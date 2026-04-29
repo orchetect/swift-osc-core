@@ -21,12 +21,12 @@ extension CharacterSet {
     package init(_ characters: Character...) {
         self.init(characters)
     }
-    
+
     /// Initialize a `CharacterSet` from one or more `Character`.
     @_disfavoredOverload
     package init(_ characters: [Character]) {
         self.init()
-        
+
         for character in characters {
             character.unicodeScalars.forEach { insert($0) }
         }
@@ -49,19 +49,19 @@ extension CharacterSet {
     package static func + (lhs: Self, rhs: Self) -> Self {
         lhs.union(rhs)
     }
-    
+
     /// Same as `lhs.formUnion(rhs)`.
     @_disfavoredOverload
     package static func += (lhs: inout Self, rhs: Self) {
         lhs.formUnion(rhs)
     }
-    
+
     /// Same as `lhs.subtracting(rhs)`.
     @_disfavoredOverload
     package static func - (lhs: Self, rhs: Self) -> Self {
         lhs.subtracting(rhs)
     }
-    
+
     /// Same as `lhs.subtract(rhs)`.
     @_disfavoredOverload
     package static func -= (lhs: inout Self, rhs: Self) {

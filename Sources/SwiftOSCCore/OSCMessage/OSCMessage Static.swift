@@ -1,7 +1,7 @@
 //
 //  OSCMessage Static.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -13,7 +13,7 @@ import struct FoundationEssentials.Data
 extension OSCMessage {
     /// Enum describing the OSC packet type.
     public static let packetType: OSCPacketType = .message
-    
+
     /// Constant caching an OSCMessage header.
     public static let header: Data = {
         guard let data = "/".toData(using: .nonLossyASCII) else {

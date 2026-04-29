@@ -1,7 +1,7 @@
 //
 //  OSCAddressSpace.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -35,21 +35,21 @@ import struct FoundationEssentials.UUID
 public actor OSCAddressSpace<MethodID: Equatable & Hashable & Sendable> {
     /// The concrete type used for method IDs.
     public typealias MethodID = MethodID
-    
+
     var root: [Node] = []
-    
+
     // Allows constructing the object with inline generics, ie:
     // let addressSpace = OSCAddressSpace<String>()
     @_documentation(visibility: internal)
     @_disfavoredOverload
     public init() { }
-    
+
     // In the absence of a custom method ID type, the default `UUID` type will be used.
     // This allows for a default constructor to be used without specifying generics:
     // let addressSpace = OSCAddressSpace()
     /// Initialize using default method ID type `UUID`.
     public init() where MethodID == UUID { }
-    
+
     // Additionally, make it possible to supply the custom type existential as a parameter.
     /// Initialize specifying a concrete method ID type.
     public init(methodIDs: MethodID.Type) { }

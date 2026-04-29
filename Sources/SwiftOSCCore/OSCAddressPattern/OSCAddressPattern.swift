@@ -1,7 +1,7 @@
 //
 //  OSCAddressPattern.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -53,7 +53,7 @@ import struct FoundationEssentials.Data
 public struct OSCAddressPattern {
     /// OSC Address storage.
     let rawAddress: String
-    
+
     /// Raw string data cache.
     let rawData: Data
 }
@@ -104,7 +104,7 @@ extension OSCAddressPattern: Codable {
         let value = try container.decode(String.self)
         self.init(value)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(stringValue)

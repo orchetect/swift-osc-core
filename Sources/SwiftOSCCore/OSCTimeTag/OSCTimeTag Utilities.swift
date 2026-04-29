@@ -1,7 +1,7 @@
 //
 //  OSCTimeTag Utilities.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -29,10 +29,10 @@ extension OSCTimeTag {
         assertionFailure("Failed to form date from date components.")
         return Date()
     }()
-    
+
     /// Duration in seconds of an NTP era (approx 136.1 years).
     static let eraDuration = TimeInterval(UInt32.max)
-    
+
     /// Returns the current era.
     static var currentEra: Int {
         Int(Date().timeIntervalSince(primeEpoch) / eraDuration)
@@ -46,18 +46,18 @@ extension TimeInterval {
         guard self > .zero else {
             return (timeTag: 0, era: 0)
         }
-        
+
         // early return for prime epoch period (era 0)
         if self <= Double(UInt32.max) {
             let timeTag = UInt64(self * 0x1_0000_0000)
             return (timeTag: timeTag, era: 0)
         }
-        
+
         // calculate era (rollover count)
         let calc = quotientAndRemainder(dividingBy: OSCTimeTag.eraDuration)
-        
+
         let timeTag = calc.remainder * 0x1_0000_0000
-        
+
         return (timeTag: UInt64(timeTag), era: Int(calc.remainder))
     }
 }

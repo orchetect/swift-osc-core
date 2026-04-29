@@ -1,7 +1,7 @@
 //
 //  OSCAddressPattern Strings.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Address Components
@@ -11,7 +11,7 @@ extension OSCAddressPattern {
     public var stringValue: String {
         rawAddress
     }
-    
+
     /// Returns the address as individual path components (strings between `/` separators).
     public var pathComponents: [Substring] {
         rawAddress.oscAddressPathComponents
@@ -27,23 +27,23 @@ extension OSCAddressPattern {
         pathComponents
             .map { Component(string: String($0)) }
     }
-    
+
     /// Returns `true` if the address matches a given local address.
     /// Employs address pattern matching if the inbound address contains a pattern.
     public func matches(localAddress: String) -> Bool {
         let selfPattern = components
         guard !selfPattern.isEmpty else { return false }
-        
+
         let localAddressComponents = localAddress.oscAddressPathComponents
-        
+
         guard selfPattern.count == localAddressComponents.count else { return false }
-        
+
         for idx in 0 ..< selfPattern.count {
             guard idx < localAddressComponents.count,
                   selfPattern[idx].evaluate(matching: localAddressComponents[idx])
             else { return false }
         }
-        
+
         return true
     }
 }

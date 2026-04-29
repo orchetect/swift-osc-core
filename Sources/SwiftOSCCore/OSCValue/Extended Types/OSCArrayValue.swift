@@ -1,7 +1,7 @@
 //
 //  OSCArrayValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -15,11 +15,11 @@ internal import SwiftASCII // ASCIICharacter
 /// OSC value array (as an OSC value type itself).
 public struct OSCArrayValue {
     public let elements: OSCValues
-    
+
     public init(_ elements: OSCValues) {
         self.elements = elements
     }
-    
+
     // NOTE: Overloads that take variadic values were tested,
     // however for code consistency and proper indentation, it is
     // undesirable to have variadic parameters.
@@ -37,13 +37,15 @@ extension OSCValue where Self == OSCArrayValue {
 // MARK: - Equatable
 
 extension OSCArrayValue: Equatable {
+    // swiftformat:disable redundantEquatable
+    
     // custom operator logic is needed because array contains `any OSCValue`
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.elements == rhs.elements
     }
     
     // additional operator overloads:
-    
+
     public static func == (lhs: Self, rhs: [any OSCValue]) -> Bool {
         lhs.elements == rhs
     }
@@ -123,9 +125,9 @@ extension OSCArrayValue: OSCValueEncodable {
         var tags: [ASCIICharacter] = []
         tags.reserveCapacity(value.elements.count + 2)
         tags += ASCIICharacter(oscTypeTagOpen)
-        
+
         var data = Data()
-        
+
         for element in value.elements {
             try OSCMessageEncoder.encode(
                 element,
@@ -133,11 +135,11 @@ extension OSCArrayValue: OSCValueEncodable {
                 builderValuesChunk: &data
             )
         }
-        
+
         tags += ASCIICharacter(oscTypeTagClose)
-        
+
         return (
-            tags: tags.map { $0.characterValue },
+            tags: tags.map(\.characterValue),
             data: data
         )
     }
@@ -151,13 +153,13 @@ extension OSCArrayValue: OSCValueDecodable {
         }
 
         var extractedValues: OSCValues = []
-        
+
         var remainingTags = Array(tags.dropFirst())
-        
+
         var currentTagIndex = remainingTags.startIndex
         while currentTagIndex < remainingTags.count {
             var tag = remainingTags[currentTagIndex]
-            
+
             if tag == oscTypeTagClose {
                 currentTagIndex += 1
                 return (
@@ -165,7 +167,7 @@ extension OSCArrayValue: OSCValueDecodable {
                     value: OSCDecoded(extractedValues)
                 )
             }
-            
+
             let tagsToAdvance = try OSCMessageDecoder.decodeValue(
                 initialChar: &tag,
                 currentTagIndex: &currentTagIndex,
@@ -175,7 +177,7 @@ extension OSCArrayValue: OSCValueDecodable {
             )
             currentTagIndex += tagsToAdvance
         }
-        
+
         // fall-through condition means we never encountered a closing tag
         throw .malformed("Array termination tag ']' was not found.")
     }

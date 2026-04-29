@@ -1,7 +1,7 @@
 //
 //  OSCValueTagIdentity.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Declarative description of how an OSC value represents itself with OSC message type tag(s).
@@ -10,7 +10,7 @@ public enum OSCValueTagIdentity: Equatable, Hashable {
     ///
     /// Most OSC values are represented in this manner. ie: `i` for `Int32`, `s` for `String`, etc.
     case tag(Character)
-    
+
     /// The OSC value occupies a single OSC-type tag character when encoded but it varies depending
     /// on the nature of the value or the content of the value's data payload.
     /// All possible type tags must be finite and known at compile time.
@@ -19,7 +19,7 @@ public enum OSCValueTagIdentity: Equatable, Hashable {
     /// a single tag character when encoded but the character may be `T` or `F`. Variable is how SwiftOSC
     /// itself internally implements `Bool` encoding and decoding.
     case variable([Character])
-    
+
     /// The OSC "value" may be complex in nature and occupies one or more OSC-type tag characters
     /// and they are not reasonably known at compile time. This scenario requires manual parsing and
     /// validation. Very few implementations will require this pattern.
@@ -50,7 +50,7 @@ extension OSCValueTagIdentity {
             false
         }
     }
-    
+
     /// Returns known static tag(s) of the tag identity.
     /// If the identity is variadic, an empty array is always returned since the tags are known only
     /// to the type's ``OSCValueCodable`` implementation.

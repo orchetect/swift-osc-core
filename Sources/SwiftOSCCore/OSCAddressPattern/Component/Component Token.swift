@@ -1,23 +1,23 @@
 //
 //  Component Token.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension OSCAddressPattern.Component {
     enum Token {
         /// One or more sequential literal characters.
         case literal(String)
-        
+
         /// `*`
         case zeroOrMoreWildcard
-        
+
         /// `?`
         case singleCharWildcard
-        
+
         /// `[]` bracket expression.
         case singleChar(isExclusion: Bool, groups: Set<CharacterGroup>)
-        
+
         /// `{}` curly-brace expression.
         case strings(strings: Set<String>)
     }
@@ -33,7 +33,7 @@ extension OSCAddressPattern.Component.Token {
     enum CharacterGroup: Equatable, Hashable {
         /// Single character.
         case single(Character)
-        
+
         /// Contiguous range of ASCII characters.
         case asciiRange(start: Character, end: Character)
     }

@@ -1,7 +1,7 @@
 //
 //  OSCTimeTag init.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -20,7 +20,7 @@ extension OSCTimeTag {
         self.era = era
         self.rawValue = rawValue
     }
-    
+
     /// Returns a Time Tag representing a time in the future.
     ///
     /// If the intention is to produce an immediate Time Tag, use ``immediate()`` instead of
@@ -35,13 +35,13 @@ extension OSCTimeTag {
         let futureDate = Date(timeIntervalSinceNow: seconds)
         self.init(future: futureDate)
     }
-    
+
     /// Returns a Time Tag formed from total elapsed seconds since 1990 (prime epoch).
     public init(timeIntervalSince1900 seconds: TimeInterval) {
         let converted = seconds.oscTimeTag
         self.init(converted.timeTag, era: converted.era)
     }
-    
+
     /// Returns a Time Tag representing a time in the future.
     ///
     /// If the intention is to produce an immediate Time Tag, use ``immediate()`` instead of

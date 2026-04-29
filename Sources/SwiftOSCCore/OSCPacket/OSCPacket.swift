@@ -1,14 +1,14 @@
 //
 //  OSCPacket.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// OSC packet containing a bundle or message.
 public enum OSCPacket {
     /// OSC bundle.
     case bundle(_ bundle: OSCBundle)
-    
+
     /// OSC message.
     case message(_ message: OSCMessage)
 }
@@ -34,7 +34,7 @@ extension OSCPacket: CustomStringConvertible {
         case let .message(message): message.description
         }
     }
-    
+
     /// Same as `description` but values are separated with new-line characters and indented.
     public var descriptionPretty: String {
         switch self {

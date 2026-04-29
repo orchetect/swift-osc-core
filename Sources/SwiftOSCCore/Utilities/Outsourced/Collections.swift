@@ -11,8 +11,7 @@
 
 // MARK: - Operators
 
-extension Collection where Self: RangeReplaceableCollection,
-Self: MutableCollection {
+extension Collection where Self: RangeReplaceableCollection, Self: MutableCollection {
     /// Syntactic sugar: Append an element to an array.
     @inlinable
     package static func += (lhs: inout Self, rhs: Element) {
@@ -28,7 +27,7 @@ extension Collection {
     package func startIndex(offsetBy distance: Int) -> Index {
         index(startIndex, offsetBy: distance)
     }
-    
+
     /// Returns an index that is the specified distance from the end index.
     @_disfavoredOverload
     package func endIndex(offsetBy distance: Int) -> Index {
@@ -43,7 +42,7 @@ extension Collection {
         let fromIndex = index(startIndex, offsetBy: offsetIndex)
         return self[fromIndex]
     }
-    
+
     /// Returns the substring in the given range of character positions (offsets from the start
     /// index).
     @_disfavoredOverload
@@ -52,7 +51,7 @@ extension Collection {
         let toIndex = index(startIndex, offsetBy: offsetRange.upperBound)
         return self[fromIndex ... toIndex]
     }
-    
+
     /// Returns the substring in the given range of character positions (offsets from the start
     /// index).
     @_disfavoredOverload
@@ -61,7 +60,7 @@ extension Collection {
         let toIndex = index(startIndex, offsetBy: offsetRange.upperBound)
         return self[fromIndex ..< toIndex]
     }
-    
+
     /// Returns the substring in the given range of character positions (offsets from the start
     /// index).
     @_disfavoredOverload
@@ -69,7 +68,7 @@ extension Collection {
         let fromIndex = index(startIndex, offsetBy: offsetRange.lowerBound)
         return self[fromIndex...]
     }
-    
+
     /// Returns the substring in the given range of character positions (offsets from the start
     /// index).
     @_disfavoredOverload
@@ -77,7 +76,7 @@ extension Collection {
         let toIndex = index(startIndex, offsetBy: offsetRange.upperBound)
         return self[...toIndex]
     }
-    
+
     /// Returns the substring in the given range of character positions (offsets from the start
     /// index).
     @_disfavoredOverload

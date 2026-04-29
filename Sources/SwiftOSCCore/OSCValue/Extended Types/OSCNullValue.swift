@@ -1,7 +1,7 @@
 //
 //  OSCNullValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Null OSC value as defined by the OSC 1.0 spec.

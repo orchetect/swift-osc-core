@@ -1,7 +1,7 @@
 //
 //  OSCPacket Properties.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension OSCPacket {
@@ -13,7 +13,7 @@ extension OSCPacket {
         case .bundle: .bundle
         }
     }
-    
+
     /// A convenience to access all messages within the packet, including within any nested bundles,
     /// preserving order.
     ///

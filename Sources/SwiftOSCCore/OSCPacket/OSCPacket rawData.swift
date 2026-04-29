@@ -1,7 +1,7 @@
 //
 //  OSCPacket rawData.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -33,7 +33,7 @@ extension OSCPacket {
             return nil
         }
     }
-    
+
     /// Returns raw OSC packet data constructed from the packet content.
     public func rawData() throws(OSCEncodeError) -> Data {
         switch self {

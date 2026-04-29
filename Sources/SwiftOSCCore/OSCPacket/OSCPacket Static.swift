@@ -1,7 +1,7 @@
 //
 //  OSCPacket Static.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Static Constructors
@@ -22,7 +22,7 @@ extension OSCPacket {
         )
         return .bundle(bundle)
     }
-    
+
     /// Construct a new OSC message.
     public static func message(
         _ addressPattern: String,
@@ -34,7 +34,7 @@ extension OSCPacket {
         )
         return .message(message)
     }
-    
+
     /// Construct a new OSC message.
     public static func message(
         _ addressPattern: OSCAddressPattern,

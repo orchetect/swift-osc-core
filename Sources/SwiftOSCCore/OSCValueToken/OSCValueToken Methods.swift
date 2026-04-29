@@ -1,7 +1,7 @@
 //
 //  OSCValueToken Methods.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension OSCValueToken {
@@ -18,10 +18,10 @@ extension OSCValueToken {
         includingOpaque: Bool = false
     ) -> Bool {
         if self == token { return true }
-        
+
         if includingOpaque {
             // handle all opaque types
-            
+
             switch token {
             case .number:
                 if self == .int32 ||
@@ -44,7 +44,7 @@ extension OSCValueToken {
                 break
             }
         }
-        
+
         return false
     }
 }

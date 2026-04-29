@@ -1,7 +1,7 @@
 //
 //  OSCMIDIValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// MIDI 1.0 message OSC value as defined by the OSC 1.0 spec.
@@ -12,7 +12,7 @@ public struct OSCMIDIValue {
     public var status: UInt8
     public var data1: UInt8
     public var data2: UInt8
-    
+
     /// MIDI 1.0 message OSC value as defined by the OSC 1.0 spec.
     ///
     /// The message is built as 1-3 raw MIDI 1.0 message bytes, along with a port ID.
@@ -94,7 +94,7 @@ extension OSCMIDIValue: Codable {
     enum CodingKeys: String, CodingKey {
         case bytes
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let bytes = try container.decode([UInt8].self, forKey: .bytes)
@@ -111,7 +111,7 @@ extension OSCMIDIValue: Codable {
         data1 = bytes[2]
         data2 = bytes[3]
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         let bytes = [portID, status, data1, data2]
@@ -146,9 +146,9 @@ extension OSCMIDIValue: OSCValueEncodable {
 extension OSCMIDIValue: OSCValueDecodable {
     public static let oscDecoding = OSCValueStaticTagDecoder<Self> { decoder throws(OSCDecodeError) in
         let bytes = try decoder.readOSC(bytes: 4)
-        
+
         let startIndex = bytes.startIndex
-        
+
         return OSCMIDIValue(
             portID: bytes[startIndex],
             status: bytes[startIndex + 1],

@@ -1,7 +1,7 @@
 //
 //  Date Extensions.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -20,7 +20,7 @@ extension Date {
     package var timeIntervalSince1900: TimeInterval {
         timeIntervalSince(OSCTimeTag.primeEpoch)
     }
-    
+
     /// Returns the NTP era.
     @_disfavoredOverload
     package var ntpEra: Int {
@@ -30,7 +30,7 @@ extension Date {
 
 extension TimeZone {
     /// UTC timezone.
-    package static let utc: TimeZone = TimeZone(abbreviation: "UTC") ?? {
+    package static let utc: TimeZone = .init(abbreviation: "UTC") ?? {
         assertionFailure("Failed to create UTC timezone.")
         return if #available(macOS 13, iOS 16, tvOS 16, watchOS 9, *) {
             .gmt

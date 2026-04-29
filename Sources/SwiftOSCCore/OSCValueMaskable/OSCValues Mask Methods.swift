@@ -1,7 +1,7 @@
 //
 //  OSCValues Mask Methods.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension OSCValues {
@@ -22,13 +22,13 @@ extension OSCValues {
     ) -> Bool {
         // should not contain more values than mask
         if count > mask.count { return false }
-        
+
         var matchCount = 0
-        
+
         for idx in 0 ..< mask.count {
             // can be a concrete type or opaque type
             let idxOptional = mask[idx].isOptional
-            
+
             if indices.contains(idx) {
                 switch mask[idx] {
                 case .number, .numberOptional, .numberOrBool, .numberOrBoolOptional:
@@ -40,7 +40,7 @@ extension OSCValues {
                         return false
                     }
                 }
-                
+
                 let token = self[idx].getSelf().oscValueToken
                 switch token.isBaseType(
                     matching: mask[idx].baseType,
@@ -49,7 +49,7 @@ extension OSCValues {
                 case true:
                     matchCount += 1
                     continue
-                    
+
                 case false:
                     return false
                 }
@@ -58,13 +58,13 @@ extension OSCValues {
                 case true:
                     matchCount += 1
                     continue
-                    
+
                 case false:
                     return false
                 }
             }
         }
-        
+
         if mask.count == matchCount { return true }
         return false
     }

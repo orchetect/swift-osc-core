@@ -1,7 +1,7 @@
 //
 //  OSCValueDecoderBlock.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Protocol that ``OSCValue`` decoder block encapsulation structs adopt.
@@ -16,9 +16,9 @@ public struct OSCValueStaticTagDecoder<OSCDecoded: OSCValueDecodable>: OSCValueD
     public typealias Block = @Sendable (
         _ decoder: inout OSCValueDecoder
     ) throws(OSCDecodeError) -> OSCDecoded
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }
@@ -30,9 +30,9 @@ public struct OSCValueVariableTagDecoder<OSCDecoded: OSCValueDecodable>: OSCValu
         _ tag: Character,
         _ decoder: inout OSCValueDecoder
     ) throws(OSCDecodeError) -> OSCDecoded
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }
@@ -48,9 +48,9 @@ public struct OSCValueVariadicTagDecoder<OSCDecoded: OSCValueDecodable>: OSCValu
         _ tags: [Character],
         _ decoder: inout OSCValueDecoder
     ) throws(OSCDecodeError) -> (tagCount: Int, value: OSCDecoded)?
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }

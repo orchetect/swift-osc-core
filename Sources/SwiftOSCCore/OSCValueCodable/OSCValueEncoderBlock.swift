@@ -1,7 +1,7 @@
 //
 //  OSCValueEncoderBlock.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -25,9 +25,9 @@ public struct OSCValueStaticTagEncoder<OSCEncoded: OSCValueEncodable>: OSCValueE
         tag: Character,
         data: Data?
     )
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }
@@ -41,9 +41,9 @@ public struct OSCValueVariableTagEncoder<OSCEncoded: OSCValueEncodable>: OSCValu
         tag: Character,
         data: Data?
     )
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }
@@ -57,9 +57,9 @@ public struct OSCValueVariadicTagEncoder<OSCEncoded: OSCValueEncodable>: OSCValu
         tags: [Character],
         data: Data?
     )
-    
+
     public let block: Block
-    
+
     public init(_ block: @escaping Block) {
         self.block = block
     }

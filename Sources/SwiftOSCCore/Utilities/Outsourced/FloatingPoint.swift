@@ -17,7 +17,7 @@ extension FloatingPoint {
         let fraction = self - (integral * rhs)
         return (quotient: integral, remainder: fraction)
     }
-    
+
     /// Returns both integral part and fractional part.
     ///
     /// - Note: This method is more computationally efficient than calling both `.integral` and
@@ -30,13 +30,13 @@ extension FloatingPoint {
         let fraction = self - integral
         return (integral: integral, fraction: fraction)
     }
-    
+
     /// Returns the integral part (digits before the decimal point)
     @inlinable
     package var integral: Self {
         integralAndFraction.integral
     }
-    
+
     /// Returns the fractional part (digits after the decimal point)
     ///
     /// - Note: this method can result in a non-trivial loss of precision for the fractional part.

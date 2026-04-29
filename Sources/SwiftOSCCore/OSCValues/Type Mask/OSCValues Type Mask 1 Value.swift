@@ -1,7 +1,7 @@
 //
 //  OSCValues Type Mask 1 Value.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // 💡 Note:
@@ -173,7 +173,7 @@ extension OSCValues {
         try validateCount(1)
         return try unwrapValue(v.self, index: 0)
     }
-    
+
     /// Returns the OSC value sequence as a strongly typed tuple
     /// if it matches the given mask of concrete value types.
     /// If the value types do not match the mask, an error is thrown.

@@ -1,7 +1,7 @@
 //
 //  OSCStringAltValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Alternative String OSC value as defined by the OSC 1.0 spec.
@@ -9,7 +9,7 @@
 /// differentiates it as an alternative string type.
 public struct OSCStringAltValue {
     public var string: String
-    
+
     public init(_ string: String) {
         self.string = string
     }
@@ -30,9 +30,9 @@ extension OSCValue where Self == OSCStringAltValue {
 
 extension OSCStringAltValue: Equatable {
     // same-type implementation is automatically synthesized by Swift
-    
+
     // additional operator overloads:
-    
+
     public static func == (lhs: OSCStringAltValue, rhs: some StringProtocol) -> Bool {
         lhs.string == rhs
     }
@@ -40,7 +40,7 @@ extension OSCStringAltValue: Equatable {
     public static func != (lhs: OSCStringAltValue, rhs: some StringProtocol) -> Bool {
         lhs.string != rhs
     }
-    
+
     public static func == (lhs: some StringProtocol, rhs: OSCStringAltValue) -> Bool {
         lhs == rhs.string
     }

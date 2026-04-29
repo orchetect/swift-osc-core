@@ -1,7 +1,7 @@
 //
 //  OSCSerialization.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -13,11 +13,11 @@ import Foundation
 public final class OSCSerialization {
     /// Shared singleton instance.
     public nonisolated(unsafe) static let shared = OSCSerialization()
-    
+
     /// Internal:
     /// Registered tag identities repository.
     var tagIdentities: [(identity: OSCValueTagIdentity, concreteType: any OSCValueCodable.Type)] = []
-    
+
     /// Singleton init.
     private init() {
         // register default types synchronously so they are available immediately
@@ -37,18 +37,18 @@ extension OSCSerialization {
     public func registerType(_ concreteType: any OSCValueCodable.Type) throws(OSCSerializationError) {
         // throw an error if user attempts to register an already existing type tag
         try canRegisterType(concreteType)
-        
+
         // add type's tag identity
         tagIdentities.append(
             (concreteType.oscTagIdentity, concreteType.self)
         )
     }
-    
+
     private func canRegisterType(_ concreteType: any OSCValueCodable.Type) throws(OSCSerializationError) {
         let staticTags = concreteType
             .oscTagIdentity
             .staticTags()
-        
+
         if !staticTags.isEmpty {
             guard staticTags.allSatisfy(tagIdentities(contains:)) == false
             else {
@@ -66,7 +66,7 @@ extension OSCSerialization {
         Float32.self,
         String.self,
         Data.self,
-        
+
         // extended types
         Bool.self,
         Character.self,
@@ -77,14 +77,14 @@ extension OSCSerialization {
         OSCNullValue.self,
         OSCStringAltValue.self,
         OSCTimeTag.self,
-        
+
         // variadic
         // OSCValues.self, // can't use `any OSC Value` as a type :(
-        
+
         // this should be registered last in order
         OSCArrayValue.self
     ]
-    
+
     /// Internal:
     /// Returns concrete type(s) for a given OSC-type tag character.
     func concreteTypes(for character: Character) -> [any OSCValueCodable.Type] {
@@ -99,9 +99,9 @@ extension OSCSerialization {
                     true
                 }
             }
-            .map { $0.concreteType }
+            .map(\.concreteType)
     }
-    
+
     /// Internal:
     /// Returns `true` if a registered tag identity matches a given OSC-type tag character.
     func tagIdentities(contains character: Character) -> Bool {

@@ -1,7 +1,7 @@
 //
 //  OSCMessage.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -18,10 +18,10 @@ import struct FoundationEssentials.Data
 public struct OSCMessage {
     /// OSC message address pattern.
     public var addressPattern: OSCAddressPattern
-    
+
     /// OSC values (arguments) contained within the message.
     public var values: OSCValues
-    
+
     @usableFromInline
     let _rawData: Data?
 }
@@ -56,13 +56,14 @@ extension OSCMessage: CustomStringConvertible {
             ? "OSCMessage(\(addressPattern.stringValue.quoted))"
             : "OSCMessage(\(addressPattern.stringValue.quoted), values: \(values))"
     }
-    
+
     /// Same as `description` but values are separated with new-line characters and indented.
     public var descriptionPretty: String {
         values.isEmpty
             ? "OSCMessage(\(addressPattern.stringValue.quoted))"
             : "OSCMessage(\(addressPattern.stringValue.quoted)) with values:\n  "
-                + values.map { "\(type(of: $0)): \($0)" }.joined(separator: "\n  ")
-                .trimmed
+            + values.map { "\(type(of: $0)): \($0)" }
+            .joined(separator: "\n  ")
+            .trimmed
     }
 }

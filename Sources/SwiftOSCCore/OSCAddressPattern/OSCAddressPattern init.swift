@@ -1,7 +1,7 @@
 //
 //  OSCAddressPattern init.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 internal import SwiftASCII // ASCIIString
@@ -16,7 +16,7 @@ extension OSCAddressPattern {
         let asciiLossy = ASCIIString(lossy)
         self.init(ascii: asciiLossy)
     }
-    
+
     /// Internal:
     /// Create an OSC address from a raw `ASCIIString` address.
     init(ascii address: ASCIIString) {
@@ -38,7 +38,7 @@ extension OSCAddressPattern {
         let formedAddress = ("/" + lossy.joined(separator: "/"))
         self.init(formedAddress)
     }
-    
+
     /// Internal:
     /// Create an OSC address from individual path components.
     /// The path component strings will be converted to ASCII strings, lossily converting or

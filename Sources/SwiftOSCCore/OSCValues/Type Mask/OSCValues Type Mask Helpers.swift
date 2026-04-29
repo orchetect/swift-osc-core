@@ -1,7 +1,7 @@
 //
 //  OSCValues Type Mask Helpers.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension OSCValues {
@@ -30,18 +30,18 @@ extension OSCValues {
         guard indices.contains(index) else {
             throw .invalidCount
         }
-        
+
         switch MaskType.self {
         case is Int.Type:
             guard let typed = self[index] as? (any BinaryInteger) else {
                 throw .mismatchedTypes
             }
-            
+
             return Int(typed) as! MaskType // guaranteed
-            
+
         case is AnyOSCNumberValue.Type:
             let sourceValue = self[index]
-            
+
             switch sourceValue {
             case let int as any (OSCValue & BinaryInteger):
                 return AnyOSCNumberValue(int) as! MaskType // guaranteed
@@ -52,12 +52,12 @@ extension OSCValues {
             default:
                 throw .mismatchedTypes
             }
-            
+
         default:
             guard let typed = self[index] as? MaskType else {
                 throw .mismatchedTypes
             }
-            
+
             return typed
         }
     }
@@ -72,7 +72,7 @@ extension OSCValues {
         guard indices.contains(index) else {
             return nil
         }
-        
+
         return try unwrapValue(
             type.Wrapped,
             index: index,

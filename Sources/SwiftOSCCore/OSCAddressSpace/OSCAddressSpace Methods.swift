@@ -1,7 +1,7 @@
 //
 //  OSCAddressSpace Methods.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -15,7 +15,7 @@ import struct FoundationEssentials.UUID
 extension OSCAddressSpace {
     /// A closure executed when an inbound OSC message address pattern matches a local OSC method.
     public typealias MethodBlock = @Sendable (_ values: OSCValues, _ host: String, _ port: UInt16) async -> Void
-    
+
     /// Register an OSC method by supplying its local address.
     ///
     /// Replaces existing reference if one exists for that method already.
@@ -47,7 +47,7 @@ extension OSCAddressSpace {
     ) -> MethodID where MethodID == UUID {
         register(localAddress: OSCAddressPattern(address).pathComponents, block: block)
     }
-    
+
     /// Register an OSC method by supplying its local address, assigning a custom unique identifier.
     ///
     /// Replaces existing reference if one exists for that method already.
@@ -78,7 +78,7 @@ extension OSCAddressSpace {
     ) {
         register(localAddress: OSCAddressPattern(address).pathComponents, id: id, block: block)
     }
-    
+
     /// Register an OSC method by supplying its local address.
     ///
     /// Replaces existing reference if one exists for that method already.
@@ -115,7 +115,7 @@ extension OSCAddressSpace {
             )
             return MethodID()
         }
-        
+
         guard let node = createMethodNode(
             path: pathComponents,
             id: MethodID(),
@@ -131,7 +131,7 @@ extension OSCAddressSpace {
 
         return returnedID
     }
-    
+
     /// Register an OSC method by supplying its local address, assigning a custom unique identifier.
     ///
     /// Replaces existing reference if one exists for that method already.
@@ -167,14 +167,14 @@ extension OSCAddressSpace {
             )
             return
         }
-        
+
         _ = createMethodNode(
             path: pathComponents,
             id: id,
             block: block
         )
     }
-    
+
     /// Unregister an OSC method by supplying its local address.
     ///
     /// - Returns: `true` if the operation was successful, `false` if unsuccessful or the path does
@@ -185,7 +185,7 @@ extension OSCAddressSpace {
             path: OSCAddressPattern(address).pathComponents
         )
     }
-    
+
     /// Unregister an OSC address with the given method ID.
     ///
     /// - Returns: `true` if the operation was successful, `false` if unsuccessful or the method ID does
@@ -196,7 +196,7 @@ extension OSCAddressSpace {
             methodID: methodID
         )
     }
-    
+
     /// Unregister an OSC method by supplying its local address.
     ///
     /// - Returns: `true` if the operation was successful, `false` if unsuccessful or the path does
@@ -209,7 +209,7 @@ extension OSCAddressSpace {
             path: pathComponents
         )
     }
-    
+
     /// Unregister all registered OSC methods.
     public func unregisterAll() {
         root.removeAll()
@@ -280,12 +280,12 @@ extension OSCAddressSpace {
         port: UInt16
     ) -> [MethodID] {
         let nodes = methodNodes(patternMatching: message.addressPattern)
-        
+
         for node in nodes {
             guard case let .method(id: _, block: block) = node.nodeType, let block else { continue }
             Task { await block(message.values, host, port) }
         }
-        
+
         return nodes
             .compactMap {
                 guard case let .method(id: id, block: _) = $0.nodeType else { return nil }

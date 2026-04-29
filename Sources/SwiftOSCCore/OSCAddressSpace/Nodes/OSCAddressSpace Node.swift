@@ -1,7 +1,7 @@
 //
 //  OSCAddressSpace Node.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -16,13 +16,13 @@ extension OSCAddressSpace {
     final class Node: OSCAddressSpaceNode {
         /// Class instance identity. (Not node ID).
         let internalNodeID = UUID()
-        
+
         var nodeType: OSCAddressSpaceNodeType<MethodID>
-        
+
         nonisolated let name: String
-        
+
         var children: [Node] = []
-        
+
         required init(
             name: any StringProtocol,
             type nodeType: OSCAddressSpaceNodeType<MethodID>
@@ -30,7 +30,7 @@ extension OSCAddressSpace {
             self.name = String(name)
             self.nodeType = nodeType
         }
-        
+
         /// Returns `true` if node is a method.
         /// (Note that a method can also be a container if it has children.)
         var isMethod: Bool {
@@ -67,7 +67,7 @@ extension OSCAddressSpace.Node {
     func convert(to newNodeType: OSCAddressSpaceNodeType<MethodID>) {
         nodeType = newNodeType
     }
-    
+
     /// Internal:
     /// Filters ``children`` that match the given path component OSC address pattern.
     func children(
@@ -75,7 +75,7 @@ extension OSCAddressSpace.Node {
     ) -> [OSCAddressSpace.Node] {
         children.filter(matching: pattern)
     }
-    
+
     /// Internal:
     /// Validates an OSC address space node name b invalid characters.
     ///
@@ -101,7 +101,7 @@ extension OSCAddressSpace.Node {
         strict: Bool = false
     ) -> Bool {
         guard !name.isEmpty else { return false }
-        
+
         // if the name results in a pattern other than a single contiguous string,
         // then it's invalid
         let tokens = OSCAddressPattern.Component(string: String(name)).tokens
@@ -109,17 +109,17 @@ extension OSCAddressSpace.Node {
               let singleToken = tokens.first,
               case let .literal(str) = singleToken
         else { return false }
-        
+
         // forward slash is illegal since it is used to separate address path components
         guard !str.contains("/") else { return false }
-        
+
         // some characters are still possible to be used but only cause invalidation
         // with opt-in strict validation
         if strict {
             guard !str.contains(anyCharacters: " #}]")
             else { return false }
         }
-        
+
         return true
     }
 }

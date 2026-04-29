@@ -23,7 +23,7 @@ extension StringProtocol {
     package var isASCII: Bool {
         allSatisfy(\.isASCII)
     }
-    
+
     /// Returns true if all characters in the string are contained in the character set.
     @_disfavoredOverload
     package func isOnly(
@@ -33,17 +33,17 @@ extension StringProtocol {
         let mergedCharacterSet = characterSets.isEmpty
             ? characterSet
             : characterSets.reduce(into: characterSet, +=)
-        
+
         return allSatisfy(mergedCharacterSet.contains(_:))
     }
-    
+
     /// Returns true if all characters in the string are contained in the character set.
     @_disfavoredOverload
     package func isOnly(characters: String) -> Bool {
         let characterSet = CharacterSet(charactersIn: characters)
         return allSatisfy(characterSet.contains(_:))
     }
-    
+
     /// Returns true if any character in the string are contained in the character set.
     @_disfavoredOverload
     package func contains(
@@ -53,23 +53,23 @@ extension StringProtocol {
         let mergedCharacterSet = characterSets.isEmpty
             ? characterSet
             : characterSets.reduce(into: characterSet, +=)
-        
+
         for char in self {
             if mergedCharacterSet.contains(char) { return true }
         }
-        
+
         return false
     }
-    
+
     /// Returns true if any character in the string are contained in the character set.
     @_disfavoredOverload
     package func contains(anyCharacters characters: String) -> Bool {
         let characterSet = CharacterSet(charactersIn: characters)
-        
+
         for char in self {
             if characterSet.contains(char) { return true }
         }
-        
+
         return false
     }
 }

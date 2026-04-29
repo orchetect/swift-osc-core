@@ -1,7 +1,7 @@
 //
 //  OSCAddressSpaceNodeType.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Node type.
@@ -10,7 +10,7 @@
 enum OSCAddressSpaceNodeType<MethodID: Equatable & Hashable & Sendable> {
     /// Container only.
     case container
-    
+
     /// Method, as well as a container if children are present.
     case method(id: MethodID, block: OSCAddressSpace.MethodBlock?)
 }

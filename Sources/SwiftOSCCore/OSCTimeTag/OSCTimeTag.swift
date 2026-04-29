@@ -1,7 +1,7 @@
 //
 //  OSCTimeTag.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// OSC Time Tag.
@@ -31,10 +31,10 @@ public struct OSCTimeTag {
     ///
     /// - Note: See https://www.eecis.udel.edu/~mills/y2k.html for details.
     public let era: Int
-    
+
     /// Raw value type (aka `UInt64`)
     public typealias RawValue = UInt64
-    
+
     /// Raw Time Tag value as encoded in OSC.
     public let rawValue: RawValue
 }
@@ -56,7 +56,7 @@ extension OSCTimeTag: CustomStringConvertible {
         if rawValue == 1 {
             return "1 (immediate)"
         }
-        
+
         switch era {
         case 0:
             return "\(rawValue)"

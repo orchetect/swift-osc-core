@@ -1,13 +1,13 @@
 //
 //  OSCAddressSpaceNode.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Protocol adopted by the internal `OSCAddressSpace` `Node` class.
 protocol OSCAddressSpaceNode {
     associatedtype MethodID: Equatable & Hashable & Sendable
-    
+
     var nodeType: OSCAddressSpaceNodeType<MethodID> { get set }
     nonisolated var name: String { get }
     var children: [Self] { get }

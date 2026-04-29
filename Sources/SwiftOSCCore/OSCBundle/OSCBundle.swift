@@ -1,7 +1,7 @@
 //
 //  OSCBundle.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -21,10 +21,10 @@ public struct OSCBundle {
     /// Time tag.
     /// Default value 1: means "immediate" in OSC spec.
     public var timeTag: OSCTimeTag
-    
+
     /// Bundles and/or messages contained within the bundle.
     public var elements: [OSCPacket]
-    
+
     @usableFromInline
     let _rawData: Data?
 }
@@ -34,9 +34,9 @@ public struct OSCBundle {
 extension OSCBundle: Equatable {
     public func elementsEqual(to other: Self) -> Bool {
         // don't factor timeTag into equality
-        
+
         guard elements.count == other.elements.count else { return false }
-        
+
         return elements == other.elements
     }
 }
@@ -54,7 +54,7 @@ extension OSCBundle: Sendable { }
 extension OSCBundle: CustomStringConvertible {
     public var description: String {
         let tt = timeTag.isImmediate ? "" : "timeTag: \(timeTag)"
-        
+
         switch elements.isEmpty {
         case true:
             return "OSCBundle(\(tt))"
@@ -62,15 +62,15 @@ extension OSCBundle: CustomStringConvertible {
             return "OSCBundle(\(tt)\(timeTag.isImmediate ? "" : ", ")elements: \(elements))"
         }
     }
-    
+
     /// Same as `description` but elements are separated with new-line characters.
     public var descriptionPretty: String {
         let tt = timeTag.rawValue == 1 ? "" : "timeTag: \(timeTag)"
-        
+
         let elementsString = elements
             .map { "\($0)" }
             .joined(separator: "\n  ")
-        
+
         switch elements.isEmpty {
         case true:
             return "OSCBundle(\(tt))"

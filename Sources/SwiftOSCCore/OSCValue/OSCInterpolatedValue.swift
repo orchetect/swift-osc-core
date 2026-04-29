@@ -1,7 +1,7 @@
 //
 //  OSCInterpolatedValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Interpolated types
@@ -26,7 +26,7 @@ extension OSCInterpolatedValue {
     public static var oscTagIdentity: OSCValueTagIdentity {
         CoreOSCValue.oscTagIdentity
     }
-    
+
     public static var oscValueToken: OSCValueToken {
         CoreOSCValue.oscValueToken
     }

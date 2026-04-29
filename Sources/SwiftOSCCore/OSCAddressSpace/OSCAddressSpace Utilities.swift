@@ -1,7 +1,7 @@
 //
 //  OSCAddressSpace Utilities.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Node Utility Methods
@@ -20,14 +20,14 @@ extension OSCAddressSpace {
         block: MethodBlock? = nil
     ) -> Node? where S.Element: StringProtocol {
         guard !path.isEmpty else { return nil }
-        
+
         var pathRef: Node? = nil // start at root
-        
+
         for idx in path.indices {
             let isLast = idx == path.indices.last! // guaranteed non-nil
-            
+
             let peers = (pathRef?.children ?? root)
-            
+
             func appendPeer(_ newNode: Node) {
                 if let pathRef {
                     pathRef.children.append(newNode)
@@ -35,7 +35,7 @@ extension OSCAddressSpace {
                     root.append(newNode)
                 }
             }
-            
+
             if let existingNode = peers
                 .first(where: { $0.name == path[idx] })
             {
@@ -52,10 +52,10 @@ extension OSCAddressSpace {
                 pathRef = newNode
             }
         }
-        
+
         return pathRef
     }
-    
+
     /// Internal:
     /// Remove a method node if it is a method, or convert it to a container if it has children.
     ///
@@ -72,10 +72,10 @@ extension OSCAddressSpace {
         guard !path.isEmpty,
               let nodes = nodePath(path: path)
         else { return false }
-        
+
         return removeMethodNode(path: nodes)
     }
-    
+
     /// Internal:
     /// Remove a method node if it is a method, or convert it to a container if it has children.
     ///
@@ -91,7 +91,7 @@ extension OSCAddressSpace {
     ) -> Bool {
         guard let lastPathComponentNode = path.last
         else { return false }
-        
+
         func removeParentChild(_ child: Node) {
             if let parentNode = path.dropLast().last {
                 parentNode.children.removeAll(where: { $0 == child })
@@ -100,7 +100,7 @@ extension OSCAddressSpace {
                 root.removeAll(where: { $0 == child })
             }
         }
-        
+
         // remove the node if
         //   1) it's marked as a method, and
         //   2) it has no children
@@ -114,10 +114,10 @@ extension OSCAddressSpace {
             // not a method node; nothing can be done
             return false
         }
-        
+
         return true
     }
-    
+
     /// Internal:
     /// Remove a method node with the given method ID if it is a method, or convert it to a container
     /// if it has children.
@@ -132,10 +132,10 @@ extension OSCAddressSpace {
     func removeMethodNode(methodID: MethodID) -> Bool {
         guard let nodes = nodePath(methodID: methodID)
         else { return false }
-        
+
         return removeMethodNode(path: nodes)
     }
-    
+
     /// Internal:
     /// Returns the `Node` for the last path component of the given path if it is a method.
     /// Returns `nil` if the node does not exist or if the node is a container.
@@ -153,7 +153,7 @@ extension OSCAddressSpace {
         }
         return pathRef
     }
-    
+
     /// Internal:
     /// Returns the `Node` for the last path component of the given path.
     /// - May be a partial path.
@@ -172,7 +172,7 @@ extension OSCAddressSpace {
         }
         return pathRef
     }
-    
+
     /// Internal:
     /// Returns an array representing the path comprised of `Node` references for each path
     /// component.
@@ -192,7 +192,7 @@ extension OSCAddressSpace {
         }
         return nodes
     }
-    
+
     /// Internal:
     /// Returns an array representing the path comprised of `Node` references for each path
     /// component.
@@ -209,7 +209,7 @@ extension OSCAddressSpace {
             } else {
                 []
             }
-            
+
             if let lastNode = nodePath.last,
                case let .method(id: lastNodeID, block: _) = lastNode.nodeType,
                lastNodeID == methodID
@@ -217,18 +217,18 @@ extension OSCAddressSpace {
                 return nodePath
             }
 
-            for child in (context?.node.children ?? root) {
+            for child in context?.node.children ?? root {
                 if let path = visit(context: (node: child, path: nodePath)) {
                     return path
                 }
             }
-            
+
             return nil
         }
-        
+
         return visit(context: nil)
     }
-    
+
     /// Internal:
     /// Returns the method ID corresponding to the node at the given path.
     func methodID<S: BidirectionalCollection>(
@@ -236,11 +236,11 @@ extension OSCAddressSpace {
     ) -> MethodID? where S.Element: StringProtocol {
         guard let nodes = nodePath(path: path)
         else { return nil }
-        
+
         guard let lastNode = nodes.last,
               case let .method(id: id, block: _) = lastNode.nodeType
         else { return nil }
-        
+
         return id
     }
 }
@@ -254,16 +254,16 @@ extension OSCAddressSpace {
     func methodNodes(patternMatching address: OSCAddressPattern) -> [Node] {
         let patternComponents = address.components
         guard !patternComponents.isEmpty else { return [] }
-        
+
         var isRoot = true
         var nodes: [Node] = []
-        
+
         var idx = patternComponents.startIndex
         while idx < patternComponents.endIndex {
             let isLast = idx == patternComponents.indices.last
-            
-            let peers = isRoot ? root : nodes.lazy.flatMap { $0.children }
-            
+
+            let peers = isRoot ? root : nodes.lazy.flatMap(\.children)
+
             let matches = peers.filter(matching: patternComponents[idx])
 
             if isLast {
@@ -271,11 +271,11 @@ extension OSCAddressSpace {
             } else {
                 nodes = matches
             }
-            
+
             idx += 1
             isRoot = false
         }
-        
+
         return nodes
     }
 }

@@ -1,7 +1,7 @@
 //
 //  OSCMessage rawData.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -22,17 +22,17 @@ extension OSCMessage {
     /// if the data is not the expected format.
     public init(from rawData: some DataProtocol) throws(OSCDecodeError) {
         let rawData = Data(rawData)
-        
+
         // cache raw data
         _rawData = rawData
-        
+
         let decoded = try OSCMessageDecoder.decode(rawData: rawData)
-        
+
         // update public properties
         addressPattern = .init(decoded.addressPattern)
         values = decoded.values
     }
-    
+
     /// Returns raw OSC packet data constructed from the message content.
     public func rawData() throws(OSCEncodeError) -> Data {
         // return cached data if struct was originally initialized from raw data
@@ -40,12 +40,12 @@ extension OSCMessage {
         if let cached = _rawData {
             return cached
         }
-        
+
         let encoder = try OSCMessageEncoder(
             addressPattern: addressPattern,
             values: values
         )
-        
+
         return encoder.rawOSCMessageData()
     }
 }

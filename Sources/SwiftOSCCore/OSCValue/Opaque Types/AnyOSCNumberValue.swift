@@ -1,7 +1,7 @@
 //
 //  AnyOSCNumberValue.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// A meta-type used in ``OSCValues`` `masked()` to opaquely mask any OSC number type.
@@ -14,19 +14,19 @@
 public struct AnyOSCNumberValue {
     /// Base value storage.
     public let base: OSCNumberValueBase
-    
+
     init(_ base: Bool) {
         self.base = .bool(base)
     }
-    
+
     init(_ base: some OSCValue & BinaryInteger) {
         self.base = .int(base)
     }
-    
+
     init(_ base: some OSCValue & BinaryFloatingPoint) {
         self.base = .float(base)
     }
-    
+
     /// Returns the boxed value as an `Bool`, lossily converting format if necessary.
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
     ///
@@ -43,7 +43,7 @@ public struct AnyOSCNumberValue {
             Double(v) >= 1.0
         }
     }
-    
+
     /// Returns the boxed value as an `Int`, lossily converting format if necessary.
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
     public var intValue: Int {
@@ -56,7 +56,7 @@ public struct AnyOSCNumberValue {
             Int(v)
         }
     }
-    
+
     /// Returns the boxed value as a `Double`, lossily converting format if necessary.
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
     public var doubleValue: Double {

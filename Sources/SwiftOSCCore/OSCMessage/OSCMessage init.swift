@@ -1,7 +1,7 @@
 //
 //  OSCMessage init.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 internal import SwiftASCII
@@ -24,7 +24,7 @@ extension OSCMessage {
         self.values = values
         _rawData = nil
     }
-    
+
     /// Create an OSC message from an ``OSCAddressPattern`` and zero or more OSC values (arguments).
     public init(
         _ addressPattern: OSCAddressPattern,
@@ -34,7 +34,7 @@ extension OSCMessage {
         self.values = values
         _rawData = nil
     }
-    
+
     /// Create an OSC message from OSC address pattern path components and zero or more OSC values
     /// (arguments).
     /// An empty path components sequence is equivalent to the address of "/".
@@ -46,9 +46,9 @@ extension OSCMessage {
         self.values = values
         _rawData = nil
     }
-    
+
     // MARK: - SwiftASCII typed
-    
+
     /// Internal:
     /// Create an OSC message from a raw ``ASCIIString`` address pattern and zero or more OSC values
     /// (arguments).
@@ -60,7 +60,7 @@ extension OSCMessage {
         self.values = values
         _rawData = nil
     }
-    
+
     /// Internal:
     /// Create an OSC message from ``ASCIIString`` OSC address pattern path components and zero or
     /// more OSC values (arguments).

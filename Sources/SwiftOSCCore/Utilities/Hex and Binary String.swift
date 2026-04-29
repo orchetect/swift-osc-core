@@ -1,7 +1,7 @@
 //
 //  Hex and Binary String.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Hex String
@@ -13,7 +13,7 @@ extension BinaryInteger {
         (prefix ? "0x" : "")
             + String(self, radix: 16, uppercase: true)
     }
-    
+
     /// Returns an integer as a hex string padded to _n_ characters after the prefix.
     /// Prefix optional.
     package func hexString(padTo: Int, prefix: Bool = true) -> String {
@@ -34,7 +34,7 @@ extension Collection where Element: BinaryInteger {
         map { $0.hexString(prefix: prefixes) }
             .joined(separator: separator)
     }
-    
+
     /// Returns a collection of integers as a flat string of hex strings
     /// padded to _n_ characters after the prefix.
     /// Prefixes optional.
@@ -46,7 +46,7 @@ extension Collection where Element: BinaryInteger {
         map { $0.hexString(padTo: padEachTo, prefix: prefixes) }
             .joined(separator: separator)
     }
-    
+
     /// Returns a concatenated string formatted as a hex string array literal.
     package func hexStringArrayLiteral(padEachTo: Int = 2) -> String {
         "[" + hexString(padEachTo: padEachTo, prefixes: true, separator: ", ") + "]"
@@ -62,7 +62,7 @@ extension BinaryInteger {
         (prefix ? "0b" : "")
             + String(self, radix: 2, uppercase: true)
     }
-    
+
     /// Returns an integer as a binary string padded to _n_ characters after the prefix.
     /// Prefix optional.
     package func binaryString(padTo: Int, prefix: Bool = true) -> String {
@@ -83,7 +83,7 @@ extension Collection where Element: BinaryInteger {
         map { $0.binaryString(prefix: prefixes) }
             .joined(separator: separator)
     }
-    
+
     /// Returns a collection of integers as a flat string of binary strings
     /// padded to _n_ characters after the prefix.
     /// Prefixes optional.

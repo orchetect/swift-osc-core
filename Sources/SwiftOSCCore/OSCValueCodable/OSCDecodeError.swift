@@ -1,7 +1,7 @@
 //
 //  OSCDecodeError.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(Darwin)
@@ -14,19 +14,19 @@ import protocol Foundation.LocalizedError
 public enum OSCDecodeError: LocalizedError, Equatable, Hashable {
     /// Malformed data. `verboseError` contains the specific reason.
     case malformed(_ verboseError: String)
-        
+
     /// An unexpected OSC-value type was encountered in the data.
     /// `tag` contains the OSC Type Tag encountered.
     case unexpectedType(tag: Character)
-    
+
     /// Error encountered while decoding an OSC value.
     /// `verboseError` contains the specific reason.
     case valueDecodingError(_ verboseError: String)
-    
+
     /// Internal inconsistency; decoding logic is in an unexpected state and cannot continue.
     /// `verboseError` contains the specific reason.
     case internalInconsistency(_ verboseError: String)
-    
+
     public var errorDescription: String? {
         switch self {
         case let .malformed(verboseError): "Malformed data: \(verboseError)"
