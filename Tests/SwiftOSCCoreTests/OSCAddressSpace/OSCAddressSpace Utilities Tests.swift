@@ -5,7 +5,7 @@
 //
 
 import struct Foundation.UUID
-@testable import OSCKitCore
+@testable import SwiftOSCCore
 import Testing
 
 @Suite struct OSCAddressSpace_Utilities_Tests {

@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import OSCKitCore
+import SwiftOSCCore
 import Testing
 
 @Suite struct OSCPacket_Data_Extensions_Tests {

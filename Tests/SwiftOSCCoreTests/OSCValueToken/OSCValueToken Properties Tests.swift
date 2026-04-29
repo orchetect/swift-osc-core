@@ -4,7 +4,7 @@
 //  © 2020-2026 Steffan Andrews • Licensed under MIT License
 //
 
-@testable import OSCKitCore
+@testable import SwiftOSCCore
 import SwiftASCII
 import Testing
 

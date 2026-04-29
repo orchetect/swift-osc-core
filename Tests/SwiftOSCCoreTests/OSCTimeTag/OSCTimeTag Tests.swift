@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import OSCKitCore
+import SwiftOSCCore
 import Testing
 
 @Suite struct OSCTimeTag_Tests {

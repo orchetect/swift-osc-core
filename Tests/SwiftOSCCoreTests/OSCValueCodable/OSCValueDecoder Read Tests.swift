@@ -5,7 +5,7 @@
 //
 
 import Foundation
-@testable import OSCKitCore
+@testable import SwiftOSCCore
 import SwiftASCII
 import Testing
 

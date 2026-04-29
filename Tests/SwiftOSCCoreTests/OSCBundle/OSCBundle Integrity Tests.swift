@@ -5,7 +5,7 @@
 //
 
 import Foundation
-@testable import OSCKitCore
+@testable import SwiftOSCCore
 import Testing
 
 @Suite struct OSCBundle_Integrity_Tests {

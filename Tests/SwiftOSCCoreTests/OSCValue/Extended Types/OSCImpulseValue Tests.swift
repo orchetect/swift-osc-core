@@ -4,7 +4,7 @@
 //  © 2020-2026 Steffan Andrews • Licensed under MIT License
 //
 
-import OSCKitCore
+import SwiftOSCCore
 import Testing
 
 @Suite struct OSCImpulseValue_Tests {

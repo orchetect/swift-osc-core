@@ -6,7 +6,7 @@
 
 import Foundation
 import Numerics
-import OSCKitCore
+import SwiftOSCCore
 import Testing
 
 @Suite struct OSCTimeTag_StaticConstructors_Tests {
