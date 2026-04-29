@@ -38,12 +38,12 @@ extension OSCValue where Self == OSCArrayValue {
 
 extension OSCArrayValue: Equatable {
     // swiftformat:disable redundantEquatable
-    
+
     // custom operator logic is needed because array contains `any OSCValue`
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.elements == rhs.elements
     }
-    
+
     // additional operator overloads:
 
     public static func == (lhs: Self, rhs: [any OSCValue]) -> Bool {

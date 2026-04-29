@@ -1,7 +1,7 @@
 //
 //  Test Utilities.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import CoreFoundation
@@ -12,6 +12,7 @@ import Testing
 import Darwin
 #elseif canImport(Glibc)
 import Glibc
+
 private let USEC_PER_SEC = 1_000_000
 #endif
 
@@ -21,12 +22,12 @@ func isSystemTimingStable(
     tolerance: TimeInterval = 0.01
 ) -> Bool {
     let durationUS = UInt32(duration * TimeInterval(USEC_PER_SEC))
-    
+
     let start = Date()
     usleep(durationUS)
     let end = Date()
     let diff = end.timeIntervalSince(start)
-    
+
     let range = (duration - tolerance) ... (duration + tolerance)
     return range.contains(diff)
 }

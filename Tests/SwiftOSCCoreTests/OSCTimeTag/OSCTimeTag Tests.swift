@@ -1,14 +1,15 @@
 //
 //  OSCTimeTag Tests.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
 import SwiftOSCCore
 import Testing
 
-@Suite struct OSCTimeTag_Tests {
+@Suite
+struct OSCTimeTag_Tests {
     // De-flake mitigation: allow more time variance for CI pipeline
     #if os(macOS)
     let tolerance: TimeInterval = 0.001
@@ -17,7 +18,7 @@ import Testing
     #else // linux
     let tolerance: TimeInterval = 0.05
     #endif
-    
+
     @Test
     func init_RawValue() {
         // ensure all raw values including 0 and 1 are allowed
@@ -29,23 +30,23 @@ import Testing
         #expect(OSCTimeTag(timeTag1Jan2200, era: 2).rawValue == timeTag1Jan2200)
         #expect(OSCTimeTag(UInt64.max).rawValue == UInt64.max)
     }
-    
+
     // MARK: - .init(timeIntervalSinceNow:)
-    
+
     @Test
     func init_timeIntervalSinceNow_Zero() {
         let tag = OSCTimeTag(timeIntervalSinceNow: 0.0)
-        
+
         #expect(tag.rawValue > timeTag1Jan2022)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
         #expect(!tag.isFuture)
     }
-    
+
     @Test
     func init_timeIntervalSinceNow_EdgeCase_Negative() {
         let tag = OSCTimeTag(timeIntervalSinceNow: -10.0)
-        
+
         #expect(tag.rawValue != 0)
         #expect(tag.rawValue != 1)
         #expect(tag.era == 0)
@@ -54,13 +55,13 @@ import Testing
         #expect(tag.date < Date())
         #expect(tag.timeIntervalSinceNow().isApproximatelyEqual(to: -10.0, absoluteTolerance: tolerance))
     }
-    
+
     // MARK: - .init(timeIntervalSince1900:)
-    
+
     @Test
     func init_timeIntervalSince1900_Zero() {
         let tag = OSCTimeTag(timeIntervalSince1900: 0.0)
-        
+
         #expect(tag.rawValue == 0)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
@@ -68,11 +69,11 @@ import Testing
         #expect(tag.date == primeEpoch)
         #expect(tag.timeIntervalSinceNow() < 0.0)
     }
-    
+
     @Test
     func init_timeIntervalSince1900() {
         let tag = OSCTimeTag(timeIntervalSince1900: 10.0)
-        
+
         #expect(tag.rawValue == 10 << 32)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
@@ -80,12 +81,12 @@ import Testing
         #expect(tag.date == primeEpoch + 10.0)
         #expect(tag.timeIntervalSinceNow() < 10.0)
     }
-    
+
     @Test
     func init_timeIntervalSince1900_EdgeCase_Negative() {
         // negative values should clamp to 0.
         let tag = OSCTimeTag(timeIntervalSince1900: -1.0)
-        
+
         #expect(tag.rawValue == 0)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
@@ -93,11 +94,11 @@ import Testing
         #expect(tag.date == primeEpoch)
         #expect(tag.timeIntervalSinceNow() < 0.0)
     }
-    
+
     @Test
     func init_timeIntervalSince1900_Known() {
         let tag = OSCTimeTag(timeIntervalSince1900: seconds1Jan2022)
-        
+
         #expect(tag.rawValue == timeTag1Jan2022)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
@@ -106,14 +107,14 @@ import Testing
         #expect(tag.timeIntervalSinceNow() < 0.0)
         #expect(tag.timeInterval(since: primeEpoch) == seconds1Jan2022)
     }
-    
+
     @Test
     func knownEra0TimeTag() {
         // use a known raw time tag value to test calculations
         // (for this test to succeed, the system's date must be > Jan 1st 2022)
-        
+
         let tag = OSCTimeTag(timeTag1Jan2022)
-        
+
         #expect(tag.rawValue == timeTag1Jan2022)
         #expect(tag.era == 0)
         #expect(!tag.isImmediate)
@@ -122,13 +123,13 @@ import Testing
         #expect(tag.timeIntervalSinceNow() < 0.0)
         #expect(tag.timeInterval(since: primeEpoch) == seconds1Jan2022)
     }
-    
+
     @Test
     func knownEra1TimeTag() {
         // use a known raw time tag value to test calculations
-        
+
         let tag = OSCTimeTag(timeTag1Jan2050, era: 1)
-        
+
         #expect(tag.rawValue == timeTag1Jan2050)
         #expect(tag.era == 1)
         #expect(!tag.isImmediate)
@@ -137,13 +138,13 @@ import Testing
         #expect(tag.timeIntervalSinceNow() > 0.0)
         #expect(tag.timeInterval(since: primeEpoch) == seconds1Jan2050)
     }
-    
+
     @Test
     func knownEra2TimeTag() {
         // use a known raw time tag value to test calculations
-        
+
         let tag = OSCTimeTag(timeTag1Jan2200, era: 2)
-        
+
         #expect(tag.rawValue == timeTag1Jan2200)
         #expect(tag.era == 2)
         #expect(!tag.isImmediate)
@@ -152,9 +153,9 @@ import Testing
         #expect(tag.timeIntervalSinceNow() > 0.0)
         #expect(tag.timeInterval(since: primeEpoch) == seconds1Jan2200)
     }
-    
+
     // MARK: - .immediate() (raw value of 1)
-    
+
     @Test
     func immediate_Basics() {
         let tag = OSCTimeTag.immediate()
@@ -163,47 +164,47 @@ import Testing
         #expect(tag.isImmediate)
         #expect(!tag.isFuture)
     }
-    
+
     @Test
     func immediate_date() {
         let tag = OSCTimeTag.immediate()
         let date = Date()
         #expect(tag.date.timeIntervalSince(date).isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
     }
-    
+
     @Test
     func immediate_timeIntervalSinceNow() {
         let tag = OSCTimeTag.immediate()
         let captureSecondsFromNow = tag.timeIntervalSinceNow()
         #expect(captureSecondsFromNow.isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
     }
-    
+
     // MARK: - .now()
-    
+
     @Test
     func now_rawValue() {
         let tag = OSCTimeTag.now()
         #expect(tag.rawValue > timeTag1Jan2022)
     }
-    
+
     @Test
     func now_era() {
         let tag = OSCTimeTag.now()
         #expect(tag.era == Date().ntpEra)
     }
-    
+
     @Test
     func now_isImmediate() {
         let tag = OSCTimeTag.now()
         #expect(!tag.isImmediate)
     }
-    
+
     @Test
     func now_isFuture() {
         let tag = OSCTimeTag.now()
         #expect(!tag.isFuture)
     }
-    
+
     @Test
     func now_date() {
         let date = Date()
@@ -211,7 +212,7 @@ import Testing
         let captureDate = tag.date
         #expect(date.timeIntervalSince(captureDate).isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
     }
-    
+
     @Test
     func now_timeIntervalSinceNow() {
         let tag = OSCTimeTag.now()

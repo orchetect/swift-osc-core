@@ -1,15 +1,16 @@
 //
 //  OSCMIDIValue Tests.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import SwiftOSCCore
 import Testing
 
-@Suite struct OSCMIDIValue_Tests {
+@Suite
+struct OSCMIDIValue_Tests {
     // MARK: - `any OSCValue` Constructors
-    
+
     @Test
     func oscValue_midi() {
         let val: any OSCValue = .midi(portID: 0x01, status: 0x90, data1: 0x02, data2: 0x03)

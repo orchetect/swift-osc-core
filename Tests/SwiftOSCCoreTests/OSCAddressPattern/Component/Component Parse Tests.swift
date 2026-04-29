@@ -1,48 +1,49 @@
 //
 //  Component Parse Tests.swift
-//  OSCKit • https://github.com/orchetect/OSCKit
-//  © 2020-2026 Steffan Andrews • Licensed under MIT License
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 @testable import SwiftOSCCore
 import Testing
 
-@Suite struct OSCAddressPattern_Component_Parse_Tests {
+@Suite
+struct OSCAddressPattern_Component_Parse_Tests {
     @Test
     func basic() {
         #expect(
             OSCAddressPattern.Component(string: "").tokens ==
                 []
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "1").tokens ==
                 [.literal("1")]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "123").tokens ==
                 [.literal("123")]
         )
     }
-    
+
     @Test
     func wildcard() {
         #expect(
             OSCAddressPattern.Component(string: "*").tokens ==
                 [.zeroOrMoreWildcard]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "**").tokens ==
                 [.zeroOrMoreWildcard]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "***").tokens ==
                 [.zeroOrMoreWildcard]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "*abc*").tokens ==
                 [
@@ -51,7 +52,7 @@ import Testing
                     .zeroOrMoreWildcard
                 ]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "**ab**c**").tokens ==
                 [
@@ -63,7 +64,7 @@ import Testing
                 ]
         )
     }
-    
+
     @Test
     func brackets() {
         #expect(
@@ -73,7 +74,7 @@ import Testing
                     groups: []
                 )]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[a-z]").tokens ==
                 [.singleChar(
@@ -81,7 +82,7 @@ import Testing
                     groups: [.asciiRange(start: "a", end: "z")]
                 )]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[a-z][A-Z][0-9]").tokens ==
                 [
@@ -99,7 +100,7 @@ import Testing
                     )
                 ]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[a-zA-Z0-9]").tokens ==
                 [
@@ -114,7 +115,7 @@ import Testing
                 ]
         )
     }
-    
+
     @Test
     func bracketsExcluded() {
         #expect(
@@ -124,7 +125,7 @@ import Testing
                     groups: []
                 )]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[!a-z]").tokens ==
                 [.singleChar(
@@ -132,7 +133,7 @@ import Testing
                     groups: [.asciiRange(start: "a", end: "z")]
                 )]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[!a-z][A-Z][0-9]").tokens ==
                 [
@@ -150,7 +151,7 @@ import Testing
                     )
                 ]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "[!a-zA-Z0-9]").tokens ==
                 [
@@ -165,40 +166,40 @@ import Testing
                 ]
         )
     }
-    
+
     @Test
     func braces() {
         #expect(
             OSCAddressPattern.Component(string: "{}").tokens ==
                 [.strings(strings: [])]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "{,}").tokens ==
                 [.strings(strings: [])]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "{abc}").tokens ==
                 [.strings(strings: ["abc"])]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "{abc,def}").tokens ==
                 [.strings(strings: ["abc", "def"])]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "{abc,}").tokens ==
                 [.strings(strings: ["abc"])]
         )
-        
+
         #expect(
             OSCAddressPattern.Component(string: "{,abc}").tokens ==
                 [.strings(strings: ["abc"])]
         )
     }
-    
+
     @Test
     func complex() {
         #expect(
