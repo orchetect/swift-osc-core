@@ -16,7 +16,7 @@ internal import SwiftASCII // ASCIICharacter
 ///
 /// Generally there is no need to directly instance or interact with this unless you are
 /// implementing custom OSC value types. OSC message encoding and decoding is handled automatically
-/// in OSCKit otherwise.
+/// in SwiftOSC otherwise.
 public struct OSCMessageEncoder {
     var builderAddress: Data
     var builderTags: [ASCIICharacter] = []
@@ -97,7 +97,7 @@ public struct OSCMessageEncoder {
             
         default:
             throw .internalInconsistency(
-                "Unexpected encoder: \(type(of: T.self)). Only encoder types supplied by OSCKit can be used."
+                "Unexpected encoder: \(type(of: T.self)). Only encoder types supplied by SwiftOSC can be used."
             )
         }
     }

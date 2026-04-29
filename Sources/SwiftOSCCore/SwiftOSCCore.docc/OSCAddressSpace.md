@@ -1,4 +1,4 @@
-# ``OSCKitCore/OSCAddressSpace``
+# ``SwiftOSCCore/OSCAddressSpace``
 
 ## Topics
 

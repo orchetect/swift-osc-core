@@ -48,7 +48,7 @@ private func handle(message: OSCMessage, host: String, port: UInt16) throws {
 
 ### Using OSCAddressSpace for automated address pattern matching
 
-OSCKit provides an abstraction called ``OSCAddressSpace``. This object is generally instanced once and stored globally.
+SwiftOSC provides an abstraction called ``OSCAddressSpace``. This object is generally instanced once and stored globally.
 
 Each local OSC address (OSC Method) must be registered once with this object in order to enable it to perform matching against received OSC message address patterns. Each method is assigned an ID, and can optionally store a closure.
 

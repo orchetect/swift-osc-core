@@ -34,7 +34,7 @@ The _Syntax_ columns below provide easy reference for how to construct them.
 
 ### Interpolated OSC Types
 
-OSCKit adds the following interpolated types. These types can be used directly and they will transparently encode and decode to compatible core OSC types on-the-fly. This is provided as a convenience and requires no extra handling.
+SwiftOSC adds the following interpolated types. These types can be used directly and they will transparently encode and decode to compatible core OSC types on-the-fly. This is provided as a convenience and requires no extra handling.
 
 | Type              | Encoding Type                                       |
 | ----------------- | --------------------------------------------------- |
@@ -51,7 +51,7 @@ OSCKit adds the following interpolated types. These types can be used directly a
 
 ### Type-Erased OSC Types
 
-OSCKit also adds the following opaque type-erasure types.
+SwiftOSC also adds the following opaque type-erasure types.
 
 | Type                  | Description                                          |
 | --------------------- | ---------------------------------------------------- |

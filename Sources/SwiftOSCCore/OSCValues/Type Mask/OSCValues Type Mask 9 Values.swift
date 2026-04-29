@@ -71,7 +71,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -228,7 +228,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -385,7 +385,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -542,7 +542,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -699,7 +699,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -856,7 +856,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -1013,7 +1013,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -1170,7 +1170,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -1327,7 +1327,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)
@@ -1484,7 +1484,7 @@ extension OSCValues {
     /// These types conform to the ``OSCInterpolatedValue`` protocol (which defines their core
     /// encoding value type) and may be used any where ``OSCValue`` is accepted.
     ///
-    /// OSCKit provides conformance for a number of such common Swift Standard Library types:
+    /// SwiftOSC provides conformance for a number of such common Swift Standard Library types:
     /// `Int8`, `Int16`, `UInt`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `Float16`, `Float80`.
     ///
     /// (Note that `Int32`, `Int64`, `Float32` are already core `OSCValue` types.)

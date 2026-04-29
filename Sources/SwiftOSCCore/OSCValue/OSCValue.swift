@@ -8,7 +8,7 @@
 ///
 /// This includes standard OSC types (`Int32`, `String`, etc.) as well as interpolated types (`Int`,
 /// `UInt8`, etc.) and novel OSC types (``OSCImpulseValue``, ``OSCMIDIValue``, etc.).
-/// For a full list of types, see the "OSC Value Types" article in the OSCKit target documentation.
+/// For a full list of types, see the "OSC Value Types" article in the documentation.
 public protocol OSCValue: Equatable, Hashable, OSCValueCodable, OSCValueMaskable, Sendable { }
 
 extension OSCValue {

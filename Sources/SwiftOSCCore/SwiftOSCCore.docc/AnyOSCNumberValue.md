@@ -1,4 +1,4 @@
-# ``OSCKitCore/AnyOSCNumberValue``
+# ``SwiftOSCCore/AnyOSCNumberValue``
 
 ## Topics
 

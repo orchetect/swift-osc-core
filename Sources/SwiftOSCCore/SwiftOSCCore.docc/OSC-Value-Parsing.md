@@ -4,7 +4,7 @@ Methods for parsing OSC Message value collections.
 
 ### Using masked() to validate and unwrap expected value types
 
-Since local OSC "addresses" (OSC Methods) are generally considered methods (akin to functions) which take parameters (OSC values/arguments), in most use cases an OSC Method will have a defined type mask. OSCKit provides a powerful and flexible API to both validate and strongly type an OSC value array.
+Since local OSC "addresses" (OSC Methods) are generally considered methods (akin to functions) which take parameters (OSC values/arguments), in most use cases an OSC Method will have a defined type mask. SwiftOSC provides a powerful and flexible API to both validate and strongly type an OSC value array.
 
 Validate and unwrap value array with expected member `String`:
 

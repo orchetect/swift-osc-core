@@ -16,7 +16,7 @@ public enum OSCValueTagIdentity: Equatable, Hashable {
     /// All possible type tags must be finite and known at compile time.
     ///
     /// An example is Boolean (true/false). A single instance of the concrete type (`Bool`) occupies
-    /// a single tag character when encoded but the character may be `T` or `F`. Variable is how OSCKit
+    /// a single tag character when encoded but the character may be `T` or `F`. Variable is how SwiftOSC
     /// itself internally implements `Bool` encoding and decoding.
     case variable([Character])
     
@@ -26,7 +26,7 @@ public enum OSCValueTagIdentity: Equatable, Hashable {
     ///
     /// One (perhaps the only) example of a variadic implementation is an OSC value array. It starts
     /// with the `[` tag and ends with the `]` tag and may contain zero or more value tags. Its
-    /// definition would have a `minCount` of `2` and a `maxCount` of `nil`. Variadic is how OSCKit
+    /// definition would have a `minCount` of `2` and a `maxCount` of `nil`. Variadic is how SwiftOSC
     /// itself internally implements OSC array encoding and decoding.
     case variadic(minCount: Int?, maxCount: Int?)
 }

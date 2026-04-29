@@ -114,7 +114,7 @@ enum OSCMessageDecoder {
         
         guard isTypeDecoded else {
             throw .internalInconsistency(
-                "No decoder found to decode OSC type tag: \(initialChar). Only decoder types supplied by OSCKit can be used."
+                "No decoder found to decode OSC type tag: \(initialChar). Only decoder types supplied by SwiftOSC can be used."
             )
         }
         
