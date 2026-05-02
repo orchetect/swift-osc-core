@@ -17,9 +17,11 @@ Provides core functionality for [SwiftOSC](https://github.com/orchetect/swift-os
 
 ## Compatibility
 
-| macOS | iOS  | tvOS | visionOS | watchOS | Linux | Android | Windows  |
-| :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :------: |
-|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   🟢   |    🟢    | Untested |
+| macOS | iOS  | tvOS | visionOS | watchOS | Linux | Android | WASM  | Windows  |
+| :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :---: | :------: |
+|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   🟢   |    🟢    | 🚧[^1] | Untested |
+
+[^1]: Support for indicated platforms is either planned or WIP.
 
 ## Getting Started
 
