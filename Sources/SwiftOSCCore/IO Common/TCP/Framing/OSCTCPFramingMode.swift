@@ -4,6 +4,12 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(FoundationEssentials)
+import protocol FoundationEssentials.MutableDataProtocol
+#else
+import protocol Foundation.MutableDataProtocol
+#endif
+
 /// Packet framing modes for TCP-based OSC sockets.
 public enum OSCTCPFramingMode {
     /// OSC 1.0 mode: Packet length header.
@@ -45,3 +51,25 @@ extension OSCTCPFramingMode: CaseIterable {
 }
 
 extension OSCTCPFramingMode: Sendable { }
+
+// MARK: - Methods
+
+extension OSCTCPFramingMode {
+    /// Encodes TCP packet data using the framing mode.
+    public func encode(data: some MutableDataProtocol) -> some MutableDataProtocol {
+        switch self {
+        case .osc1_0:
+            // packet framed using a packet-length header
+            // 4-byte int for size
+            TCPPacketLengthHeaderCoding.encode(data, byteOrder: .bigEndian)
+            
+        case .osc1_1:
+            // packet framed using SLIP (double END) protocol: http://www.rfc-editor.org/rfc/rfc1055.txt
+            TCPSLIPCoding.encode(data)
+            
+        case .none:
+            // no framing, send bytes as-is
+            data
+        }
+    }
+}
