@@ -5,8 +5,12 @@
 //
 
 #if canImport(FoundationEssentials)
+import struct FoundationEssentials.Data
+import protocol FoundationEssentials.DataProtocol
 import protocol FoundationEssentials.MutableDataProtocol
 #else
+import struct Foundation.Data
+import protocol Foundation.DataProtocol
 import protocol Foundation.MutableDataProtocol
 #endif
 
@@ -54,15 +58,17 @@ extension MutableDataProtocol {
 
         return output
     }
+}
 
+extension DataProtocol {
     /// Returns an array of SLIP-encoded packets stripped of their SLIP encoding.
     ///
     /// This can accommodate one or more packets in the same data stream. Each packet is
     /// returned as an element in the array.
-    func slipDecoded() throws(OSCTCPSLIPDecodingError) -> [Self] {
-        var packets: [Self] = []
+    func slipDecoded() throws(OSCTCPSLIPDecodingError) -> [Data] {
+        var packets: [Data] = []
 
-        var currentPacketData = Self()
+        var currentPacketData = Data()
         var isEscaped = false
 
         for index in indices {
@@ -76,7 +82,7 @@ extension MutableDataProtocol {
                 // consider the END byte the end of the current packet
                 if !currentPacketData.isEmpty {
                     packets.append(currentPacketData)
-                    currentPacketData = Self()
+                    currentPacketData = Data()
                 }
 
                 // discard one or more sequential END bytes before, between, and after each packet
