@@ -5,8 +5,10 @@
 //
 
 #if canImport(FoundationEssentials)
+import protocol FoundationEssentials.DataProtocol
 import protocol FoundationEssentials.MutableDataProtocol
 #else
+import protocol Foundation.DataProtocol
 import protocol Foundation.MutableDataProtocol
 #endif
 
@@ -19,7 +21,9 @@ extension MutableDataProtocol {
             .toData(byteOrder)
         return length + self
     }
+}
 
+extension DataProtocol {
     /// Decodes data that may contain one or more packet-length header framed datagrams.
     ///
     /// The structure is one or more of: a UInt32 length value followed by a sequence of bytes of that length.
