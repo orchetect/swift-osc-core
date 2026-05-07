@@ -21,6 +21,9 @@ public protocol OSCHandlerProtocol: AnyObject where Self: Sendable {
     ///
     /// Set this handler either during class initialization or by calling ``setReceiveHandler(_:)``.
     var receiveHandler: OSCHandlerBlock? { get }
+    
+    /// Sets the receive handler that is called when OSC bundles or messages are received.
+    func setReceiveHandler(_ handler: OSCHandlerBlock?)
 }
 
 // MARK: - Handle and Dispatch
