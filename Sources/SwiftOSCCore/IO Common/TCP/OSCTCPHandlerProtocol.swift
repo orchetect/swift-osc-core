@@ -47,7 +47,7 @@ extension OSCTCPHandlerProtocol {
 
         case .osc1_1:
             do {
-                let packets = try TCPPacketLengthHeaderCoding.decode(data)
+                let packets = try TCPSLIPCoding.decode(data)
                 
                 guard !packets.isEmpty else {
                     #if DEBUG
