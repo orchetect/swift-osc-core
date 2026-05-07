@@ -6,8 +6,7 @@ let package = Package(
     name: "swift-osc-core",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
     products: [
-        .library(name: "SwiftOSCCore", targets: ["SwiftOSCCore"]),
-        .library(name: "SwiftOSCIOCore", targets: ["SwiftOSCCore", "SwiftOSCIOCore"])
+        .library(name: "SwiftOSCCore", targets: ["SwiftOSCCore"])
     ],
     dependencies: [
         .package(url: "https://github.com/orchetect/swift-ascii", from: "1.3.1"),
@@ -20,13 +19,6 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftASCII", package: "swift-ascii"),
                 .product(name: "SwiftDataParsing", package: "swift-data-parsing")
-            ],
-            swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
-        ),
-        .target(
-            name: "SwiftOSCIOCore",
-            dependencies: [
-                "SwiftOSCCore"
             ],
             swiftSettings: [.define("DEBUG", .when(configuration: .debug))]
         ),
