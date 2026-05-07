@@ -24,7 +24,7 @@ extension OSCHandlerProtocol {
     /// > Note:
     /// >
     /// > This method is called internally by OSC server and socket classes and is not needed to be called externally.
-    public func _handle(
+    public func handle(
         packet: OSCPacket,
         timeTag: OSCTimeTag = .immediate(),
         remoteHost: String,
@@ -34,7 +34,7 @@ extension OSCHandlerProtocol {
             switch packet {
             case let .bundle(bundle):
                 for element in bundle.elements {
-                    self._handle(
+                    self.handle(
                         packet: element,
                         timeTag: bundle.timeTag,
                         remoteHost: remoteHost,
