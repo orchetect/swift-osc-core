@@ -81,7 +81,7 @@ extension TCPSLIPCoding {
     ///
     /// This can accommodate one or more packets in the same data stream. Each packet is
     /// returned as an element in the array.
-    public static func decode<D: DataProtocol>(_ data: D) throws(OSCTCPSLIPDecodingError) -> [Data] {
+    public static func decode<D: DataProtocol>(_ data: D) throws(TCPSLIPDecodingError) -> [Data] {
         try data.slipDecoded()
     }
 }
@@ -93,7 +93,7 @@ extension DataProtocol {
     ///
     /// This can accommodate one or more packets in the same data stream. Each packet is
     /// returned as an element in the array.
-    fileprivate func slipDecoded() throws(OSCTCPSLIPDecodingError) -> [Data] {
+    fileprivate func slipDecoded() throws(TCPSLIPDecodingError) -> [Data] {
         var packets: [Data] = []
 
         var currentPacketData = Data()

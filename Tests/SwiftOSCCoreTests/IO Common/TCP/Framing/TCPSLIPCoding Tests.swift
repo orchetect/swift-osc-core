@@ -118,13 +118,13 @@ struct TCPSLIPCodingTests {
     /// Test for error: two consecutive ESC bytes is not technically valid.
     @Test
     func decode_DoubleEscapeBytes() throws {
-        #expect(throws: OSCTCPSLIPDecodingError.doubleEscapeBytes) {
+        #expect(throws: TCPSLIPDecodingError.doubleEscapeBytes) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, ESC, 0x02, END]))
         }
-        #expect(throws: OSCTCPSLIPDecodingError.doubleEscapeBytes) {
+        #expect(throws: TCPSLIPDecodingError.doubleEscapeBytes) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, ESC, ESC_END, 0x02, END]))
         }
-        #expect(throws: OSCTCPSLIPDecodingError.doubleEscapeBytes) {
+        #expect(throws: TCPSLIPDecodingError.doubleEscapeBytes) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, ESC, ESC_END, ESC_END, 0x02, END]))
         }
     }
@@ -154,16 +154,16 @@ struct TCPSLIPCodingTests {
     /// Test for error: missing valid escaped character after receiving ESC byte.
     @Test
     func decode_MissingEscapedCharacter() throws {
-        #expect(throws: OSCTCPSLIPDecodingError.missingEscapedCharacter) {
+        #expect(throws: TCPSLIPDecodingError.missingEscapedCharacter) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, 0x02, END]))
         }
-        #expect(throws: OSCTCPSLIPDecodingError.missingEscapedCharacter) {
+        #expect(throws: TCPSLIPDecodingError.missingEscapedCharacter) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, 0x02, ESC_END, END]))
         }
-        #expect(throws: OSCTCPSLIPDecodingError.missingEscapedCharacter) {
+        #expect(throws: TCPSLIPDecodingError.missingEscapedCharacter) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, 0x02, ESC_ESC, END]))
         }
-        #expect(throws: OSCTCPSLIPDecodingError.missingEscapedCharacter) {
+        #expect(throws: TCPSLIPDecodingError.missingEscapedCharacter) {
             try TCPSLIPCoding.decode(Data([END, 0x01, ESC, END]))
         }
     }

@@ -1,0 +1,9 @@
+//
+//  SwiftOSCCore-API-1.0.1.swift
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
+//
+
+@_documentation(visibility: internal)
+@available(*, deprecated, renamed: "TCPSLIPDecodingError")
+public typealias OSCTCPSLIPDecodingError = TCPSLIPDecodingError

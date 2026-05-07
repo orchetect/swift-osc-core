@@ -1,5 +1,5 @@
 //
-//  OSCTCPSLIPDecodingError.swift
+//  TCPSLIPDecodingError.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
@@ -7,7 +7,7 @@
 import protocol Foundation.LocalizedError
 
 /// Error cases thrown while decoding packet data encoded with the SLIP protocol (RFC 1055).
-public enum OSCTCPSLIPDecodingError: LocalizedError {
+public enum TCPSLIPDecodingError: LocalizedError {
     case doubleEscapeBytes
     case missingEscapedCharacter
 
@@ -21,8 +21,8 @@ public enum OSCTCPSLIPDecodingError: LocalizedError {
     }
 }
 
-extension OSCTCPSLIPDecodingError: Equatable { }
+extension TCPSLIPDecodingError: Equatable { }
 
-extension OSCTCPSLIPDecodingError: Hashable { }
+extension TCPSLIPDecodingError: Hashable { }
 
-extension OSCTCPSLIPDecodingError: Sendable { }
+extension TCPSLIPDecodingError: Sendable { }
