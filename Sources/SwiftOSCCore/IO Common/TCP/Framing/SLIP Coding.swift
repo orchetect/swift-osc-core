@@ -5,34 +5,36 @@
 //
 
 #if canImport(FoundationEssentials)
-import struct FoundationEssentials.Data
+import protocol FoundationEssentials.MutableDataProtocol
 #else
-import struct Foundation.Data
+import protocol Foundation.MutableDataProtocol
 #endif
 
-extension Data {
-    /// SLIP protocol (RFC 1055) byte codes.
-    ///
-    /// See https://www.rfc-editor.org/rfc/rfc1055.txt
-    enum SLIPByte: UInt8, Sendable {
-        /// END (Packet end byte)
-        case end = 0xC0
+/// SLIP protocol (RFC 1055) byte codes.
+///
+/// See https://www.rfc-editor.org/rfc/rfc1055.txt
+enum SLIPByte: UInt8, Sendable {
+    /// END (Packet end byte)
+    case end = 0xC0
+    
+    /// ESC (Packet escape byte)
+    case esc = 0xDB
+    
+    /// ESC_END (Escaped 'end' byte)
+    case escEnd = 0xDC
+    
+    /// ESC_ESC (Escaped 'escape' byte)
+    case escEsc = 0xDD
+}
 
-        /// ESC (Packet escape byte)
-        case esc = 0xDB
-
-        /// ESC_END (Escaped 'end' byte)
-        case escEnd = 0xDC
-
-        /// ESC_ESC (Escaped 'escape' byte)
-        case escEsc = 0xDD
-    }
-
+extension MutableDataProtocol {
     /// Returns the data encoded as a SLIP packet.
-    func slipEncoded() -> Data {
+    func slipEncoded() -> Self {
+        var output = Self()
+        
         // estimate encoded size to be 10% larger than raw data size
-        var output = Data(capacity: count + (count / 10))
-
+        output.reserveCapacity(count + (count / 10))
+        
         output.append(SLIPByte.end.rawValue)
 
         for byte in self {
@@ -57,10 +59,10 @@ extension Data {
     ///
     /// This can accommodate one or more packets in the same data stream. Each packet is
     /// returned as an element in the array.
-    func slipDecoded() throws(OSCTCPSLIPDecodingError) -> [Data] {
-        var packets: [Data] = []
+    func slipDecoded() throws(OSCTCPSLIPDecodingError) -> [Self] {
+        var packets: [Self] = []
 
-        var currentPacketData = Data()
+        var currentPacketData = Self()
         var isEscaped = false
 
         for index in indices {
@@ -74,7 +76,7 @@ extension Data {
                 // consider the END byte the end of the current packet
                 if !currentPacketData.isEmpty {
                     packets.append(currentPacketData)
-                    currentPacketData = Data()
+                    currentPacketData = Self()
                 }
 
                 // discard one or more sequential END bytes before, between, and after each packet
