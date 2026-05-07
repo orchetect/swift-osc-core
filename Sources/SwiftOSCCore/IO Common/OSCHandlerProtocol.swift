@@ -11,8 +11,15 @@ import typealias Foundation.TimeInterval
 
 /// Internal protocol that TCP-based OSC classes adopt in order to handle incoming OSC data.
 public protocol OSCHandlerProtocol: AnyObject where Self: Sendable {
+    /// Dispatch queue for receiving OSC packets and dispatching the handler callback closure.
     var queue: DispatchQueue { get }
+    
+    /// OSC TimeTag mode.
     var timeTagMode: OSCTimeTagMode { get }
+    
+    /// Handler to call when OSC bundles or messages are received.
+    ///
+    /// Set this handler either during class initialization or by calling ``setReceiveHandler(_:)``.
     var receiveHandler: OSCHandlerBlock? { get }
 }
 
