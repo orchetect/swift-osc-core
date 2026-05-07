@@ -21,6 +21,34 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftOSCIOCore"
+               BuildableName = "SwiftOSCIOCore"
+               BlueprintName = "SwiftOSCIOCore"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftOSCIOInternals"
+               BuildableName = "SwiftOSCIOInternals"
+               BlueprintName = "SwiftOSCIOInternals"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -37,6 +65,26 @@
                BlueprintIdentifier = "SwiftOSCCoreTests"
                BuildableName = "SwiftOSCCoreTests"
                BlueprintName = "SwiftOSCCoreTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftOSCIOCoreTests"
+               BuildableName = "SwiftOSCIOCoreTests"
+               BlueprintName = "SwiftOSCIOCoreTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftOSCIOInternalsTests"
+               BuildableName = "SwiftOSCIOInternalsTests"
+               BlueprintName = "SwiftOSCIOInternalsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
