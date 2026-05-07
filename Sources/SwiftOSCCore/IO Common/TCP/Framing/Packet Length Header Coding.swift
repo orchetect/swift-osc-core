@@ -5,16 +5,16 @@
 //
 
 #if canImport(FoundationEssentials)
-import struct FoundationEssentials.Data
+import protocol FoundationEssentials.MutableDataProtocol
 #else
-import struct Foundation.Data
+import protocol Foundation.MutableDataProtocol
 #endif
 
 import SwiftDataParsing
 
-extension Data {
+extension MutableDataProtocol {
     /// Returns the data encoded as a packet-length header framed datagram.
-    func packetLengthHeaderEncoded(byteOrder: ByteOrder = .platformDefault) -> Data {
+    func packetLengthHeaderEncoded(byteOrder: ByteOrder = .platformDefault) -> Self {
         let length = UInt32(count)
             .toData(byteOrder)
         return length + self
@@ -23,31 +23,33 @@ extension Data {
     /// Decodes data that may contain one or more packet-length header framed datagrams.
     ///
     /// The structure is one or more of: a UInt32 length value followed by a sequence of bytes of that length.
-    func packetLengthHeaderDecoded(byteOrder: ByteOrder = .platformDefault) throws(OSCTCPPacketLengthHeaderDecodingError) -> [Data] {
+    func packetLengthHeaderDecoded(
+        byteOrder: ByteOrder = .platformDefault
+    ) throws(OSCTCPPacketLengthHeaderDecodingError) -> [SubSequence] {
         var sequences: [SubSequence] = []
 
         var offset: Index = startIndex
 
         while offset < endIndex {
-            guard offset + 4 <= endIndex else {
+            guard distance(from: offset, to: endIndex) >= 4 else {
                 throw .notEnoughBytes
             }
-            let lengthFieldRange = offset ..< offset + 4
+            let lengthFieldRange = offset ..< index(offset, offsetBy: 4)
 
             guard let length = self[lengthFieldRange]
                 .toUInt32(from: byteOrder)
             else {
                 throw .notEnoughBytes
             }
+            
+            offset = lengthFieldRange.upperBound
 
-            offset = lengthFieldRange.endIndex
-
-            guard offset + Int(length) <= endIndex else {
+            guard distance(from: offset, to: endIndex) >= Int(length) else {
                 throw .notEnoughBytes
             }
-            let packetRange = offset ..< offset + Int(length)
+            let packetRange = offset ..< index(offset, offsetBy: Int(length))
 
-            offset = packetRange.endIndex
+            offset = packetRange.upperBound
 
             let sequence: SubSequence = self[packetRange]
             sequences.append(sequence)
