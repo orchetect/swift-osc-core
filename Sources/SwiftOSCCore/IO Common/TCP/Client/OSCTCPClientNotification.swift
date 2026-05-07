@@ -16,7 +16,7 @@ public enum OSCTCPClientNotification {
 
 extension OSCTCPClientNotification: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return switch (lhs, rhs) {
+        switch (lhs, rhs) {
         case (.connected, .connected):
             true
             
