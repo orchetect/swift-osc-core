@@ -7,3 +7,7 @@
 @_documentation(visibility: internal)
 @available(*, deprecated, renamed: "TCPSLIPDecodingError")
 public typealias OSCTCPSLIPDecodingError = TCPSLIPDecodingError
+
+@_documentation(visibility: internal)
+@available(*, deprecated, renamed: "TCPPacketLengthHeaderDecodingError")
+public typealias OSCTCPPacketLengthHeaderDecodingError = TCPPacketLengthHeaderDecodingError

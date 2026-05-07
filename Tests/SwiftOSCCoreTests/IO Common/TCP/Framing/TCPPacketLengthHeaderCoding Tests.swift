@@ -69,17 +69,17 @@ struct TCPPacketLengthHeaderCodingTests {
     @Test
     func decode_SinglePacket_EdgeCases() throws {
         // not enough bytes
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(Data([0x01, 0x00, 0x00, 0x00]), byteOrder: .littleEndian)
         }
 
         // too many bytes
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(Data([0x01, 0x00, 0x00, 0x00, 0x40, 0x41]), byteOrder: .littleEndian)
         }
 
         // wrong UInt32 size encoding byteOrder
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(Data([0x00, 0x00, 0x00, 0x01, 0x40]), byteOrder: .littleEndian)
         }
     }
@@ -145,7 +145,7 @@ struct TCPPacketLengthHeaderCodingTests {
     @Test
     func decode_MultiplePackets_EdgeCases() throws {
         // one valid packet and one packet with not enough bytes
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x02, 0x00, 0x00, 0x00, 0x41]),
@@ -153,7 +153,7 @@ struct TCPPacketLengthHeaderCodingTests {
         }
 
         // one valid packet and one packet with not enough bytes
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x01, 0x00, 0x00, 0x00, 0x41, 0x42]),
@@ -161,7 +161,7 @@ struct TCPPacketLengthHeaderCodingTests {
         }
 
         // two valid packets and one packet with not enough bytes
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x02, 0x00, 0x00, 0x00, 0x41, 0x42,
@@ -170,7 +170,7 @@ struct TCPPacketLengthHeaderCodingTests {
         }
 
         // two packets with wrong UInt32 size encoding byteOrder
-        #expect(throws: OSCTCPPacketLengthHeaderDecodingError.notEnoughBytes) {
+        #expect(throws: TCPPacketLengthHeaderDecodingError.notEnoughBytes) {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x00, 0x00, 0x00, 0x01, 0x40,
                       0x00, 0x00, 0x00, 0x02, 0x41, 0x42]),

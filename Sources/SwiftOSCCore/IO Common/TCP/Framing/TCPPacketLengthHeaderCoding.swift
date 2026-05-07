@@ -44,7 +44,7 @@ extension TCPPacketLengthHeaderCoding {
     public static func decode<D: DataProtocol>(
         _ data: D,
         byteOrder: ByteOrder = .platformDefault
-    ) throws(OSCTCPPacketLengthHeaderDecodingError) -> [D.SubSequence] {
+    ) throws(TCPPacketLengthHeaderDecodingError) -> [D.SubSequence] {
         try data.packetLengthHeaderDecoded(byteOrder: byteOrder)
     }
 }
@@ -55,7 +55,7 @@ extension DataProtocol {
     /// The structure is one or more of: a `UInt32` length value followed by a sequence of bytes of that length.
     fileprivate func packetLengthHeaderDecoded(
         byteOrder: ByteOrder = .platformDefault
-    ) throws(OSCTCPPacketLengthHeaderDecodingError) -> [SubSequence] {
+    ) throws(TCPPacketLengthHeaderDecodingError) -> [SubSequence] {
         var sequences: [SubSequence] = []
 
         var offset: Index = startIndex
