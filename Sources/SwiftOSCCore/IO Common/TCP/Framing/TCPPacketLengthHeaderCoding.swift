@@ -1,5 +1,5 @@
 //
-//  Packet Length Header Coding.swift
+//  TCPPacketLengthHeaderCoding.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
@@ -14,20 +14,46 @@ import protocol Foundation.MutableDataProtocol
 
 import SwiftDataParsing
 
+/// TCP packet length header coding utilities.
+public enum TCPPacketLengthHeaderCoding { }
+
+// MARK: - Encode
+
+extension TCPPacketLengthHeaderCoding {
+    /// Returns the data encoded as a packet-length header framed datagram.
+    public static func encode<D: MutableDataProtocol>(_ data: D, byteOrder: ByteOrder = .platformDefault) -> D {
+        data.packetLengthHeaderEncoded(byteOrder: byteOrder)
+    }
+}
+
 extension MutableDataProtocol {
     /// Returns the data encoded as a packet-length header framed datagram.
-    func packetLengthHeaderEncoded(byteOrder: ByteOrder = .platformDefault) -> Self {
+    fileprivate func packetLengthHeaderEncoded(byteOrder: ByteOrder = .platformDefault) -> Self {
         let length = UInt32(count)
             .toData(byteOrder)
         return length + self
     }
 }
 
+// MARK: - Decode
+
+extension TCPPacketLengthHeaderCoding {
+    /// Decodes data that may contain one or more packet-length header framed datagrams.
+    ///
+    /// The structure is one or more of: a `UInt32` length value followed by a sequence of bytes of that length.
+    public static func decode<D: DataProtocol>(
+        _ data: D,
+        byteOrder: ByteOrder = .platformDefault
+    ) throws(OSCTCPPacketLengthHeaderDecodingError) -> [D.SubSequence] {
+        try data.packetLengthHeaderDecoded(byteOrder: byteOrder)
+    }
+}
+
 extension DataProtocol {
     /// Decodes data that may contain one or more packet-length header framed datagrams.
     ///
-    /// The structure is one or more of: a UInt32 length value followed by a sequence of bytes of that length.
-    func packetLengthHeaderDecoded(
+    /// The structure is one or more of: a `UInt32` length value followed by a sequence of bytes of that length.
+    fileprivate func packetLengthHeaderDecoded(
         byteOrder: ByteOrder = .platformDefault
     ) throws(OSCTCPPacketLengthHeaderDecodingError) -> [SubSequence] {
         var sequences: [SubSequence] = []

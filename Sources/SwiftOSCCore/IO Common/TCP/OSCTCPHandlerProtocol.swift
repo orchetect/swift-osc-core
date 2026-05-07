@@ -26,7 +26,7 @@ extension OSCTCPHandlerProtocol {
         switch framingMode {
         case .osc1_0:
             do {
-                let packets = try data.packetLengthHeaderDecoded(byteOrder: .bigEndian)
+                let packets = try TCPPacketLengthHeaderCoding.decode(data, byteOrder: .bigEndian)
                 
                 guard !packets.isEmpty else {
                     #if DEBUG
@@ -47,7 +47,7 @@ extension OSCTCPHandlerProtocol {
 
         case .osc1_1:
             do {
-                let packets = try SLIPCoding.decode(data)
+                let packets = try TCPPacketLengthHeaderCoding.decode(data)
                 
                 guard !packets.isEmpty else {
                     #if DEBUG
