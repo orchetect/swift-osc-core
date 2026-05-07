@@ -10,7 +10,7 @@ import struct FoundationEssentials.Data
 import struct Foundation.Data
 #endif
 
-@testable import SwiftOSCCore
+@testable import SwiftOSCIOCore
 import Testing
 
 @Suite
