@@ -47,7 +47,7 @@ extension OSCTCPHandlerProtocol {
 
         case .osc1_1:
             do {
-                let packets = try data.slipDecoded()
+                let packets = try SLIPCoding.decode(data)
                 
                 guard !packets.isEmpty else {
                     #if DEBUG
