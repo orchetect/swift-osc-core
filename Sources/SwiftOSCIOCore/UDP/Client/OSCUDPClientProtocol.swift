@@ -65,31 +65,19 @@ public protocol OSCUDPClientProtocol: Sendable {
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
-    func send(
-        _ packet: OSCPacket,
-        to host: String,
-        port: UInt16
-    ) throws
+    func send(_ packet: OSCPacket, to host: String, port: UInt16) throws
     
     /// Send an OSC bundle ad-hoc to a recipient on the network.
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
-    func send(
-        _ bundle: OSCBundle,
-        to host: String,
-        port: UInt16
-    ) throws
+    func send(_ bundle: OSCBundle, to host: String, port: UInt16) throws
     
     /// Send an OSC message ad-hoc to a recipient on the network.
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
-    func send(
-        _ message: OSCMessage,
-        to host: String,
-        port: UInt16
-    ) throws
+    func send(_ message: OSCMessage, to host: String, port: UInt16) throws
     
     // MARK: - Properties
     
@@ -192,11 +180,7 @@ extension OSCUDPClientProtocol {
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     @_disfavoredOverload
-    public func send(
-        _ packet: OSCPacket,
-        to host: String,
-        port: UInt16 = 8000
-    ) throws {
+    public func send(_ packet: OSCPacket, to host: String, port: UInt16 = 8000) throws {
         try send(packet, to: host, port: port)
     }
     
@@ -205,11 +189,7 @@ extension OSCUDPClientProtocol {
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     @_disfavoredOverload
-    public func send(
-        _ bundle: OSCBundle,
-        to host: String,
-        port: UInt16 = 8000
-    ) throws {
+    public func send(_ bundle: OSCBundle, to host: String, port: UInt16 = 8000) throws {
         try send(.bundle(bundle), to: host, port: port)
     }
     
@@ -218,11 +198,7 @@ extension OSCUDPClientProtocol {
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     @_disfavoredOverload
-    public func send(
-        _ message: OSCMessage,
-        to host: String,
-        port: UInt16 = 8000
-    ) throws {
+    public func send(_ message: OSCMessage, to host: String, port: UInt16 = 8000) throws {
         try send(.message(message), to: host, port: port)
     }
 }
