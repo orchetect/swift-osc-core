@@ -143,8 +143,6 @@ extension OSCTCPClientProtocol {
         )
     }
     
-    // MARK: - Lifecycle
-    
     /// Connects to the remote host.
     ///
     /// - Parameters:
@@ -152,5 +150,17 @@ extension OSCTCPClientProtocol {
     @_disfavoredOverload
     public func connect(timeout: TimeInterval = 5.0) throws {
         try connect(timeout: timeout)
+    }
+}
+
+// MARK: - Default implementation
+
+extension OSCTCPClientProtocol {
+    public func send(_ bundle: OSCBundle) throws {
+        try send(.bundle(bundle))
+    }
+    
+    public func send(_ message: OSCMessage) throws {
+        try send(.message(message))
     }
 }
