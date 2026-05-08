@@ -70,14 +70,38 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// Send an OSC message to all connected clients.
     func send(_ message: OSCMessage) throws
     
+    /// Send an OSC bundle or message to an individual connected client.
+    func send(_ packet: OSCPacket, toClientID clientID: OSCTCPClientSessionID) throws
+    
+    /// Send an OSC bundle to an individual connected client.
+    func send(_ bundle: OSCBundle, toClientID clientID: OSCTCPClientSessionID) throws
+    
+    /// Send an OSC message to an individual connected client.
+    func send(_ message: OSCMessage, toClientID clientID: OSCTCPClientSessionID) throws
+    
     /// Send an OSC bundle or message to one or more connected clients.
-    func send(_ packet: OSCPacket, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    /// Optionally supply an error handler that will be called for each error encountered.
+    func send(
+        _ packet: OSCPacket,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)?
+    )
     
     /// Send an OSC bundle to one or more connected clients.
-    func send(_ bundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    /// Optionally supply an error handler that will be called for each error encountered.
+    func send(
+        _ bundle: OSCBundle,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)?
+    )
     
     /// Send an OSC message to one or more connected clients.
-    func send(_ message: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    /// Optionally supply an error handler that will be called for each error encountered.
+    func send(
+        _ message: OSCMessage,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)?
+    )
 
     // MARK: - Properties
 
@@ -167,11 +191,41 @@ extension OSCTCPServerProtocol {
         try send(.message(message))
     }
     
-    public func send(_ bundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
-        try send(.bundle(bundle), toClientIDs: clientIDs)
+    public func send(_ bundle: OSCBundle, toClientID clientID: OSCTCPClientSessionID) throws {
+        try send(.bundle(bundle), toClientID: clientID)
     }
     
-    public func send(_ message: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
-        try send(.message(message), toClientIDs: clientIDs)
+    public func send(_ message: OSCMessage, toClientID clientID: OSCTCPClientSessionID) throws {
+        try send(.message(message), toClientID: clientID)
+    }
+    
+    public func send(
+        _ packet: OSCPacket,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)? = nil
+    ) {
+        for clientID in clientIDs {
+            do {
+                try send(packet, toClientID: clientID)
+            } catch {
+                errorHandler?(clientID, error)
+            }
+        }
+    }
+    
+    public func send(
+        _ bundle: OSCBundle,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)? = nil
+    ) {
+        send(.bundle(bundle), toClientIDs: clientIDs, errorHandler: errorHandler)
+    }
+    
+    public func send(
+        _ message: OSCMessage,
+        toClientIDs clientIDs: [OSCTCPClientSessionID],
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)? = nil
+    ) {
+        send(.message(message), toClientIDs: clientIDs, errorHandler: errorHandler)
     }
 }
