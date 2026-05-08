@@ -62,22 +62,22 @@ public protocol OSCTCPServerProtocol: Sendable {
     // MARK: - Communication
     
     /// Send an OSC bundle or message to all connected clients.
-    func send(_ oscPacket: OSCPacket) throws
+    func send(_ packet: OSCPacket) throws
     
     /// Send an OSC bundle to all connected clients.
-    func send(_ oscBundle: OSCBundle) throws
+    func send(_ bundle: OSCBundle) throws
     
     /// Send an OSC message to all connected clients.
-    func send(_ oscMessage: OSCMessage) throws
+    func send(_ message: OSCMessage) throws
     
     /// Send an OSC bundle or message to one or more connected clients.
-    func send(_ oscPacket: OSCPacket, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    func send(_ packet: OSCPacket, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
     
     /// Send an OSC bundle to one or more connected clients.
-    func send(_ oscBundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    func send(_ bundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
     
     /// Send an OSC message to one or more connected clients.
-    func send(_ oscMessage: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
+    func send(_ message: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws
 
     // MARK: - Properties
 
@@ -159,19 +159,19 @@ extension OSCTCPServerProtocol {
 // MARK: - Default implementation
 
 extension OSCTCPServerProtocol {
-    public func send(_ oscBundle: OSCBundle) throws {
-        try send(.bundle(oscBundle))
+    public func send(_ bundle: OSCBundle) throws {
+        try send(.bundle(bundle))
     }
     
-    public func send(_ oscMessage: OSCMessage) throws {
-        try send(.message(oscMessage))
+    public func send(_ message: OSCMessage) throws {
+        try send(.message(message))
     }
     
-    public func send(_ oscBundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
-        try send(.bundle(oscBundle), toClientIDs: clientIDs)
+    public func send(_ bundle: OSCBundle, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
+        try send(.bundle(bundle), toClientIDs: clientIDs)
     }
     
-    public func send(_ oscMessage: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
-        try send(.message(oscMessage), toClientIDs: clientIDs)
+    public func send(_ message: OSCMessage, toClientIDs clientIDs: [OSCTCPClientSessionID]) throws {
+        try send(.message(message), toClientIDs: clientIDs)
     }
 }
