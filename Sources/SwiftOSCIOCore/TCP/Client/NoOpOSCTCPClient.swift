@@ -9,6 +9,16 @@ import typealias Foundation.TimeInterval
 
 /// A no-op OSC TCP client implementation provided for testing or mocking.
 open class NoOpOSCTCPClient: OSCTCPClientProtocol {
+    open var remoteHost: String
+    open var remotePort: UInt16
+    open var interface: String?
+    open var timeTagMode: OSCTimeTagMode
+    open internal(set) var isConnected: Bool = false
+    open var framingMode: OSCTCPFramingMode
+    var queue: DispatchQueue
+    var receiveHandler: OSCHandlerBlock?
+    var notificationHandler: NotificationHandlerBlock?
+
     required public init(
         remoteHost: String,
         remotePort: UInt16,
@@ -18,59 +28,45 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
         queue: DispatchQueue?,
         receiveHandler: OSCHandlerBlock?
     ) {
-        // empty
+        self.remoteHost = remoteHost
+        self.remotePort = remotePort
+        self.interface = interface
+        self.timeTagMode = timeTagMode
+        self.framingMode = framingMode
+        self.queue = queue ?? .global()
+        self.receiveHandler = receiveHandler
+    }
+
+    // MARK: - Lifecycle
+
+    open func connect(timeout: TimeInterval) throws {
+        isConnected = true
+    }
+
+    open func close() {
+        isConnected = false
+    }
+
+    // MARK: - Communication
+
+    open func send(_ packet: OSCPacket) throws {
+        guard isConnected else { throw OSCTCPClientError.notStarted }
+        print("No-op send: \(packet)")
+    }
+
+    // MARK: - Properties
+
+    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+        queue.sync {
+            receiveHandler = handler
+        }
+    }
+
+    open func setNotificationHandler(_ handler: NotificationHandlerBlock?) {
+        queue.sync {
+            notificationHandler = handler
+        }
     }
 }
 
 extension NoOpOSCTCPClient: @unchecked Sendable { } // TODO: unchecked
-
-// MARK: - Lifecycle
-
-extension NoOpOSCTCPClient {
-    public func connect(timeout: TimeInterval) throws { }
-
-    public func close() { }
-}
-
-// MARK: - Communication
-
-extension NoOpOSCTCPClient {
-    public func send(_ packet: OSCPacket) throws { }
-
-    public func send(_ bundle: OSCBundle) throws { }
-
-    public func send(_ message: OSCMessage) throws { }
-}
-
-// MARK: - Properties
-
-extension NoOpOSCTCPClient {
-    public var timeTagMode: OSCTimeTagMode {
-        get { .ignore }
-        set { /* empty */ }
-    }
-
-    public var remoteHost: String {
-        ""
-    }
-
-    public var remotePort: UInt16 {
-        0
-    }
-
-    public var interface: String? {
-        nil
-    }
-
-    public var isConnected: Bool {
-        false
-    }
-
-    public var framingMode: OSCTCPFramingMode {
-        .osc1_1
-    }
-
-    public func setReceiveHandler(_ handler: OSCHandlerBlock?) { }
-
-    public func setNotificationHandler(_ handler: NotificationHandlerBlock?) { }
-}
