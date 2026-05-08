@@ -176,8 +176,8 @@ extension OSCUDPClientProtocol {
     public init(
         localPort: UInt16?,
         interface: String? = nil,
-        isPortReuseEnabled: Bool = false,
-        isIPv4BroadcastEnabled: Bool = false
+        isPortReuseEnabled: Bool = false, // same as default implementation of init() below
+        isIPv4BroadcastEnabled: Bool = false // same as default implementation of init() below
     ) {
         self.init(
             localPort: localPort,
@@ -224,5 +224,18 @@ extension OSCUDPClientProtocol {
         port: UInt16 = 8000
     ) throws {
         try send(.message(message), to: host, port: port)
+    }
+}
+
+// MARK: - Defaulted Implementation
+
+extension OSCUDPClientProtocol {
+    public init() {
+        self.init(
+            localPort: nil,
+            interface: nil,
+            isPortReuseEnabled: false, // same as defaulted init above
+            isIPv4BroadcastEnabled: false // same as defaulted init above
+        )
     }
 }
