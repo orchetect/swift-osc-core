@@ -19,7 +19,7 @@ import SwiftOSCCore
 ///
 /// What differentiates this client class from the server class is that the client class is designed to connect to a
 /// remote TCP server. (Whereas, the server is designed to listen for inbound connections.)
-public protocol OSCTCPClientProtocol {
+public protocol OSCTCPClientProtocol: Sendable {
     /// Notification type.
     typealias Notification = OSCTCPClientNotification
     
