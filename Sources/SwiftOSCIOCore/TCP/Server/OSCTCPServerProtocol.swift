@@ -135,7 +135,7 @@ public protocol OSCTCPServerProtocol: Sendable {
     func disconnectClient(clientID: OSCTCPClientSessionID)
 }
 
-// MARK: - Defaulted parameters
+// MARK: - Defaulted Parameters
 
 extension OSCTCPServerProtocol {
     /// Initialize with a remote hostname and UDP port.
@@ -174,7 +174,7 @@ extension OSCTCPServerProtocol {
     }
 }
 
-// MARK: - Default implementation
+// MARK: - Default Implementation
 
 extension OSCTCPServerProtocol {
     public func send(_ bundle: OSCBundle, toClientID clientID: OSCTCPClientSessionID) throws {

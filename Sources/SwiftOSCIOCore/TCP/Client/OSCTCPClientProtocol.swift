@@ -103,7 +103,7 @@ public protocol OSCTCPClientProtocol: Sendable {
     func setNotificationHandler(_ handler: NotificationHandlerBlock?)
 }
 
-// MARK: - Defaulted parameters
+// MARK: - Defaulted Parameters
 
 extension OSCTCPClientProtocol {
     /// Initialize with a remote hostname and UDP port.
@@ -153,7 +153,7 @@ extension OSCTCPClientProtocol {
     }
 }
 
-// MARK: - Default implementation
+// MARK: - Default Implementation
 
 extension OSCTCPClientProtocol {
     public func send(_ bundle: OSCBundle) throws {
