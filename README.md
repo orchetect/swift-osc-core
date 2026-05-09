@@ -11,6 +11,7 @@ Provides core functionality for [SwiftOSC](https://github.com/orchetect/swift-os
 - OSC address pattern matching and dispatch
 - Convenient OSC message value type masking, validation and strong-typing
 - Support for custom OSC types
+- Modular: use one of the [provided TCP/UDP network I/O layers](https://github.com/orchetect/swift-osc), or implement your own
 - Supports Swift 6 strict concurrency
 - Fully unit tested
 - Full DocC documentation
