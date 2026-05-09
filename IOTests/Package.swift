@@ -13,15 +13,18 @@ let package = Package(
         // Note:
         // This package requires an I/O extension package to be added as a dependency in order to build and run tests.
         // - During automated CI testing, CI adds the dependency as part of the pipeline script.
-        // - During test development, you can manually temporarily add an I/O package here, assigning it the name "IO_PACKAGE".
-        //   For example, to use a local package:
-        //   .package(name: "IO_PACKAGE", path: "/Users/user/Desktop/swift-osc-io-nio")
+        // - During test development, you can temporarily add an I/O package here manually.
+        //   For example, to use a locally cloned package:
+        //     .package(path: "/Users/user/Desktop/swift-osc-io-nio")
+        //   Or to use a remote package:
+        //     .package(url: "https://github.com/user/swift-osc-io-nio", branch: "main")
     ],
     targets: [
         .testTarget(
             name: "IOTests",
             dependencies: [
-                .product(name: "SwiftOSCIO", package: "IO_PACKAGE")
+                // For example:
+                //   .product(name: "SwiftOSCIO", package: "swift-core-io-nio")
             ]
         )
     ],
