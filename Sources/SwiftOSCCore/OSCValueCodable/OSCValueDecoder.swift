@@ -12,7 +12,6 @@ import struct FoundationEssentials.Data
 import protocol FoundationEssentials.DataProtocol
 #endif
 
-internal import SwiftASCII // ASCIIString
 import SwiftDataParsing
 
 /// ``OSCValue`` decoder.
@@ -96,19 +95,20 @@ extension OSCValueDecoder {
         return value
     }
 
-    /// Read a 4-byte padded null-terminated ASCII string chunk from an OSC value data payload.
+    /// Read a 4-byte padded null-terminated UTF-8 string chunk from an OSC value data payload.
     ///
-    /// The string is validated and an error is thrown if it contains non-ASCII characters which may
-    /// be a sign the data is malformed. (OSC string encoding allows only ASCII characters.)
+    /// Although the OSC 1.0 spec describes strings as "printable ASCII", in practice every major OSC
+    /// implementation (liblo, python-osc, oscP5, osc.js, Max/MSP, ETC Eos, QLab, TouchOSC, …) encodes
+    /// strings as UTF-8. UTF-8 is a strict superset of ASCII, so pure-ASCII payloads round-trip
+    /// unchanged. Truly malformed bytes that aren't valid UTF-8 throw ``OSCDecodeError/malformed(_:)``.
     public mutating func readOSCNullTerminatedString() throws(OSCDecodeError) -> String {
         // readOSCNullTerminatedData takes care of data size validation so we don't need to do it here
         let chunk = try readOSCNullTerminatedData()
 
-        guard let value = ASCIIString(exactly: chunk)?.stringValue
+        guard let value = String(data: chunk, encoding: .utf8)
         else {
             throw .malformed(
-                "Failed to form valid ASCII string from 4-byte aligned null-terminated ASCII string chunk."
-                    + " Non-ASCII characters may be present or the data is malformed."
+                "Failed to form valid UTF-8 string from 4-byte aligned null-terminated string chunk."
             )
         }
 
