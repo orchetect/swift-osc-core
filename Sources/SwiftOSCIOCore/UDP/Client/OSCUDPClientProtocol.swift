@@ -174,33 +174,6 @@ extension OSCUDPClientProtocol {
             isIPv4BroadcastEnabled: isIPv4BroadcastEnabled
         )
     }
-    
-    /// Send an OSC bundle or message ad-hoc to a recipient on the network.
-    ///
-    /// The default port for OSC communication is 8000 but may change depending on device/software
-    /// manufacturer.
-    @_disfavoredOverload
-    public func send(_ packet: OSCPacket, to host: String, port: UInt16 = 8000) throws {
-        try send(packet, to: host, port: port)
-    }
-    
-    /// Send an OSC bundle ad-hoc to a recipient on the network.
-    ///
-    /// The default port for OSC communication is 8000 but may change depending on device/software
-    /// manufacturer.
-    @_disfavoredOverload
-    public func send(_ bundle: OSCBundle, to host: String, port: UInt16 = 8000) throws {
-        try send(.bundle(bundle), to: host, port: port)
-    }
-    
-    /// Send an OSC message ad-hoc to a recipient on the network.
-    ///
-    /// The default port for OSC communication is 8000 but may change depending on device/software
-    /// manufacturer.
-    @_disfavoredOverload
-    public func send(_ message: OSCMessage, to host: String, port: UInt16 = 8000) throws {
-        try send(.message(message), to: host, port: port)
-    }
 }
 
 // MARK: - Defaulted Implementation
@@ -213,5 +186,23 @@ extension OSCUDPClientProtocol {
             isPortReuseEnabled: false, // same as defaulted init above
             isIPv4BroadcastEnabled: false // same as defaulted init above
         )
+    }
+
+    /// Send an OSC bundle ad-hoc to a recipient on the network.
+    ///
+    /// The default port for OSC communication is 8000 but may change depending on device/software
+    /// manufacturer.
+    @_disfavoredOverload
+    public func send(_ bundle: OSCBundle, to host: String, port: UInt16) throws {
+        try send(.bundle(bundle), to: host, port: port)
+    }
+
+    /// Send an OSC message ad-hoc to a recipient on the network.
+    ///
+    /// The default port for OSC communication is 8000 but may change depending on device/software
+    /// manufacturer.
+    @_disfavoredOverload
+    public func send(_ message: OSCMessage, to host: String, port: UInt16) throws {
+        try send(.message(message), to: host, port: port)
     }
 }
