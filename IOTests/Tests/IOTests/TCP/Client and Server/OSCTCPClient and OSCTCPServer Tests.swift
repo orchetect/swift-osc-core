@@ -1,5 +1,5 @@
 //
-//  OSCTCPServer Tests.swift
+//  OSCTCPClient and OSCTCPServer Tests.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
@@ -11,7 +11,7 @@ import Foundation
 import Testing
 
 @Suite(.enabled(if: isSystemTimingStable()), .serialized)
-struct OSCTCPServer_Tests {
+struct OSCTCPClient_and_OSCTCPServer_Tests {
     /// Ensure rapidly received messages are dispatched in the order they are received.
     @MainActor @Test(arguments: 0 ... 10)
     func messageOrdering(iteration: Int) async throws {
