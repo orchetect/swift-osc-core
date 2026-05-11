@@ -4,10 +4,7 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import class Foundation.DispatchQueue
-import struct Foundation.DispatchTime
-import enum Foundation.DispatchTimeInterval
-import typealias Foundation.TimeInterval
+import Foundation
 
 /// Internal protocol that TCP-based OSC classes adopt in order to handle incoming OSC data.
 public protocol OSCHandlerProtocol: AnyObject where Self: Sendable {
@@ -123,8 +120,7 @@ extension OSCHandlerProtocol {
             return
         }
 
-        let usec = Int(secondsFromNow * TimeInterval(1_000_000))
-        queue.asyncAfter(deadline: .now().advanced(by: .microseconds(usec))) { [weak self] in
+        queue.asyncAfter(deadline: .now() + secondsFromNow) { [weak self] in
             self?.receiveHandler?(message, timeTag, remoteHost, remotePort)
         }
     }
