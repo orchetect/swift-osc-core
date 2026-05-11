@@ -5,7 +5,6 @@
 //
 
 import class Foundation.DispatchQueue
-import typealias Foundation.TimeInterval
 
 /// A no-op OSC UDP client implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCUDPClient: OSCUDPClientProtocol {
