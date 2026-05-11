@@ -7,14 +7,14 @@
 import class Foundation.DispatchQueue
 import typealias Foundation.TimeInterval
 
-/// A no-op OSC TCP client implementation provided for testing or mocking.
+/// A no-op OSC TCP client implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCTCPClient: OSCTCPClientProtocol {
-    open var remoteHost: String
-    open var remotePort: UInt16
-    open var interface: String?
     open var timeTagMode: OSCTimeTagMode
-    open internal(set) var isConnected: Bool = false
-    open var framingMode: OSCTCPFramingMode
+    open private(set) var remoteHost: String
+    open private(set) var remotePort: UInt16
+    open private(set) var interface: String?
+    open private(set) var isConnected: Bool = false
+    open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue
     var receiveHandler: OSCHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
