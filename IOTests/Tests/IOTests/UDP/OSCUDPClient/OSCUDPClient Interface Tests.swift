@@ -69,7 +69,7 @@ struct OSCUDPClient_Interface_Tests {
         
         let client = OSCUDPClient(localPort: nil, interface: interface)
         
-        #expect(throws: OSCUDPClientError.invalidInterface) {
+        #expect(throws: OSCIOError.invalidInterface) {
             try client.start()
         }
     }

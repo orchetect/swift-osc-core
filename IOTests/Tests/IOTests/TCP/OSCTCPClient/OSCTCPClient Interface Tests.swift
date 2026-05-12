@@ -69,7 +69,7 @@ struct OSCTCPClient_Interface_Tests {
         
         let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: 63076, interface: interface)
         
-        #expect(throws: OSCTCPClientError.invalidInterface) {
+        #expect(throws: OSCIOError.invalidInterface) {
             try client.connect()
         }
     }

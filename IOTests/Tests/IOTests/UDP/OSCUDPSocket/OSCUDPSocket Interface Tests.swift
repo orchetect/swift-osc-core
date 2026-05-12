@@ -69,7 +69,7 @@ struct OSCUDPSocket_Interface_Tests {
         
         let socket = OSCUDPSocket(interface: interface)
         
-        #expect(throws: OSCUDPClientError.invalidInterface) {
+        #expect(throws: OSCIOError.invalidInterface) {
             try socket.start()
         }
     }

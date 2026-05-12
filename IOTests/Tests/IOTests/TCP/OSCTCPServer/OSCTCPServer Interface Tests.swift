@@ -69,7 +69,7 @@ struct OSCTCPServer_Interface_Tests {
         
         let server = OSCTCPServer(port: nil, interface: interface)
         
-        #expect(throws: OSCTCPClientError.invalidInterface) {
+        #expect(throws: OSCIOError.invalidInterface) {
             try server.start()
         }
     }
