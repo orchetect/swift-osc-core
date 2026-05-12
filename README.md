@@ -50,14 +50,14 @@ To use this extension as standalone dependency (instead of importing the **swift
 
 ## Documentation
 
-See the [online documentation](https://swiftpackageindex.com/orchetect/swift-osc-core/main/documentation) for this repository. See one of the I/O extension repositories for example code.
+See the [online documentation](https://swiftpackageindex.com/orchetect/swift-osc-core/documentation) for this repository. See one of the I/O extension repositories for example code.
 
 For support, feature requests, and bug reports see the main [SwiftOSC](https://github.com/orchetect/swift-osc) repository.
 
 ## Dependencies
 
-- [swift-ascii](https://github.com/orchetect/SwiftASCII) is used for ASCII string and character formatting and validation.
-- [swift-data-parsing](https://github.com/orchetect/swift-data-parsing) is used for message decoding.
+- [SwiftASCII](https://github.com/orchetect/SwiftASCII) is used for ASCII string and character formatting and validation.
+- [SwiftDataParsing](https://github.com/orchetect/swift-data-parsing) is used for message decoding.
 
 ## Author
 
