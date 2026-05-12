@@ -69,7 +69,7 @@ struct OSCUDPServer_Interface_Tests {
         
         let server = OSCUDPServer(port: nil, interface: interface)
         
-        #expect(throws: OSCTCPClientError.invalidInterface) {
+        #expect(throws: OSCUDPClientError.invalidInterface) {
             try server.start()
         }
     }
