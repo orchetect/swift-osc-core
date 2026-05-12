@@ -114,14 +114,6 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// TCP packet framing mode.
     var framingMode: OSCTCPFramingMode { get }
     
-    /// Set the receive handler closure.
-    /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
-    
-    /// Set the notification handler closure.
-    /// This closure will be called when a notification is generated, such as connection and disconnection events.
-    func setNotificationHandler(_ handler: NotificationHandlerBlock?)
-    
     /// Returns a dictionary of currently connected clients keyed by client session ID.
     ///
     /// > Note:
@@ -130,6 +122,14 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// > upon each newly-made connection. For this reason, these IDs should not be stored persistently, but instead
     /// > queried from the OSC TCP server when a client connects or analyzing currently-connected clients.
     var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] { get }
+    
+    /// Set the receive handler closure.
+    /// This closure will be called when OSC bundles or messages are received.
+    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    
+    /// Set the notification handler closure.
+    /// This closure will be called when a notification is generated, such as connection and disconnection events.
+    func setNotificationHandler(_ handler: NotificationHandlerBlock?)
     
     /// Disconnect a connected client from the server.
     func disconnectClient(clientID: OSCTCPClientSessionID)
