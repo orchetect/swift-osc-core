@@ -20,17 +20,19 @@ struct OSCTCPServer_Interface_Tests {
         print("Found interfaces:")
         dump(interfaces)
         
-        guard let interface = interfaces.first else {
+        guard let (_, interfaceAddress) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceAddress
+        print("Using interface \"\(interface)\"")
         
         // set up server
-        let server = OSCTCPServer(port: nil, interface: interface.address)
+        let server = OSCTCPServer(port: nil, interface: interface)
+        #expect(server.interface == interface)
         try server.start()
         server.stop()
     }
@@ -43,17 +45,19 @@ struct OSCTCPServer_Interface_Tests {
         print("Found interfaces:")
         dump(interfaces)
         
-        guard let interface = interfaces.first else {
+        guard let (interfaceName, _) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceName
+        print("Using interface \"\(interface)\"")
         
         // set up server
-        let server = OSCTCPServer(port: nil, interface: interface.name)
+        let server = OSCTCPServer(port: nil, interface: interface)
+        #expect(server.interface == interface)
         try server.start()
         server.stop()
     }

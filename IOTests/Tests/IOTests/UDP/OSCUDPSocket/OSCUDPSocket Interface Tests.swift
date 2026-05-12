@@ -20,19 +20,21 @@ struct OSCUDPSocket_Interface_Tests {
         print("Found interfaces:")
         dump(interfaces)
         
-        guard let interface = interfaces.first else {
+        guard let (_, interfaceAddress) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceAddress
+        print("Using interface \"\(interface)\"")
         
         // set up server
-        let server = OSCUDPSocket(interface: interface.address)
-        try server.start()
-        server.stop()
+        let socket = OSCUDPSocket(interface: interface)
+        #expect(socket.interface == interface)
+        try socket.start()
+        socket.stop()
     }
     
     /// Attempt to bind to a network interface, if one is present that can be used.
@@ -43,19 +45,21 @@ struct OSCUDPSocket_Interface_Tests {
         print("Found interfaces:")
         dump(interfaces)
         
-        guard let interface = interfaces.first else {
+        guard let (interfaceName, _) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceName
+        print("Using interface \"\(interface)\"")
         
         // set up server
-        let server = OSCUDPSocket(interface: interface.name)
-        try server.start()
-        server.stop()
+        let socket = OSCUDPSocket(interface: interface)
+        #expect(socket.interface == interface)
+        try socket.start()
+        socket.stop()
     }
 
     /// Attempt to bind to an invalid network interface.
@@ -63,10 +67,10 @@ struct OSCUDPSocket_Interface_Tests {
     func interfaceBinding_invalid() async throws {
         let interface = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         
-        let server = OSCUDPSocket(interface: interface)
+        let socket = OSCUDPSocket(interface: interface)
         
         #expect(throws: OSCTCPClientError.invalidInterface) {
-            try server.start()
+            try socket.start()
         }
     }
 }

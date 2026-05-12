@@ -15,21 +15,24 @@ struct OSCTCPClient_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
     @MainActor @Test
     func interfaceBinding_interfaceAddress() async throws {
-        guard let interface = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+        guard let (_, interfaceAddress) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceAddress
+        print("Using interface \"\(interface)\"")
         
         // create a server to connect to
-        let server = OSCTCPServer(port: nil, interface: interface.address)
+        let server = OSCTCPServer(port: nil, interface: interface)
+        #expect(server.interface == interface)
         try server.start()
         
         // set up client
-        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface.address)
+        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface)
+        #expect(client.interface == interface)
         try client.connect()
         client.close()
     }
@@ -37,21 +40,24 @@ struct OSCTCPClient_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
     @MainActor @Test
     func interfaceBinding_interfaceName() async throws {
-        guard let interface = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+        guard let (interfaceName, _) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
         
-        print("Using interface \"\(interface.name)\" (\(interface.address))")
+        let interface = interfaceName
+        print("Using interface \"\(interface)\"")
         
         // create a server to connect to
-        let server = OSCTCPServer(port: nil, interface: interface.name)
+        let server = OSCTCPServer(port: nil, interface: interface)
+        #expect(server.interface == interface)
         try server.start()
         
         // set up client
-        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface.name)
+        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface)
+        #expect(client.interface == interface)
         try client.connect()
         client.close()
     }
