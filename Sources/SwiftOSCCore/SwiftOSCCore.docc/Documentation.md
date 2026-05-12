@@ -10,7 +10,7 @@ This target contains documentation on using OSC value types.
 
 > Tip:
 >
-> For a Getting Started guide and I/O usage, see the I/O package documentation.
+> For documentation on I/O usage, see [SwiftOSCIOCore](https://swiftpackageindex.com/orchetect/swift-osc-core/documentation/swiftosciocore) module documentation within this package.
 
 ## Topics
 

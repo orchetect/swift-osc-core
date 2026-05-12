@@ -1,5 +1,5 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [SwiftOSCCore]
+    - documentation_targets: [SwiftOSCCore, SwiftOSCIOCore]
       scheme: swift-osc-core
