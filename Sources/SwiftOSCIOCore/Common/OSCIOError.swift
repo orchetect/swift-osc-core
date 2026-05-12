@@ -17,7 +17,7 @@ public enum OSCIOError: LocalizedError {
     /// The socket has not been connected yet.
     case notConnected
     
-    /// No remote host was specified at initialization or in call to `send()`.
+    /// No remote host was specified.
     case noRemoteHost
     
     /// Client socket with the given client ID is not found (not connected).
@@ -32,9 +32,9 @@ public enum OSCIOError: LocalizedError {
         case .notConnected:
             "The network socket has not been connected yet."
         case .noRemoteHost:
-            "A remote host was specified at initialization or in call to send()."
+            "A remote host was specified."
         case let .clientNotFound(clientID: clientID):
-            "OSC TCP client socket with ID \(clientID) not found (not connected)."
+            "Client socket with ID \(clientID) not found (not connected)."
         }
     }
 }
