@@ -10,25 +10,83 @@ import Testing
 /// No functionality tests, just test that standardized API access compiles as expected.
 @Suite
 struct OSCUDPServer_API_Tests {
+    private static let message = OSCMessage("/test", values: [123, true])
+    private static let bundle = OSCBundle(timeTag: .immediate(), [.message(message)])
+    
     @Test
-    func udpServerAccess() {
-        let oscServer = OSCUDPServer()
+    func init_ProtocolDefined() {
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true,
+            timeTagMode: .osc1_0,
+            queue: nil,
+            receiveHandler: { _, _, _, _ in }
+        )
+    }
+    
+    @Test
+    func init_DefaultedOverloads() {
+        _ = OSCUDPServer()
         
-        _ = oscServer.isStarted
-        _ = oscServer.localPort
-        // oscServer.localPort = 9000 // immutable actor
-        oscServer.isPortReuseEnabled = true
-        oscServer.isPortReuseEnabled = false
-        oscServer.setReceiveHandler { message, timeTag, host, port in
-            print(message)
-        }
-        // oscServer.receiveHandler = { _,_ in } // immutable actor, use `setReceiveHandler()` instead
+        _ = OSCUDPServer(
+            port: 8000
+        )
         
-        _ = OSCUDPServer(port: 8006) { message, timeTag, host, port in
-            print(message)
-        }
-        _ = OSCUDPServer(port: 8007, timeTagMode: .ignore) { message, timeTag, host, port in
-            print(message)
-        }
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1"
+        )
+        
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true
+        )
+        
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true,
+            timeTagMode: .osc1_0
+        )
+        
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true,
+            timeTagMode: .osc1_0,
+            queue: nil
+        )
+    }
+    
+    @Test
+    func propertyAccess() {
+        let server = OSCUDPServer()
+        
+        // read
+        _ = server.timeTagMode
+        _ = server.localPort
+        _ = server.interface
+        _ = server.isPortReuseEnabled
+        _ = server.isStarted
+        
+        // set mutable properties
+        server.timeTagMode = .osc1_0
+        server.isPortReuseEnabled = true
+    }
+    
+    @Test
+    func methods() {
+        let server = OSCUDPServer()
+        
+        // start()
+        try? server.start()
+        
+        // stop()
+        server.stop()
+        
+        // setReceiveHandler { }
+        server.setReceiveHandler { _, _, _, _ in }
     }
 }
