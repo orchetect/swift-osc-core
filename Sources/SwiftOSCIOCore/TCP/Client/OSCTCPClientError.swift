@@ -8,6 +8,9 @@ import protocol Foundation.LocalizedError
 
 /// Error cases thrown during the operation of an OSC TCP client.
 public enum OSCTCPClientError: LocalizedError {
+    /// Invalid interface name or address.
+    case invalidInterface
+    
     /// The OSC TCP socket has not been started yet.
     case notStarted
     
@@ -16,6 +19,8 @@ public enum OSCTCPClientError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
+        case .invalidInterface:
+            "Invalid interface name or address."
         case .notStarted:
             "The OSC TCP socket has not been started yet."
         case .noRemoteHost:
