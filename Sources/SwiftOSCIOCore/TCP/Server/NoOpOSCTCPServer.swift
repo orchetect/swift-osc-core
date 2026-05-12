@@ -47,7 +47,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
     // MARK: - Communication
     
     open func send(_ packet: OSCPacket, toClientID clientID: OSCTCPClientSessionID) throws {
-        guard isStarted else { throw OSCTCPClientError.notStarted }
+        guard isStarted else { throw OSCIOError.notStarted }
         print("No-op send to client ID \(clientID): \(packet)")
     }
     

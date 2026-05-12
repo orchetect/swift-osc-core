@@ -52,7 +52,7 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
     
     open func send(_ packet: OSCPacket, to host: String, port: UInt16) throws {
         if _isStartNeededToOperate, !isStarted {
-            throw OSCUDPClientError.notStarted
+            throw OSCIOError.notStarted
         }
         print("No-op send to \(host):\(port): \(packet)")
     }
