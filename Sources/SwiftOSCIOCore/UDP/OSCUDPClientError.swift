@@ -8,7 +8,10 @@ import protocol Foundation.LocalizedError
 
 /// Error cases thrown during the operation of an OSC UDP client.
 public enum OSCUDPClientError: LocalizedError {
+    /// The OSC UDP client has not been started yet.
     case notStarted
+    
+    /// A remote host was not specified.
     case noRemoteHost
     
     public var errorDescription: String? {

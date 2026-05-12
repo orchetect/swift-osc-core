@@ -4,7 +4,7 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-// Welcome to SwiftOSC :)
+// Welcome to SwiftOSC Core :)
 
 @_documentation(visibility: internal)
 @_exported public import SwiftOSCCore

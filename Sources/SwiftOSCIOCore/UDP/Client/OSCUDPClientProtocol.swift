@@ -30,8 +30,8 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// >
     /// > This may, however, be necessary in some cases where certain hardware devices expect to receive OSC from a
     /// > prescribed remote sender port number. In this case it is often more advantageous to use the combined
-    /// > client/server ``OSCUDPSocket`` object instead, which is designed to make working with these kind round-trip
-    /// > requirements more streamlined.
+    /// > client/server ``OSCUDPSocketProtocol`` object instead, which is designed to make working with these kind
+    /// > round-trip requirements more streamlined.
     /// >
     /// > To allow the system to assign a random available local port, use the ``init()`` initializer
     /// > instead.
@@ -148,8 +148,8 @@ extension OSCUDPClientProtocol {
     /// >
     /// > This may, however, be necessary in some cases where certain hardware devices expect to receive OSC from a
     /// > prescribed remote sender port number. In this case it is often more advantageous to use the combined
-    /// > client/server ``OSCUDPSocket`` object instead, which is designed to make working with these kind round-trip
-    /// > requirements more streamlined.
+    /// > client/server ``OSCUDPSocketProtocol`` object instead, which is designed to make working with these kind
+    /// > round-trip requirements more streamlined.
     /// >
     /// > To allow the system to assign a random available local port, use the ``init()`` initializer
     /// > instead.

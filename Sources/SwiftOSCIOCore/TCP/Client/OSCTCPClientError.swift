@@ -8,7 +8,10 @@ import protocol Foundation.LocalizedError
 
 /// Error cases thrown during the operation of an OSC TCP client.
 public enum OSCTCPClientError: LocalizedError {
+    /// The OSC TCP socket has not been started yet.
     case notStarted
+    
+    /// A remote host was specified at initialization or in call to `send()`.
     case noRemoteHost
     
     public var errorDescription: String? {
