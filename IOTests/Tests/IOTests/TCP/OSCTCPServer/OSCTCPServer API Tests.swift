@@ -83,14 +83,14 @@ struct OSCTCPServer_API_Tests {
         server.stop()
         
         // send(OSCPacket)
-        try? server.send(OSCPacket.bundle(Self.bundle))
+        server.send(OSCPacket.bundle(Self.bundle))
         try? server.send(OSCPacket.bundle(Self.bundle), toClientID: 0)
-        try? server.send(OSCPacket.bundle(Self.bundle), toClientIDs: [0])
-        try? server.send(OSCPacket.bundle(Self.bundle), toClientIDs: [0]) { _, _ in }
-        try? server.send(OSCPacket.message(Self.message))
+        server.send(OSCPacket.bundle(Self.bundle), toClientIDs: [0])
+        server.send(OSCPacket.bundle(Self.bundle), toClientIDs: [0]) { _, _ in }
+        server.send(OSCPacket.message(Self.message))
         try? server.send(OSCPacket.message(Self.message), toClientID: 0)
-        try? server.send(OSCPacket.message(Self.message), toClientIDs: [0])
-        try? server.send(OSCPacket.message(Self.message), toClientIDs: [0]) { _, _ in }
+        server.send(OSCPacket.message(Self.message), toClientIDs: [0])
+        server.send(OSCPacket.message(Self.message), toClientIDs: [0]) { _, _ in }
         
         // send(OSCBundle)
         server.send(Self.bundle)
