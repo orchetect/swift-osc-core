@@ -172,6 +172,15 @@ extension OSCTCPServerProtocol {
             receiveHandler: receiveHandler
         )
     }
+
+    @_disfavoredOverload
+    public func send(
+        _ packet: OSCPacket,
+        toClientIDs clientIDs: [OSCTCPClientSessionID]? = nil,
+        errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)? = nil
+    ) {
+        send(packet, toClientIDs: clientIDs, errorHandler: errorHandler)
+    }
 }
 
 // MARK: - Default Implementation
