@@ -63,17 +63,13 @@ struct OSCUDPClient_API_Tests {
         client.stop()
         
         // send(OSCPacket)
-        try? client.send(OSCPacket.bundle(Self.bundle), to: "nowhere")
         try? client.send(OSCPacket.bundle(Self.bundle), to: "nowhere", port: 8000)
-        try? client.send(OSCPacket.message(Self.message), to: "nowhere")
         try? client.send(OSCPacket.message(Self.message), to: "nowhere", port: 8000)
         
         // send(OSCBundle)
-        try? client.send(Self.bundle, to: "nowhere")
         try? client.send(Self.bundle, to: "nowhere", port: 8000)
         
         // send(OSCMessage)
-        try? client.send(Self.message, to: "nowhere")
         try? client.send(Self.message, to: "nowhere", port: 8000)
     }
 }
