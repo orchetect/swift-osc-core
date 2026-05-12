@@ -446,7 +446,6 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         await client1Receiver.reset()
         await client2Receiver.reset()
     }
-
     // TODO: add tests for clients connecting, disconnecting, and reconnecting (check for memory leaks?)
 }
 
