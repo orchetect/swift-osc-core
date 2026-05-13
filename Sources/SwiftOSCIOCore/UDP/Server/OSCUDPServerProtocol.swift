@@ -27,17 +27,15 @@ public protocol OSCUDPServerProtocol: Sendable {
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes to receive broadcast packets.
-    ///   - timeTagMode: OSC TimeTag mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     init(
         port: UInt16?,
         interface: String?,
         isPortReuseEnabled: Bool,
-        timeTagMode: OSCTimeTagMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCMessageHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     )
 
     // MARK: - Lifecycle
@@ -49,9 +47,6 @@ public protocol OSCUDPServerProtocol: Sendable {
     func stop()
 
     // MARK: - Properties
-
-    /// Time tag mode. Determines how OSC bundle time tags are handled.
-    var timeTagMode: OSCTimeTagMode { get set }
 
     /// UDP port used by the OSC server to listen for inbound OSC packets.
     /// This may only be set at the time of initialization.
@@ -77,8 +72,8 @@ public protocol OSCUDPServerProtocol: Sendable {
     var isStarted: Bool { get }
 
     /// Set the receive handler closure.
-    /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
+    /// This closure will be called when OSC packets are received.
+    func setReceiveHandler(_ handler: OSCPacketHandler?)
 }
 
 // MARK: - Defaulted Parameters
@@ -98,24 +93,21 @@ extension OSCUDPServerProtocol {
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes to receive broadcast packets.
-    ///   - timeTagMode: OSC TimeTag mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     @_disfavoredOverload
     public init(
         port: UInt16? = 8000,
         interface: String? = nil,
         isPortReuseEnabled: Bool = false,
-        timeTagMode: OSCTimeTagMode = .ignore,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCMessageHandlerBlock? = nil
+        receiveHandler: OSCPacketHandler? = nil
     ) {
         self.init(
             port: port,
             interface: interface,
             isPortReuseEnabled: isPortReuseEnabled,
-            timeTagMode: timeTagMode,
             queue: queue,
             receiveHandler: receiveHandler
         )

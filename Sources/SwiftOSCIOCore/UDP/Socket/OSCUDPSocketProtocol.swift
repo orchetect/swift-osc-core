@@ -33,21 +33,19 @@ public protocol OSCUDPSocketProtocol: Sendable {
     ///   - remotePort: Remote port on the remote host machine to send outbound OSC packets to.
     ///     If `nil` or `0`, the `localPort` value will be used.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
-    ///   - timeTagMode: OSC time-tag mode. The default is recommended.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     init(
         localPort: UInt16?,
         remoteHost: String?,
         remotePort: UInt16?,
         interface: String?,
-        timeTagMode: OSCTimeTagMode,
         isIPv4BroadcastEnabled: Bool,
         queue: DispatchQueue?,
-        receiveHandler: OSCMessageHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     )
 
     // MARK: - Lifecycle
@@ -79,9 +77,6 @@ public protocol OSCUDPSocketProtocol: Sendable {
     func send(_ message: OSCMessage, to host: String?, port: UInt16?) throws
 
     // MARK: - Properties
-
-    /// Time tag mode. Determines how OSC bundle time tags are handled.
-    var timeTagMode: OSCTimeTagMode { get set }
 
     /// Remote network hostname.
     /// If non-nil, this host will be used in calls to ``send(_:to:port:)-(OSCPacket,_,_)``. The host may still be
@@ -138,8 +133,8 @@ public protocol OSCUDPSocketProtocol: Sendable {
     var isStarted: Bool { get }
 
     /// Set the receive handler closure.
-    /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
+    /// This closure will be called when OSC packets are received.
+    func setReceiveHandler(_ handler: OSCPacketHandler?)
 }
 
 // MARK: - Defaulted Parameters
@@ -158,29 +153,26 @@ extension OSCUDPSocketProtocol {
     ///   - remotePort: Remote port on the remote host machine to send outbound OSC packets to.
     ///     If `nil` or `0`, the `localPort` value will be used.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
-    ///   - timeTagMode: OSC time-tag mode. The default is recommended.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     @_disfavoredOverload
     public init(
         localPort: UInt16? = nil,
         remoteHost: String? = nil,
         remotePort: UInt16? = nil,
         interface: String? = nil,
-        timeTagMode: OSCTimeTagMode = .ignore,
         isIPv4BroadcastEnabled: Bool = false,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCMessageHandlerBlock? = nil
+        receiveHandler: OSCPacketHandler? = nil
     ) {
         self.init(
             localPort: localPort,
             remoteHost: remoteHost,
             remotePort: remotePort,
             interface: interface,
-            timeTagMode: timeTagMode,
             isIPv4BroadcastEnabled: isIPv4BroadcastEnabled,
             queue: queue,
             receiveHandler: receiveHandler

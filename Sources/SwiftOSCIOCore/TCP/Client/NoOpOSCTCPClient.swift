@@ -9,29 +9,26 @@ import typealias Foundation.TimeInterval
 
 /// A no-op OSC TCP client implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCTCPClient: OSCTCPClientProtocol {
-    open var timeTagMode: OSCTimeTagMode
     open private(set) var remoteHost: String
     open private(set) var remotePort: UInt16
     open private(set) var interface: String?
     open private(set) var isConnected: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue
-    var receiveHandler: OSCMessageHandlerBlock?
+    var receiveHandler: OSCPacketHandler?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
         remoteHost: String,
         remotePort: UInt16,
         interface: String?,
-        timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCMessageHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     ) {
         self.remoteHost = remoteHost
         self.remotePort = remotePort
         self.interface = interface
-        self.timeTagMode = timeTagMode
         self.framingMode = framingMode
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
@@ -56,7 +53,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
         }
