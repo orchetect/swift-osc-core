@@ -98,20 +98,30 @@ extension OSCValueDecoder {
     /// Read a 4-byte padded null-terminated UTF-8 string chunk from an OSC value data payload.
     ///
     /// Although the OSC 1.0 spec describes strings as "printable ASCII", in practice every major OSC
-    /// implementation (liblo, python-osc, oscP5, osc.js, Max/MSP, ETC Eos, QLab, TouchOSC, …) encodes
+    /// implementation (liblo, python-osc, oscP5, osc.js, Max/MSP, ETC Eos, QLab, TouchOSC, etc.) encodes
     /// strings as UTF-8. UTF-8 is a strict superset of ASCII, so pure-ASCII payloads round-trip
-    /// unchanged. Truly malformed bytes that aren't valid UTF-8 throw ``OSCDecodeError/malformed(_:)``.
-    public mutating func readOSCNullTerminatedString() throws(OSCDecodeError) -> String {
+    /// unchanged.
+    ///
+    /// - Parameters:
+    ///   - lossy: If `true`, invalid UTF-8 encoding is decoded lossily instead of throwing an error.
+    ///     If `false` (default), truly malformed bytes that aren't valid UTF-8 throw ``OSCDecodeError/malformed(_:)``.
+    public mutating func readOSCNullTerminatedString(lossy: Bool = false) throws(OSCDecodeError) -> String {
         // readOSCNullTerminatedData takes care of data size validation so we don't need to do it here
         let chunk = try readOSCNullTerminatedData()
 
-        guard let value = String(data: chunk, encoding: .utf8)
-        else {
-            throw .malformed(
-                "Failed to form valid UTF-8 string from 4-byte aligned null-terminated string chunk."
-            )
+        let value: String
+        if lossy {
+            value = String(decoding: chunk, as: UTF8.self)
+        } else {
+            guard let decoded = String(data: chunk, encoding: .utf8)
+            else {
+                throw .malformed(
+                    "Failed to form valid UTF-8 string from 4-byte aligned null-terminated string chunk."
+                )
+            }
+            value = decoded
         }
-
+        
         return value
     }
 
