@@ -33,4 +33,5 @@ This target contains documentation on using OSC value types.
 
 ### Advanced
 
+- ``OSCSerialization``
 - <doc:OSC-Custom-Types>
