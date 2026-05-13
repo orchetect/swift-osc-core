@@ -11,7 +11,7 @@ public enum OSCPacketHandler {
     case packets(_ handler: OSCPacketHandlerBlock)
 
     /// Unpack OSC bundles and schedule dispatch of its messages using the specified OSC time-tag policy.
-    case messages(timeTagMode: OSCTimeTagMode, _ handler: OSCMessageHandlerBlock)
+    case messages(timeTagMode: OSCTimeTagMode = .ignore, _ handler: OSCMessageHandlerBlock)
 }
 
 extension OSCPacketHandler: Sendable { }
