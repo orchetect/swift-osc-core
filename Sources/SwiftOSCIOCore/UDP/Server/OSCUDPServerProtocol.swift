@@ -39,27 +39,27 @@ public protocol OSCUDPServerProtocol: Sendable {
         queue: DispatchQueue?,
         receiveHandler: OSCHandlerBlock?
     )
-    
+
     // MARK: - Lifecycle
-    
+
     /// Bind the local UDP port and begin listening for OSC packets.
     func start() throws
-    
+
     /// Stops listening for data and closes the OSC server port.
     func stop()
-    
+
     // MARK: - Properties
-    
+
     /// Time tag mode. Determines how OSC bundle time tags are handled.
     var timeTagMode: OSCTimeTagMode { get set }
-    
+
     /// UDP port used by the OSC server to listen for inbound OSC packets.
     /// This may only be set at the time of initialization.
     var localPort: UInt16 { get }
-    
+
     /// Network interface to restrict connections to.
     var interface: String? { get }
-    
+
     /// Enable local UDP port reuse by other processes.
     /// This property must be set prior to calling ``start()`` in order to take effect.
     ///
@@ -72,10 +72,10 @@ public protocol OSCUDPServerProtocol: Sendable {
     /// or multicast messages for any additional sockets which bind to the same address and port. Unicast
     /// messages are only received by the first socket to bind.
     var isPortReuseEnabled: Bool { get set }
-    
+
     /// Returns a boolean indicating whether the OSC server has been started.
     var isStarted: Bool { get }
-    
+
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
     func setReceiveHandler(_ handler: OSCHandlerBlock?)

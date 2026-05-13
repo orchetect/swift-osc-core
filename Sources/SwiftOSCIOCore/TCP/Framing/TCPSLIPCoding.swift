@@ -26,13 +26,13 @@ extension TCPSLIPCoding {
     public enum Byte: UInt8, Sendable {
         /// END (Packet end byte)
         case end = 0xC0
-        
+
         /// ESC (Packet escape byte)
         case esc = 0xDB
-        
+
         /// ESC_END (Escaped 'end' byte)
         case escEnd = 0xDC
-        
+
         /// ESC_ESC (Escaped 'escape' byte)
         case escEsc = 0xDD
     }
@@ -51,10 +51,10 @@ extension MutableDataProtocol {
     /// Returns the data encoded as a SLIP packet.
     fileprivate func slipEncoded() -> Self {
         var output = Self()
-        
+
         // estimate encoded size to be 10% larger than raw data size
         output.reserveCapacity(count + (count / 10))
-        
+
         output.append(TCPSLIPCoding.Byte.end.rawValue)
 
         for byte in self {
@@ -81,7 +81,7 @@ extension TCPSLIPCoding {
     ///
     /// This can accommodate one or more packets in the same data stream. Each packet is
     /// returned as an element in the array.
-    public static func decode<D: DataProtocol>(_ data: D) throws(TCPSLIPDecodingError) -> [Data] {
+    public static func decode(_ data: some DataProtocol) throws(TCPSLIPDecodingError) -> [Data] {
         try data.slipDecoded()
     }
 }

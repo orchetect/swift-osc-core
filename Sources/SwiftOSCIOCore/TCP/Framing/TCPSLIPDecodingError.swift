@@ -10,7 +10,7 @@ import protocol Foundation.LocalizedError
 public enum TCPSLIPDecodingError: LocalizedError {
     /// SLIP packet data is malformed. Double escape bytes encountered.
     case doubleEscapeBytes
-    
+
     /// SLIP packet data is malformed. Encountered an escape byte but missing subsequent escaped character.
     case missingEscapedCharacter
 

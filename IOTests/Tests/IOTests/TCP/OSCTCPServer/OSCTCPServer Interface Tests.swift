@@ -14,47 +14,47 @@ import Testing
 struct OSCTCPServer_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
     @MainActor @Test
-    func interfaceBinding_interfaceAddress() async throws {
+    func interfaceBinding_interfaceAddress() throws {
         let interfaces = try ipV4NetworkDevices(includeLoopback: false)
-        
+
         print("Found interfaces:")
         dump(interfaces)
-        
+
         guard let (_, interfaceAddress) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
-        
+
         let interface = interfaceAddress
         print("Using interface \"\(interface)\"")
-        
+
         // set up server
         let server = OSCTCPServer(port: nil, interface: interface)
         #expect(server.interface == interface)
         try server.start()
         server.stop()
     }
-    
+
     /// Attempt to bind to a network interface, if one is present that can be used.
     @MainActor @Test
-    func interfaceBinding_interfaceName() async throws {
+    func interfaceBinding_interfaceName() throws {
         let interfaces = try ipV4NetworkDevices(includeLoopback: false)
-        
+
         print("Found interfaces:")
         dump(interfaces)
-        
+
         guard let (interfaceName, _) = interfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
             return
         }
-        
+
         let interface = interfaceName
         print("Using interface \"\(interface)\"")
-        
+
         // set up server
         let server = OSCTCPServer(port: nil, interface: interface)
         #expect(server.interface == interface)
@@ -64,11 +64,11 @@ struct OSCTCPServer_Interface_Tests {
 
     /// Attempt to bind to an invalid network interface.
     @MainActor @Test
-    func interfaceBinding_invalid() async throws {
+    func interfaceBinding_invalid() throws {
         let interface = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        
+
         let server = OSCTCPServer(port: nil, interface: interface)
-        
+
         #expect(throws: OSCIOError.invalidInterface) {
             try server.start()
         }

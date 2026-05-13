@@ -71,7 +71,7 @@ extension DataProtocol {
             else {
                 throw .notEnoughBytes
             }
-            
+
             offset = lengthFieldRange.upperBound
 
             guard distance(from: offset, to: endIndex) >= Int(length) else {

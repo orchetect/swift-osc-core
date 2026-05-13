@@ -8,7 +8,7 @@
 public enum OSCTCPClientNotification {
     /// The client successfully connected to the remote server.
     case connected
-    
+
     /// The client was disconnected from the remote server.
     /// If the disconnection was a result of an error, the error will be non-nil.
     case disconnected(error: (any Error)?)
@@ -19,10 +19,10 @@ extension OSCTCPClientNotification: Equatable {
         switch (lhs, rhs) {
         case (.connected, .connected):
             true
-            
+
         case let (.disconnected(lhsError), .disconnected(rhsError)):
             lhsError?.localizedDescription == rhsError?.localizedDescription
-            
+
         default:
             false
         }
@@ -32,7 +32,7 @@ extension OSCTCPClientNotification: Equatable {
 extension OSCTCPClientNotification: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
-            // no associated values, hash as normal
+        // no associated values, hash as normal
         case .connected:
             hasher.combine(0)
         case let .disconnected(error):

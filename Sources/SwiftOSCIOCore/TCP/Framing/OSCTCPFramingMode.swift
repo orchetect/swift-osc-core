@@ -62,11 +62,11 @@ extension OSCTCPFramingMode {
             // packet framed using a packet-length header
             // 4-byte int for size
             TCPPacketLengthHeaderCoding.encode(data, byteOrder: .bigEndian)
-            
+
         case .osc1_1:
             // packet framed using SLIP (double END) protocol: http://www.rfc-editor.org/rfc/rfc1055.txt
             TCPSLIPCoding.encode(data)
-            
+
         case .none:
             // no framing, send bytes as-is
             data

@@ -24,7 +24,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
         queue: DispatchQueue?,
         receiveHandler: OSCHandlerBlock?
     ) {
-        self.localPort = port ?? 0
+        localPort = port ?? 0
         self.interface = interface
         self.isPortReuseEnabled = isPortReuseEnabled
         self.timeTagMode = timeTagMode

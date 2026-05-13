@@ -10,8 +10,8 @@ import PackageDescription
 let package = Package(
     name: "IOTests",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio", from: "2.87.0"), // lowest version that supports Swift 6.0
-        
+        .package(url: "https://github.com/apple/swift-nio", from: "2.87.0") // lowest version that supports Swift 6.0
+
         // Note:
         // This package requires an I/O extension package to be added as a dependency in order to build and run tests.
         // - During automated CI testing, CI adds the dependency as part of the pipeline script.
@@ -25,8 +25,8 @@ let package = Package(
         .testTarget(
             name: "IOTests",
             dependencies: [
-                .product(name: "NIOCore", package: "swift-nio"),
-                
+                .product(name: "NIOCore", package: "swift-nio")
+
                 // Add I/O package. For example:
                 //   .product(name: "SwiftOSCIO", package: "swift-core-io-nio")
             ]
@@ -44,6 +44,7 @@ let package = Package(
         func getEnvironmentVar(_ name: String) -> String? {
             ProcessInfo.processInfo.environment[name]
         }
+
     #elseif canImport(CoreFoundation)
         import CoreFoundation
 

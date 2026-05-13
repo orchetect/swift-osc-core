@@ -58,29 +58,29 @@ public protocol OSCUDPClientProtocol: Sendable {
 
     /// Closes the OSC port.
     func stop()
-    
+
     // MARK: - Communication
-    
+
     /// Send an OSC bundle or message ad-hoc to a recipient on the network.
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     func send(_ packet: OSCPacket, to host: String, port: UInt16) throws
-    
+
     /// Send an OSC bundle ad-hoc to a recipient on the network.
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     func send(_ bundle: OSCBundle, to host: String, port: UInt16) throws
-    
+
     /// Send an OSC message ad-hoc to a recipient on the network.
     ///
     /// The default port for OSC communication is 8000 but may change depending on device/software
     /// manufacturer.
     func send(_ message: OSCMessage, to host: String, port: UInt16) throws
-    
+
     // MARK: - Properties
-    
+
     /// Local UDP port used by the client from which to send OSC packets. (This is not the remote port
     /// which is specified each time a call to ``send(_:to:port:)-(OSCPacket,_,_)`` is made.)
     /// This may only be set at the time of initialization.
@@ -91,10 +91,10 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// > property may return a value of `0` until the first successful call to ``send(_:to:port:)-(OSCPacket,_,_)``
     /// > is made.
     var localPort: UInt16 { get }
-    
+
     /// Network interface to restrict connections to.
     var interface: String? { get }
-    
+
     /// Enable local UDP port reuse by other processes.
     /// This property must be set prior to calling ``start()`` in order to take effect.
     ///
@@ -103,7 +103,7 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// this functionality in the socket. All processes that wish to use the address & port
     /// simultaneously must all enable reuse port on the socket bound to that port.
     var isPortReuseEnabled: Bool { get set }
-    
+
     /// Enable sending IPv4 broadcast messages from the socket.
     /// This may be set at any time.
     ///
@@ -126,7 +126,7 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// Internet Protocol version 6 (IPv6) does not implement this method of broadcast, and
     /// therefore does not define broadcast addresses. Instead, IPv6 uses multicast addressing.
     var isIPv4BroadcastEnabled: Bool { get set }
-    
+
     /// Returns a boolean indicating whether the OSC client has been started.
     var isStarted: Bool { get }
 }

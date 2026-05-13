@@ -17,7 +17,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
     var queue: DispatchQueue
     var receiveHandler: OSCHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
-    
+
     required public init(
         port: UInt16?,
         interface: String?,
@@ -26,31 +26,31 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
         queue: DispatchQueue?,
         receiveHandler: OSCHandlerBlock?
     ) {
-        self.localPort = port ?? 0
+        localPort = port ?? 0
         self.interface = interface
         self.timeTagMode = timeTagMode
         self.framingMode = framingMode
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
     }
-    
+
     // MARK: - Lifecycle
-    
+
     open func start() throws {
         isStarted = true
     }
-    
+
     open func stop() {
         isStarted = false
     }
-    
+
     // MARK: - Communication
-    
+
     open func send(_ packet: OSCPacket, toClientID clientID: OSCTCPClientSessionID) throws {
         guard isStarted else { throw OSCIOError.notStarted }
         print("No-op send to client ID \(clientID): \(packet)")
     }
-    
+
     open func send(
         _ packet: OSCPacket,
         toClientIDs clientIDs: [OSCTCPClientSessionID]?,
@@ -65,9 +65,9 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
             }
         }
     }
-    
+
     // MARK: - Properties
-    
+
     open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
         queue.sync {
             receiveHandler = handler

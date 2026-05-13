@@ -16,6 +16,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
             if remotePort == 0 { remotePort = localPort }
         }
     }
+
     open private(set) var interface: String?
     open private(set) var isIPv4BroadcastEnabled: Bool
     open private(set) var isStarted: Bool = false

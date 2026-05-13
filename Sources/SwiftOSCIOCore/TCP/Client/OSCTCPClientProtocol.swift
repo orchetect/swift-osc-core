@@ -22,10 +22,10 @@ import SwiftOSCCore
 public protocol OSCTCPClientProtocol: Sendable {
     /// Notification type.
     typealias Notification = OSCTCPClientNotification
-    
+
     /// Notification handler closure.
     typealias NotificationHandlerBlock = @Sendable (_ notification: Notification) -> Void
-    
+
     /// Initialize with a remote hostname and UDP port.
     ///
     /// > Note:
@@ -51,53 +51,53 @@ public protocol OSCTCPClientProtocol: Sendable {
         queue: DispatchQueue?,
         receiveHandler: OSCHandlerBlock?
     )
-    
+
     // MARK: - Lifecycle
-    
+
     /// Connects to the remote host.
     ///
     /// - Parameters:
     ///   - timeout: Supply a timeout period in seconds.
     func connect(timeout: TimeInterval) throws
-    
+
     /// Close the connection, if any.
     func close()
-    
+
     // MARK: - Communication
-    
+
     /// Send an OSC bundle or message to the host.
     func send(_ packet: OSCPacket) throws
-    
+
     /// Send an OSC bundle to the host.
     func send(_ bundle: OSCBundle) throws
-    
+
     /// Send an OSC message to the host.
     func send(_ message: OSCMessage) throws
-    
+
     // MARK: - Properties
-    
+
     /// Time tag mode. Determines how OSC bundle time tags are handled.
     var timeTagMode: OSCTimeTagMode { get set }
-    
+
     /// Remote network hostname.
     var remoteHost: String { get }
-    
+
     /// Remote network port.
     var remotePort: UInt16 { get }
-    
+
     /// Network interface to restrict connections to.
     var interface: String? { get }
-    
+
     /// Returns a boolean indicating whether the OSC socket is connected to the remote host.
     var isConnected: Bool { get }
-    
+
     /// TCP packet framing mode.
     var framingMode: OSCTCPFramingMode { get }
-    
+
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
     func setReceiveHandler(_ handler: OSCHandlerBlock?)
-    
+
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
     func setNotificationHandler(_ handler: NotificationHandlerBlock?)
@@ -142,7 +142,7 @@ extension OSCTCPClientProtocol {
             receiveHandler: receiveHandler
         )
     }
-    
+
     /// Connects to the remote host.
     ///
     /// - Parameters:
@@ -159,7 +159,7 @@ extension OSCTCPClientProtocol {
     public func send(_ bundle: OSCBundle) throws {
         try send(.bundle(bundle))
     }
-    
+
     public func send(_ message: OSCMessage) throws {
         try send(.message(message))
     }

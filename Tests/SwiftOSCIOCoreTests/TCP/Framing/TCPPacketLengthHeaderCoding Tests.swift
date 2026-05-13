@@ -97,30 +97,34 @@ struct TCPPacketLengthHeaderCodingTests {
         )
         #expect(
             try TCPPacketLengthHeaderCoding.decode(
-            Data([0x00, 0x00, 0x00, 0x00,
+                Data([0x00, 0x00, 0x00, 0x00,
                       0x01, 0x00, 0x00, 0x00, 0x40]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data(), Data([0x40])]
         )
         #expect(
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x01, 0x00, 0x00, 0x00, 0x41]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data([0x40]), Data([0x41])]
         )
         #expect(
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x02, 0x00, 0x00, 0x00, 0x40,
                       0x41, 0x01, 0x00, 0x00, 0x00, 0x42]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data([0x40, 0x41]), Data([0x42])]
         )
         #expect(
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x02, 0x00, 0x00, 0x00, 0x40, 0x41,
                       0x02, 0x00, 0x00, 0x00, 0x42, 0x43]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data([0x40, 0x41]), Data([0x42, 0x43])]
         )
         #expect(
@@ -128,7 +132,8 @@ struct TCPPacketLengthHeaderCodingTests {
                 Data([0x02, 0x00, 0x00, 0x00, 0x40, 0x41,
                       0x02, 0x00, 0x00, 0x00, 0x42, 0x43,
                       0x00, 0x00, 0x00, 0x00]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data([0x40, 0x41]), Data([0x42, 0x43]), Data()]
         )
         #expect(
@@ -136,7 +141,8 @@ struct TCPPacketLengthHeaderCodingTests {
                 Data([0x02, 0x00, 0x00, 0x00, 0x40, 0x41,
                       0x00, 0x00, 0x00, 0x00,
                       0x02, 0x00, 0x00, 0x00, 0x42, 0x43]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
                 == [Data([0x40, 0x41]), Data(), Data([0x42, 0x43])]
         )
     }
@@ -149,7 +155,8 @@ struct TCPPacketLengthHeaderCodingTests {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x02, 0x00, 0x00, 0x00, 0x41]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
         }
 
         // one valid packet and one packet with not enough bytes
@@ -157,7 +164,8 @@ struct TCPPacketLengthHeaderCodingTests {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x01, 0x00, 0x00, 0x00, 0x41, 0x42]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
         }
 
         // two valid packets and one packet with not enough bytes
@@ -166,7 +174,8 @@ struct TCPPacketLengthHeaderCodingTests {
                 Data([0x01, 0x00, 0x00, 0x00, 0x40,
                       0x02, 0x00, 0x00, 0x00, 0x41, 0x42,
                       0x02, 0x00, 0x00, 0x00, 0x43]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
         }
 
         // two packets with wrong UInt32 size encoding byteOrder
@@ -174,7 +183,8 @@ struct TCPPacketLengthHeaderCodingTests {
             try TCPPacketLengthHeaderCoding.decode(
                 Data([0x00, 0x00, 0x00, 0x01, 0x40,
                       0x00, 0x00, 0x00, 0x02, 0x41, 0x42]),
-                byteOrder: .littleEndian)
+                byteOrder: .littleEndian
+            )
         }
     }
 

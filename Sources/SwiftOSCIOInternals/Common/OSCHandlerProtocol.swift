@@ -1,6 +1,6 @@
 //
 //  OSCHandlerProtocol.swift
-//  SwiftOSC I/O: SwiftNIO • https://github.com/orchetect/swift-osc-io-nio
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
@@ -10,15 +10,15 @@ import Foundation
 public protocol OSCHandlerProtocol: AnyObject where Self: Sendable {
     /// Dispatch queue for receiving OSC packets and dispatching the handler callback closure.
     var queue: DispatchQueue { get }
-    
+
     /// OSC TimeTag mode.
     var timeTagMode: OSCTimeTagMode { get }
-    
+
     /// Handler to call when OSC bundles or messages are received.
     ///
     /// Set this handler either during class initialization or by calling ``setReceiveHandler(_:)``.
     var receiveHandler: OSCHandlerBlock? { get }
-    
+
     /// Sets the receive handler that is called when OSC bundles or messages are received.
     func setReceiveHandler(_ handler: OSCHandlerBlock?)
 }

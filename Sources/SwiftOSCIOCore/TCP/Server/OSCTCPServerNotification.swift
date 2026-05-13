@@ -8,7 +8,7 @@
 public enum OSCTCPServerNotification {
     /// The server accepted a connection from a remote client.
     case connected(remoteHost: String, remotePort: UInt16, clientID: OSCTCPClientSessionID)
-    
+
     /// The server was notified that a remote client connection has closed.
     /// If the disconnection was a result of an error, the error will be non-nil.
     case disconnected(remoteHost: String, remotePort: UInt16, clientID: OSCTCPClientSessionID, error: (any Error)?)
@@ -25,7 +25,7 @@ extension OSCTCPServerNotification: Equatable {
             (lhsHost == rhsHost)
                 && (lhsPort == rhsPort)
                 && (lhsClientID == rhsClientID)
-        
+
         case let (
             .disconnected(lhsHost, lhsPort, lhsClientID, lhsError),
             .disconnected(rhsHost, rhsPort, rhsClientID, rhsError)

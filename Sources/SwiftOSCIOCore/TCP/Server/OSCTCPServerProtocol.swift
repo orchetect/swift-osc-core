@@ -22,10 +22,10 @@ import SwiftOSCCore
 public protocol OSCTCPServerProtocol: Sendable {
     /// Notification type.
     typealias Notification = OSCTCPServerNotification
-    
+
     /// Notification handler closure.
     typealias NotificationHandlerBlock = @Sendable (_ notification: Notification) -> Void
-    
+
     /// Initialize with a remote hostname and UDP port.
     ///
     /// > Note:
@@ -55,10 +55,10 @@ public protocol OSCTCPServerProtocol: Sendable {
 
     /// Starts listening for inbound connections.
     func start() throws
-    
+
     /// Closes any open client connections and stops listening for inbound connection requests.
     func stop()
-    
+
     // MARK: - Communication
 
     /// Send an OSC bundle or message to an individual connected client.
@@ -78,7 +78,7 @@ public protocol OSCTCPServerProtocol: Sendable {
         toClientIDs clientIDs: [OSCTCPClientSessionID]?,
         errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)?
     )
-    
+
     /// Send an OSC bundle to one or more connected clients.
     /// Passing `nil` client IDs (default) sends to all connected clients.
     /// Optionally supply an error handler that will be called for each error encountered.
@@ -87,7 +87,7 @@ public protocol OSCTCPServerProtocol: Sendable {
         toClientIDs clientIDs: [OSCTCPClientSessionID]?,
         errorHandler: ((_ clientID: OSCTCPClientSessionID, _ error: any Error) -> Void)?
     )
-    
+
     /// Send an OSC message to one or more connected clients.
     /// Passing `nil` client IDs (default) sends to all connected clients.
     /// Optionally supply an error handler that will be called for each error encountered.
@@ -101,19 +101,19 @@ public protocol OSCTCPServerProtocol: Sendable {
 
     /// Time tag mode. Determines how OSC bundle time tags are handled.
     var timeTagMode: OSCTimeTagMode { get set }
-    
+
     /// Local network port.
     var localPort: UInt16 { get }
-    
+
     /// Network interface to restrict connections to.
     var interface: String? { get }
-    
+
     /// Returns a boolean indicating whether the OSC server has been started.
     var isStarted: Bool { get }
-    
+
     /// TCP packet framing mode.
     var framingMode: OSCTCPFramingMode { get }
-    
+
     /// Returns a dictionary of currently connected clients keyed by client session ID.
     ///
     /// > Note:
@@ -122,15 +122,15 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// > upon each newly-made connection. For this reason, these IDs should not be stored persistently, but instead
     /// > queried from the OSC TCP server when a client connects or analyzing currently-connected clients.
     var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] { get }
-    
+
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
     func setReceiveHandler(_ handler: OSCHandlerBlock?)
-    
+
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
     func setNotificationHandler(_ handler: NotificationHandlerBlock?)
-    
+
     /// Disconnect a connected client from the server.
     func disconnectClient(clientID: OSCTCPClientSessionID)
 }

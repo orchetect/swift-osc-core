@@ -10,19 +10,19 @@ import protocol Foundation.LocalizedError
 public enum OSCIOError: LocalizedError {
     /// Invalid interface name or address.
     case invalidInterface
-    
+
     /// The socket has not been started yet.
     case notStarted
-    
+
     /// The socket has not been connected yet.
     case notConnected
-    
+
     /// No remote host was specified.
     case noRemoteHost
-    
+
     /// Client socket with the given client ID is not found (not connected).
     case clientNotFound(clientID: OSCTCPClientSessionID)
-    
+
     public var errorDescription: String? {
         switch self {
         case .invalidInterface:

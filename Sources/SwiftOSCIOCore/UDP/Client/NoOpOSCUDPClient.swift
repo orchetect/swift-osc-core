@@ -14,7 +14,7 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
     open var isIPv4BroadcastEnabled: Bool
     open private(set) var isStarted: Bool = false
     private var _isStartNeededToOperate: Bool
-    
+
     public required convenience init() {
         self.init(
             localPort: nil,
@@ -22,10 +22,10 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
             isPortReuseEnabled: false, // same as protocol defaults
             isIPv4BroadcastEnabled: false // same as protocol defaults
         )
-        
+
         _isStartNeededToOperate = false
     }
-    
+
     public required init(
         localPort: UInt16?,
         interface: String?,
@@ -39,17 +39,17 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
 
         _isStartNeededToOperate = true
     }
-    
+
     // MARK: - Lifecycle
-    
+
     open func start() throws {
         isStarted = true
     }
-    
+
     open func stop() {
         isStarted = false
     }
-    
+
     open func send(_ packet: OSCPacket, to host: String, port: UInt16) throws {
         if _isStartNeededToOperate, !isStarted {
             throw OSCIOError.notStarted

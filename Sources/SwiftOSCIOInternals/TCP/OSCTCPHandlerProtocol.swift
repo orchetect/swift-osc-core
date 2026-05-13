@@ -1,6 +1,6 @@
 //
 //  OSCTCPHandlerProtocol.swift
-//  SwiftOSC I/O: SwiftNIO • https://github.com/orchetect/swift-osc-io-nio
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
@@ -22,20 +22,20 @@ extension OSCTCPHandlerProtocol {
     public func handle(receivedData data: some DataProtocol, remoteHost: String, remotePort: UInt16) {
         // This routine must accommodate more than one consecutive packet contained in the data
         // which may happen when multiple packets are sent rapidly from a client.
-        
+
         switch framingMode {
         case .osc1_0:
             do {
                 let packets = try TCPPacketLengthHeaderCoding.decode(data, byteOrder: .bigEndian)
-                
+
                 guard !packets.isEmpty else {
                     #if DEBUG
                     print("Failed to parse OSC packets from incoming TCP data.")
                     #endif
-                    
+
                     return
                 }
-                
+
                 _handle(receivedPackets: packets, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
                 #if DEBUG
@@ -48,15 +48,15 @@ extension OSCTCPHandlerProtocol {
         case .osc1_1:
             do {
                 let packets = try TCPSLIPCoding.decode(data)
-                
+
                 guard !packets.isEmpty else {
                     #if DEBUG
                     print("Failed to parse OSC packets from incoming TCP data.")
                     #endif
-                    
+
                     return
                 }
-                
+
                 _handle(receivedPackets: packets, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
                 #if DEBUG
@@ -72,7 +72,7 @@ extension OSCTCPHandlerProtocol {
             _handle(receivedPackets: packets, remoteHost: remoteHost, remotePort: remotePort)
         }
     }
-    
+
     func _handle(receivedPackets packets: some Sequence<some DataProtocol>, remoteHost: String, remotePort: UInt16) {
         for packetData in packets {
             do {
@@ -80,7 +80,7 @@ extension OSCTCPHandlerProtocol {
                     #if DEBUG
                     print("Error parsing OSC packet from incoming TCP data; it may not be OSC data or may be malformed.")
                     #endif
-                    
+
                     continue
                 }
                 handle(packet: oscPacket, remoteHost: remoteHost, remotePort: remotePort)
