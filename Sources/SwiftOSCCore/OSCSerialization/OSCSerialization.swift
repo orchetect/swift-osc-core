@@ -8,11 +8,15 @@ import Foundation
 
 /// OSC Coding serialization context (global singleton).
 ///
-/// Register custom value types to enable ``OSCValueDecoder`` and ``OSCValues`` `masked()` support
-/// for them.
+/// - Central encoding and decoding configuration.
+/// - Register custom value types to enable ``OSCValueDecoder`` and ``OSCValues`` `masked()` support
+///   for them.
 public final class OSCSerialization {
     /// Shared singleton instance.
     public nonisolated(unsafe) static let shared = OSCSerialization()
+
+    /// This setting determines whether OSC string value decoding allows lossy decoding of invalid UTF-8 data.
+    public var isLossyStringDecodingAllowed: Bool = true
 
     /// Internal:
     /// Registered tag identities repository.
