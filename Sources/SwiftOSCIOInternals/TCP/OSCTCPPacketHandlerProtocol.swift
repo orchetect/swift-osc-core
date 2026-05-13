@@ -1,5 +1,5 @@
 //
-//  OSCTCPHandlerProtocol.swift
+//  OSCTCPPacketHandlerProtocol.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
@@ -7,13 +7,13 @@
 import Foundation
 import SwiftDataParsing
 
-/// Protocol that TCP-based OSC classes adopt in order to handle incoming OSC data.
-public protocol OSCTCPHandlerProtocol: OSCHandlerProtocol {
+/// Protocol that TCP-based OSC I/O classes adopt in order to handle incoming OSC packets.
+public protocol OSCTCPPacketHandlerProtocol: OSCPacketDispatcherProtocol {
     /// TCP framing mode used by the connection.
     var framingMode: OSCTCPFramingMode { get }
 }
 
-extension OSCTCPHandlerProtocol {
+extension OSCTCPPacketHandlerProtocol {
     /// Handle incoming OSC data.
     ///
     /// > Note:
@@ -83,7 +83,7 @@ extension OSCTCPHandlerProtocol {
 
                     continue
                 }
-                handle(packet: oscPacket, remoteHost: remoteHost, remotePort: remotePort)
+                dispatch(packet: oscPacket, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
                 #if DEBUG
                 print(error.localizedDescription)
