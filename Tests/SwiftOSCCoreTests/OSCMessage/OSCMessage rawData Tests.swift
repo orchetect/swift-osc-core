@@ -392,6 +392,40 @@ struct OSCMessage_rawData_Tests {
         let newMsg = OSCMessage(msg.addressPattern.stringValue, values: msg.values)
         #expect(try newMsg.rawData() == knownGoodOSCRawBytes.toData())
     }
+    
+    @Test
+    func stringAltUTF8WireBytes() throws {
+        // test an OSC message containing a single value
+        
+        // manually build a raw OSC message
+        
+        var knownGoodOSCRawBytes: [UInt8] = []
+        
+        // address
+        knownGoodOSCRawBytes += [0x2F, 0x74, 0x65, 0x73,
+                                 0x74, 0x61, 0x64, 0x64,
+                                 0x72, 0x65, 0x73, 0x73, // "/testaddress"
+                                 0x00, 0x00, 0x00, 0x00] // null null null null
+        // value type(s)
+        knownGoodOSCRawBytes += [0x2C, 0x53, 0x00, 0x00] // ",S" null null
+        // string: "café" — UTF-8 [0x63, 0x61, 0x66, 0xC3, 0xA9] (5 bytes)
+        // plus null terminator (6) padded to 8-byte (multiple of 4) boundary.
+        knownGoodOSCRawBytes += [0x63, 0x61, 0x66, 0xC3,
+                                 0xA9, 0x00, 0x00, 0x00]
+        
+        // decode
+        
+        let msg = try OSCMessage(from: knownGoodOSCRawBytes)
+        #expect(msg.addressPattern.stringValue == "/testaddress")
+        #expect(msg.values.count == 1)
+        let val = try #require(msg.values.first as? OSCStringAltValue)
+        #expect(val.string == "café")
+        
+        // re-encode
+        
+        let newMsg = OSCMessage(msg.addressPattern.stringValue, values: msg.values)
+        #expect(try newMsg.rawData() == knownGoodOSCRawBytes.toData())
+    }
 
     @Test
     func character() throws {
