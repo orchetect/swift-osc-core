@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "B651DAB4-28E7-4A07-9C12-F1651C8B223A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "IOTests",
+        "name" : "IOTests"
+      }
+    }
+  ],
+  "version" : 1
+}
