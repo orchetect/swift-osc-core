@@ -4,7 +4,7 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-internal import SwiftASCII // ASCIIString
+import Foundation
 
 @_documentation(visibility: internal)
 extension String: OSCValue {
@@ -22,7 +22,9 @@ extension String: OSCValueEncodable {
     public static let oscEncoding = OSCValueStaticTagEncoder<Self> { value throws(OSCEncodeError) in
         (
             tag: oscTag,
-            data: OSCMessageEncoder.fourNullBytePadded(value.asciiStringLossy.rawData)
+            // Encode as UTF-8 (a strict superset of ASCII). See
+            // `OSCValueDecoder.readOSCNullTerminatedString()` for the matching decode path.
+            data: OSCMessageEncoder.fourNullBytePadded(Data(value.utf8))
         )
     }
 }
@@ -30,6 +32,6 @@ extension String: OSCValueEncodable {
 @_documentation(visibility: internal)
 extension String: OSCValueDecodable {
     public static let oscDecoding = OSCValueStaticTagDecoder<Self> { decoder throws(OSCDecodeError) in
-        try decoder.readOSCNullTerminatedString()
+        try decoder.readOSCNullTerminatedString(lossy: OSCSerialization.shared.isLossyStringDecodingAllowed)
     }
 }

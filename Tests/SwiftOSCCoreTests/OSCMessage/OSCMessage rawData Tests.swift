@@ -147,6 +147,99 @@ struct OSCMessage_rawData_Tests {
     }
 
     @Test
+    func stringUTF8WireBytes() throws {
+        // Wire-byte compatibility test for UTF-8 string args. The OSC `s` tag is
+        // unchanged; the value bytes follow standard UTF-8 encoding. Pure-ASCII
+        // payloads are a subset and remain byte-identical.
+
+        var knownGoodOSCRawBytes: [UInt8] = []
+
+        // address
+        knownGoodOSCRawBytes += [0x2F, 0x74, 0x65, 0x73,
+                                 0x74, 0x61, 0x64, 0x64,
+                                 0x72, 0x65, 0x73, 0x73, // "/testaddress"
+                                 0x00, 0x00, 0x00, 0x00] // null null null null
+        // value type(s)
+        knownGoodOSCRawBytes += [0x2C, 0x73, 0x00, 0x00] // ",s" null null
+        // string: "café" — UTF-8 [0x63, 0x61, 0x66, 0xC3, 0xA9] (5 bytes)
+        // plus null terminator (6) padded to 8-byte (multiple of 4) boundary.
+        knownGoodOSCRawBytes += [0x63, 0x61, 0x66, 0xC3,
+                                 0xA9, 0x00, 0x00, 0x00]
+
+        // decode
+
+        let msg = try OSCMessage(from: knownGoodOSCRawBytes)
+        #expect(msg.addressPattern.stringValue == "/testaddress")
+        #expect(msg.values.count == 1)
+        let val: String = try #require(msg.values.first as? String)
+        #expect(val == "café")
+
+        // re-encode
+
+        let newMsg = OSCMessage(msg.addressPattern.stringValue, values: msg.values)
+        #expect(try newMsg.rawData() == knownGoodOSCRawBytes.toData())
+    }
+
+    @Test
+    func stringUTF8RoundTrip() throws {
+        // Round-trip a variety of UTF-8 strings (the encoder + decoder must be
+        // mutual inverses for any valid UTF-8 input).
+        let samples: [String] = [
+            "ASCII unchanged",
+            "café",                        // Latin-1 supplement
+            "L'ENFANT — SE RETOURNE",      // em-dash + apostrophe
+            "“smart quotes”",              // U+201C / U+201D
+            "照明 cue 1",                   // CJK
+            "Привет",                      // Cyrillic
+            "🎭 cue",                       // emoji (supplementary plane)
+        ]
+        for sample in samples {
+            let original = OSCMessage("/test", values: [sample])
+            let bytes = try original.rawData()
+            let decoded = try OSCMessage(from: bytes)
+            let decodedString: String = try #require(decoded.values.first as? String)
+            #expect(decodedString == sample, "round-trip failed for: \(sample)")
+        }
+    }
+
+    @Test
+    func stringInvalidUTF8() throws {
+        // A lone 0x80 continuation byte is not valid UTF-8.
+        var bytes: [UInt8] = []
+        // address
+        bytes += [0x2F, 0x78, 0x00, 0x00] // "/x" null null
+        // ",s" null null
+        bytes += [0x2C, 0x73, 0x00, 0x00]
+        // invalid UTF-8: lone continuation byte, null-terminated and padded
+        bytes += [0x80, 0x00, 0x00, 0x00]
+
+        // reset configuration after test runs since this is a global singleton and may alter
+        // results of other unit tests if not reset
+        let currentConfig = OSCSerialization.shared.isLossyStringDecodingAllowed
+        defer { OSCSerialization.shared.isLossyStringDecodingAllowed = currentConfig }
+        
+        // test allowed configuration condition
+        do {
+            OSCSerialization.shared.isLossyStringDecodingAllowed = true
+            
+            let decoded = try OSCMessage(from: bytes)
+            let decodedString: String = try #require(decoded.values.first as? String)
+            #expect(decodedString == "\u{FFFD}")
+        }
+        
+        // test non-allowed configuration condition
+        do {
+            OSCSerialization.shared.isLossyStringDecodingAllowed = false
+            
+            // Decoding such a string arg must throw .malformed rather than producing
+            // replacement characters silently (preserves the "throw on bad data" contract).
+            #expect(throws: OSCDecodeError.self) {
+                _ = try OSCMessage(from: bytes)
+            }
+        }
+    }
+
+    @Test
     func blob() throws {
         // test an OSC message containing a single value
 
@@ -315,6 +408,40 @@ struct OSCMessage_rawData_Tests {
 
         // re-encode
 
+        let newMsg = OSCMessage(msg.addressPattern.stringValue, values: msg.values)
+        #expect(try newMsg.rawData() == knownGoodOSCRawBytes.toData())
+    }
+    
+    @Test
+    func stringAltUTF8WireBytes() throws {
+        // test an OSC message containing a single value
+        
+        // manually build a raw OSC message
+        
+        var knownGoodOSCRawBytes: [UInt8] = []
+        
+        // address
+        knownGoodOSCRawBytes += [0x2F, 0x74, 0x65, 0x73,
+                                 0x74, 0x61, 0x64, 0x64,
+                                 0x72, 0x65, 0x73, 0x73, // "/testaddress"
+                                 0x00, 0x00, 0x00, 0x00] // null null null null
+        // value type(s)
+        knownGoodOSCRawBytes += [0x2C, 0x53, 0x00, 0x00] // ",S" null null
+        // string: "café" — UTF-8 [0x63, 0x61, 0x66, 0xC3, 0xA9] (5 bytes)
+        // plus null terminator (6) padded to 8-byte (multiple of 4) boundary.
+        knownGoodOSCRawBytes += [0x63, 0x61, 0x66, 0xC3,
+                                 0xA9, 0x00, 0x00, 0x00]
+        
+        // decode
+        
+        let msg = try OSCMessage(from: knownGoodOSCRawBytes)
+        #expect(msg.addressPattern.stringValue == "/testaddress")
+        #expect(msg.values.count == 1)
+        let val = try #require(msg.values.first as? OSCStringAltValue)
+        #expect(val.string == "café")
+        
+        // re-encode
+        
         let newMsg = OSCMessage(msg.addressPattern.stringValue, values: msg.values)
         #expect(try newMsg.rawData() == knownGoodOSCRawBytes.toData())
     }
