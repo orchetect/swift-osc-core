@@ -59,11 +59,11 @@ The [Examples](https://github.com/orchetect/swift-osc/tree/main/Examples) folder
 - ``OSCTimeTagMode``
 - ``OSCHandlerBlock``
 - ``OSCTCPFramingMode``
+- ``OSCIOError``
 
 ### UDP Client
 
 - ``OSCUDPClientProtocol``
-- ``OSCUDPClientError``
 - ``NoOpOSCUDPClient``
 
 ### UDP Server
@@ -79,13 +79,11 @@ The [Examples](https://github.com/orchetect/swift-osc/tree/main/Examples) folder
 ### TCP Client
 
 - ``OSCTCPClientProtocol``
-- ``OSCTCPClientError``
 - ``NoOpOSCTCPClient``
 
 ### TCP Server
 
 - ``OSCTCPServerProtocol``
-- ``OSCTCPServerError``
 - ``OSCTCPServerNotification``
 - ``OSCTCPClientSessionID``
 - ``OSCTCPClientNotification``
