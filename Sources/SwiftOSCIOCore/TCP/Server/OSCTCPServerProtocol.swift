@@ -48,7 +48,7 @@ public protocol OSCTCPServerProtocol: Sendable {
         timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     )
 
     // MARK: - Lifecycle
@@ -125,7 +125,7 @@ public protocol OSCTCPServerProtocol: Sendable {
 
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
 
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
@@ -161,7 +161,7 @@ extension OSCTCPServerProtocol {
         timeTagMode: OSCTimeTagMode = .ignore,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCHandlerBlock? = nil
+        receiveHandler: OSCMessageHandlerBlock? = nil
     ) {
         self.init(
             port: port,

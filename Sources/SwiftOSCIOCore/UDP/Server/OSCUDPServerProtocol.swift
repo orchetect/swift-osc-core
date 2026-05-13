@@ -37,7 +37,7 @@ public protocol OSCUDPServerProtocol: Sendable {
         isPortReuseEnabled: Bool,
         timeTagMode: OSCTimeTagMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     )
 
     // MARK: - Lifecycle
@@ -78,7 +78,7 @@ public protocol OSCUDPServerProtocol: Sendable {
 
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
 }
 
 // MARK: - Defaulted Parameters
@@ -109,7 +109,7 @@ extension OSCUDPServerProtocol {
         isPortReuseEnabled: Bool = false,
         timeTagMode: OSCTimeTagMode = .ignore,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCHandlerBlock? = nil
+        receiveHandler: OSCMessageHandlerBlock? = nil
     ) {
         self.init(
             port: port,

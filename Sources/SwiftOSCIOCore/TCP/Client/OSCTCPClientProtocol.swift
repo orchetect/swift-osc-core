@@ -49,7 +49,7 @@ public protocol OSCTCPClientProtocol: Sendable {
         timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     )
 
     // MARK: - Lifecycle
@@ -96,7 +96,7 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     /// Set the receive handler closure.
     /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
 
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
@@ -130,7 +130,7 @@ extension OSCTCPClientProtocol {
         timeTagMode: OSCTimeTagMode = .ignore,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCHandlerBlock? = nil
+        receiveHandler: OSCMessageHandlerBlock? = nil
     ) {
         self.init(
             remoteHost: remoteHost,

@@ -14,7 +14,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
     open var isPortReuseEnabled: Bool
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCMessageHandlerBlock?
 
     required public init(
         port: UInt16?,
@@ -22,7 +22,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
         isPortReuseEnabled: Bool,
         timeTagMode: OSCTimeTagMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     ) {
         localPort = port ?? 0
         self.interface = interface
@@ -44,7 +44,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
         queue.sync {
             receiveHandler = handler
         }

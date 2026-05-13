@@ -16,7 +16,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
     open private(set) var isConnected: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCMessageHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
@@ -26,7 +26,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
         timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     ) {
         self.remoteHost = remoteHost
         self.remotePort = remotePort
@@ -56,7 +56,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
         queue.sync {
             receiveHandler = handler
         }

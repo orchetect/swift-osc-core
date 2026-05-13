@@ -15,7 +15,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
     open private(set) var framingMode: OSCTCPFramingMode
     open private(set) var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] = [:]
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCMessageHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
@@ -24,7 +24,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
         timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     ) {
         localPort = port ?? 0
         self.interface = interface
@@ -68,7 +68,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
         queue.sync {
             receiveHandler = handler
         }

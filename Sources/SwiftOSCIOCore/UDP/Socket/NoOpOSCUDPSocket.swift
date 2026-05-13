@@ -21,7 +21,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
     open private(set) var isIPv4BroadcastEnabled: Bool
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCMessageHandlerBlock?
 
     required public init(
         localPort: UInt16?,
@@ -31,7 +31,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
         timeTagMode: OSCTimeTagMode,
         isIPv4BroadcastEnabled: Bool,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCMessageHandlerBlock?
     ) {
         self.localPort = localPort ?? 0
         self.remoteHost = remoteHost
@@ -55,7 +55,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
         queue.sync {
             receiveHandler = handler
         }

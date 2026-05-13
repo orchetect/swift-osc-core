@@ -17,10 +17,10 @@ public protocol OSCHandlerProtocol: AnyObject where Self: Sendable {
     /// Handler to call when OSC bundles or messages are received.
     ///
     /// Set this handler either during class initialization or by calling ``setReceiveHandler(_:)``.
-    var receiveHandler: OSCHandlerBlock? { get }
+    var receiveHandler: OSCMessageHandlerBlock? { get }
 
     /// Sets the receive handler that is called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    func setReceiveHandler(_ handler: OSCMessageHandlerBlock?)
 }
 
 // MARK: - Handle and Dispatch
