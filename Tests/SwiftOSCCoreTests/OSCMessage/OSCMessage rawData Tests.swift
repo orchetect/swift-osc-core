@@ -203,10 +203,8 @@ struct OSCMessage_rawData_Tests {
     }
 
     @Test
-    func stringInvalidUTF8Throws() throws {
-        // A lone 0x80 continuation byte is not valid UTF-8. Decoding such a
-        // string arg must throw .malformed rather than producing replacement
-        // characters silently (preserves the "throw on bad data" contract).
+    func stringInvalidUTF8() throws {
+        // A lone 0x80 continuation byte is not valid UTF-8.
         var bytes: [UInt8] = []
         // address
         bytes += [0x2F, 0x78, 0x00, 0x00] // "/x" null null
@@ -215,8 +213,29 @@ struct OSCMessage_rawData_Tests {
         // invalid UTF-8: lone continuation byte, null-terminated and padded
         bytes += [0x80, 0x00, 0x00, 0x00]
 
-        #expect(throws: OSCDecodeError.self) {
-            _ = try OSCMessage(from: bytes)
+        // reset configuration after test runs since this is a global singleton and may alter
+        // results of other unit tests if not reset
+        let currentConfig = OSCSerialization.shared.isLossyStringDecodingAllowed
+        defer { OSCSerialization.shared.isLossyStringDecodingAllowed = currentConfig }
+        
+        // test allowed configuration condition
+        do {
+            OSCSerialization.shared.isLossyStringDecodingAllowed = true
+            
+            let decoded = try OSCMessage(from: bytes)
+            let decodedString: String = try #require(decoded.values.first as? String)
+            #expect(decodedString == "\u{FFFD}")
+        }
+        
+        // test non-allowed configuration condition
+        do {
+            OSCSerialization.shared.isLossyStringDecodingAllowed = false
+            
+            // Decoding such a string arg must throw .malformed rather than producing
+            // replacement characters silently (preserves the "throw on bad data" contract).
+            #expect(throws: OSCDecodeError.self) {
+                _ = try OSCMessage(from: bytes)
+            }
         }
     }
 
