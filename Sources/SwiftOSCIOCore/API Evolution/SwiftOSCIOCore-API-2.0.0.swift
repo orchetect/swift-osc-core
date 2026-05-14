@@ -56,7 +56,7 @@ extension OSCTCPClientProtocol {
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
         get { .ignore }
-        set { /* empty */ }
+        nonmutating set { /* empty */ }
     }
 }
 
@@ -104,7 +104,7 @@ extension OSCTCPServerProtocol {
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
         get { .ignore }
-        set { /* empty */ }
+        nonmutating set { /* empty */ }
     }
 }
 
@@ -152,7 +152,7 @@ extension OSCUDPServerProtocol {
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
         get { .ignore }
-        set { /* empty */ }
+        nonmutating set { /* empty */ }
     }
 }
 
@@ -204,6 +204,6 @@ extension OSCUDPSocketProtocol {
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
         get { .ignore }
-        set { /* empty */ }
+        nonmutating set { /* empty */ }
     }
 }
