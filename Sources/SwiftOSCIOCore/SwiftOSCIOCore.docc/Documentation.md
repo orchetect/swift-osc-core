@@ -59,6 +59,7 @@ The [Examples](https://github.com/orchetect/swift-osc/tree/main/Examples) folder
 - ``OSCPacketHandler``
 - ``OSCPacketHandlerBlock``
 - ``OSCMessageHandlerBlock``
+- ``OSCDecodeErrorHandlerBlock``
 - ``OSCTimeTagMode``
 - ``OSCIOError``
 
