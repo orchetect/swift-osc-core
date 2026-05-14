@@ -38,6 +38,26 @@ extension OSCTCPClientProtocol {
             receiveHandler: handler
         )
     }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    @_disfavoredOverload
+    public func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
+        let handler: OSCPacketHandler? = if let handler {
+            .messages(timeTagMode: timeTagMode, handler)
+        } else {
+            nil
+        }
+        
+        setReceiveHandler(handler)
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    public var timeTagMode: OSCTimeTagMode {
+        get { .ignore }
+        set { /* empty */ }
+    }
 }
 
 extension OSCTCPServerProtocol {
@@ -66,6 +86,26 @@ extension OSCTCPServerProtocol {
             receiveHandler: handler
         )
     }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    @_disfavoredOverload
+    public func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
+        let handler: OSCPacketHandler? = if let handler {
+            .messages(timeTagMode: timeTagMode, handler)
+        } else {
+            nil
+        }
+        
+        setReceiveHandler(handler)
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    public var timeTagMode: OSCTimeTagMode {
+        get { .ignore }
+        set { /* empty */ }
+    }
 }
 
 extension OSCUDPServerProtocol {
@@ -93,6 +133,26 @@ extension OSCUDPServerProtocol {
             queue: queue,
             receiveHandler: handler
         )
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    @_disfavoredOverload
+    public func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
+        let handler: OSCPacketHandler? = if let handler {
+            .messages(timeTagMode: timeTagMode, handler)
+        } else {
+            nil
+        }
+        
+        setReceiveHandler(handler)
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    public var timeTagMode: OSCTimeTagMode {
+        get { .ignore }
+        set { /* empty */ }
     }
 }
 
@@ -125,5 +185,25 @@ extension OSCUDPSocketProtocol {
             queue: queue,
             receiveHandler: handler
         )
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    @_disfavoredOverload
+    public func setReceiveHandler(_ handler: OSCMessageHandlerBlock?) {
+        let handler: OSCPacketHandler? = if let handler {
+            .messages(timeTagMode: timeTagMode, handler)
+        } else {
+            nil
+        }
+        
+        setReceiveHandler(handler)
+    }
+    
+    @_documentation(visibility: internal)
+    @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
+    public var timeTagMode: OSCTimeTagMode {
+        get { .ignore }
+        set { /* empty */ }
     }
 }
