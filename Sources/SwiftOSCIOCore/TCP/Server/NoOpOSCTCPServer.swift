@@ -15,6 +15,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
     open private(set) var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] = [:]
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?
+    var receiveErrorHandler: OSCDecodeErrorHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
@@ -65,9 +66,19 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
 
     // MARK: - Properties
 
+    open func disconnectClient(clientID: OSCTCPClientSessionID) {
+        clients[clientID] = nil
+    }
+
     open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
+        }
+    }
+
+    open func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?) {
+        queue.sync {
+            receiveErrorHandler = handler
         }
     }
 
@@ -75,10 +86,6 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
         queue.sync {
             notificationHandler = handler
         }
-    }
-
-    open func disconnectClient(clientID: OSCTCPClientSessionID) {
-        clients[clientID] = nil
     }
 }
 

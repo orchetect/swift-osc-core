@@ -10,6 +10,7 @@ import SwiftOSCIOCore
 /// Internal protocol that OSC I/O classes adopt in order to handle incoming OSC packets.
 public protocol OSCPacketDispatcherProtocol: AnyObject, OSCMessageDispatcherProtocol where Self: Sendable {
     var receiveHandler: OSCPacketHandler? { get }
+    var receiveErrorHandler: OSCDecodeErrorHandlerBlock? { get }
 }
 
 // MARK: - Handle and Dispatch
@@ -90,6 +91,26 @@ extension OSCPacketDispatcherProtocol {
                     handler: handler
                 )
             }
+        }
+    }
+}
+
+// MARK: - Decoding Error Handling
+
+extension OSCPacketDispatcherProtocol {
+    /// Calls the error handler for received malformed OSC packets.
+    ///
+    /// > Note:
+    /// >
+    /// > This method is called internally by OSC server and socket classes and is not needed to be called externally.
+    public func report(
+        error: OSCDecodeError,
+        forMalformedData data: Data,
+        remoteHost: String,
+        remotePort: UInt16
+    ) {
+        queue.async {
+            self.receiveErrorHandler?(data, error, remoteHost, remotePort)
         }
     }
 }

@@ -93,6 +93,10 @@ public protocol OSCTCPClientProtocol: Sendable {
     /// This closure will be called when OSC packets are received.
     func setReceiveHandler(_ handler: OSCPacketHandler?)
 
+    /// Set the receive error handler closure.
+    /// This closure will be called when receiving OSC packets that produce errors while decoding.
+    func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?)
+
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
     func setNotificationHandler(_ handler: NotificationHandlerBlock?)

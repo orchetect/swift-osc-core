@@ -75,7 +75,7 @@ extension OSCTCPPacketHandlerProtocol {
 
     func _handle(receivedPackets packets: some Sequence<some DataProtocol>, remoteHost: String, remotePort: UInt16) {
         for packetData in packets {
-            do {
+            do throws(OSCDecodeError) {
                 guard let oscPacket = try OSCPacket(from: packetData) else {
                     #if DEBUG
                     print("Error parsing OSC packet from incoming TCP data; it may not be OSC data or may be malformed.")
@@ -85,9 +85,7 @@ extension OSCTCPPacketHandlerProtocol {
                 }
                 dispatch(packet: oscPacket, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
-                #if DEBUG
-                print(error.localizedDescription)
-                #endif
+                report(error: error, forMalformedData: Data(packetData), remoteHost: remoteHost, remotePort: remotePort)
             }
         }
     }
