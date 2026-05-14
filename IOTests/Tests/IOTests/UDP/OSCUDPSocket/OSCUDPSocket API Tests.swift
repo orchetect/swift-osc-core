@@ -141,5 +141,8 @@ struct OSCUDPSocket_API_Tests {
 
         // setReceiveHandler { }
         socket.setReceiveHandler(.messages { _, _, _, _ in })
+        
+        // setReceiveErrorHandler { }
+        socket.setReceiveErrorHandler { _, _, _ , _ in }
     }
 }

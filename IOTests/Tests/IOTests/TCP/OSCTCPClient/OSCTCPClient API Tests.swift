@@ -117,6 +117,9 @@ struct OSCTCPClient_API_Tests {
         // setReceiveHandler { }
         client.setReceiveHandler(.messages { _, _, _, _ in })
 
+        // setReceiveErrorHandler { }
+        client.setReceiveErrorHandler { _, _, _ , _ in }
+
         // setNotificationHandler { }
         client.setNotificationHandler { _ in }
     }
