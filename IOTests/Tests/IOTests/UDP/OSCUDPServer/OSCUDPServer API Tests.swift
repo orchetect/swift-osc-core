@@ -19,9 +19,24 @@ struct OSCUDPServer_API_Tests {
             port: 8000,
             interface: "en1",
             isPortReuseEnabled: true,
-            timeTagMode: .osc1_0,
             queue: nil,
-            receiveHandler: { _, _, _, _ in }
+            receiveHandler: .messages { _, _, _, _ in }
+        )
+        
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true,
+            queue: nil,
+            receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
+        )
+        
+        _ = OSCUDPServer(
+            port: 8000,
+            interface: "en1",
+            isPortReuseEnabled: true,
+            queue: nil,
+            receiveHandler: .packets { _, _, _ in }
         )
     }
 
@@ -48,14 +63,6 @@ struct OSCUDPServer_API_Tests {
             port: 8000,
             interface: "en1",
             isPortReuseEnabled: true,
-            timeTagMode: .osc1_0
-        )
-
-        _ = OSCUDPServer(
-            port: 8000,
-            interface: "en1",
-            isPortReuseEnabled: true,
-            timeTagMode: .osc1_0,
             queue: nil
         )
     }
@@ -65,14 +72,12 @@ struct OSCUDPServer_API_Tests {
         let server = OSCUDPServer()
 
         // read
-        _ = server.timeTagMode
         _ = server.localPort
         _ = server.interface
         _ = server.isPortReuseEnabled
         _ = server.isStarted
 
         // set mutable properties
-        server.timeTagMode = .osc1_0
         server.isPortReuseEnabled = true
     }
 
@@ -87,6 +92,6 @@ struct OSCUDPServer_API_Tests {
         server.stop()
 
         // setReceiveHandler { }
-        server.setReceiveHandler { _, _, _, _ in }
+        server.setReceiveHandler(.messages { _, _, _, _ in })
     }
 }

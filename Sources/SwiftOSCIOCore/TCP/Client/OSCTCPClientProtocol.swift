@@ -37,19 +37,17 @@ public protocol OSCTCPClientProtocol: Sendable {
     ///   - remoteHost: Remote hostname or IP address.
     ///   - remotePort: Remote port number.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
-    ///   - timeTagMode: OSC TimeTag mode. (Default is recommended.)
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     init(
         remoteHost: String,
         remotePort: UInt16,
         interface: String?,
-        timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     )
 
     // MARK: - Lifecycle
@@ -76,9 +74,6 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     // MARK: - Properties
 
-    /// Time tag mode. Determines how OSC bundle time tags are handled.
-    var timeTagMode: OSCTimeTagMode { get set }
-
     /// Remote network hostname.
     var remoteHost: String { get }
 
@@ -95,8 +90,8 @@ public protocol OSCTCPClientProtocol: Sendable {
     var framingMode: OSCTCPFramingMode { get }
 
     /// Set the receive handler closure.
-    /// This closure will be called when OSC bundles or messages are received.
-    func setReceiveHandler(_ handler: OSCHandlerBlock?)
+    /// This closure will be called when OSC packets are received.
+    func setReceiveHandler(_ handler: OSCPacketHandler?)
 
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
@@ -117,26 +112,23 @@ extension OSCTCPClientProtocol {
     ///   - remoteHost: Remote hostname or IP address.
     ///   - remotePort: Remote port number.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
-    ///   - timeTagMode: OSC TimeTag mode. (Default is recommended.)
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
-    ///   - receiveHandler: Handler to call when OSC bundles or messages are received.
+    ///   - receiveHandler: Handler to call when OSC packets are received.
     @_disfavoredOverload
     public init(
         remoteHost: String,
         remotePort: UInt16,
         interface: String? = nil,
-        timeTagMode: OSCTimeTagMode = .ignore,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
-        receiveHandler: OSCHandlerBlock? = nil
+        receiveHandler: OSCPacketHandler? = nil
     ) {
         self.init(
             remoteHost: remoteHost,
             remotePort: remotePort,
             interface: interface,
-            timeTagMode: timeTagMode,
             framingMode: framingMode,
             queue: queue,
             receiveHandler: receiveHandler

@@ -12,17 +12,18 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test
     func defaultTimeTag() async throws {
         try await confirmation(expectedCount: 1) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
+            let server = OSCUDPServer()
 
-            server.setReceiveHandler { _, _, _, _ in
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle(
                 [.message("/test", values: [Int32(123)])]
             )
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 0.5)
         }
@@ -31,18 +32,19 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test
     func immediate() async throws {
         try await confirmation(expectedCount: 1) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
-
-            server.setReceiveHandler { _, _, _, _ in
+            let server = OSCUDPServer()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle(
                 timeTag: .immediate(),
                 [.message("/test", values: [Int32(123)])]
             )
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 0.5)
         }
@@ -51,18 +53,19 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test
     func now() async throws {
         try await confirmation(expectedCount: 1) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
-
-            server.setReceiveHandler { _, _, _, _ in
+            let server = OSCUDPServer()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle(
                 timeTag: .now(),
                 [.message("/test", values: [Int32(123)])]
             )
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 0.5)
         }
@@ -72,18 +75,19 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test(.enabled(if: isSystemTimingStable()))
     func oneSecondInFuture_Early() async throws {
         try await confirmation(expectedCount: 0) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
-
-            server.setReceiveHandler { _, _, _, _ in
+            let server = OSCUDPServer()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle(
                 timeTag: .timeIntervalSinceNow(1.0), // 1 second in future
                 [.message("/test", values: [Int32(123)])]
             )
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 0.9) // just under 1 second
         }
@@ -95,25 +99,26 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test(.enabled(if: isSystemTimingStable()))
     func oneSecondInFuture_OnTimeOrThereafter() async throws {
         try await confirmation(expectedCount: 1) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
-
-            server.setReceiveHandler { _, _, _, _ in
+            let server = OSCUDPServer()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             // this message should arrive 1 second in the future
             let bundle1 = OSCBundle(
                 timeTag: .timeIntervalSinceNow(1.0),
                 [.message("/test1", values: [Int32(123)])]
             )
-            server.core.handle(packet: .bundle(bundle1), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle1), remoteHost: "127.0.0.1", remotePort: 8000)
 
             // this message should NOT arrive, as it is scheduled in the future after the test has ended
             let bundle2 = OSCBundle(
                 timeTag: .timeIntervalSinceNow(1.5),
                 [.message("/test2", values: [Int32(123)])]
             )
-            server.core.handle(packet: .bundle(bundle2), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle2), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 1.1) // allow for just over 1 second to accommodate testing overhead
         }
@@ -123,18 +128,19 @@ struct OSCUDPServer_TimeTag_OSC1_0_Tests {
     @Test
     func past() async throws {
         try await confirmation(expectedCount: 1) { confirmation in
-            let server = OSCUDPServer(timeTagMode: .osc1_0)
-
-            server.setReceiveHandler { _, _, _, _ in
+            let server = OSCUDPServer()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle(
                 timeTag: .timeIntervalSinceNow(-1.0),
                 [.message("/test", values: [Int32(123)])]
             )
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 0.5)
         }

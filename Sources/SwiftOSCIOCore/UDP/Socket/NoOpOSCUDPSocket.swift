@@ -8,7 +8,6 @@ import class Foundation.DispatchQueue
 
 /// A no-op OSC UDP socket implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
-    open var timeTagMode: OSCTimeTagMode
     open var remoteHost: String?
     open private(set) var localPort: UInt16
     open var remotePort: UInt16 {
@@ -21,23 +20,21 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
     open private(set) var isIPv4BroadcastEnabled: Bool
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCPacketHandler?
 
     required public init(
         localPort: UInt16?,
         remoteHost: String?,
         remotePort: UInt16?,
         interface: String?,
-        timeTagMode: OSCTimeTagMode,
         isIPv4BroadcastEnabled: Bool,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     ) {
         self.localPort = localPort ?? 0
         self.remoteHost = remoteHost
         self.remotePort = remotePort ?? self.localPort
         self.interface = interface
-        self.timeTagMode = timeTagMode
         self.isIPv4BroadcastEnabled = isIPv4BroadcastEnabled
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
@@ -55,7 +52,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
         }

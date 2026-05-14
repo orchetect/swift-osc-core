@@ -20,10 +20,29 @@ struct OSCUDPSocket_API_Tests {
             remoteHost: nil,
             remotePort: nil,
             interface: nil,
-            timeTagMode: .ignore,
             isIPv4BroadcastEnabled: true,
             queue: nil,
-            receiveHandler: { _, _, _, _ in }
+            receiveHandler: .messages { _, _, _, _ in }
+        )
+        
+        _ = OSCUDPSocket(
+            localPort: nil,
+            remoteHost: nil,
+            remotePort: nil,
+            interface: nil,
+            isIPv4BroadcastEnabled: true,
+            queue: nil,
+            receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
+        )
+        
+        _ = OSCUDPSocket(
+            localPort: nil,
+            remoteHost: nil,
+            remotePort: nil,
+            interface: nil,
+            isIPv4BroadcastEnabled: true,
+            queue: nil,
+            receiveHandler: .packets { _, _, _ in }
         )
     }
 
@@ -58,15 +77,6 @@ struct OSCUDPSocket_API_Tests {
             remoteHost: "nowhere",
             remotePort: 9000,
             interface: "en1",
-            timeTagMode: .osc1_0
-        )
-
-        _ = OSCUDPSocket(
-            localPort: 8000,
-            remoteHost: "nowhere",
-            remotePort: 9000,
-            interface: "en1",
-            timeTagMode: .osc1_0,
             isIPv4BroadcastEnabled: false
         )
 
@@ -75,7 +85,6 @@ struct OSCUDPSocket_API_Tests {
             remoteHost: "nowhere",
             remotePort: 9000,
             interface: "en1",
-            timeTagMode: .osc1_0,
             isIPv4BroadcastEnabled: false,
             queue: nil
         )
@@ -86,7 +95,6 @@ struct OSCUDPSocket_API_Tests {
         let socket = OSCUDPSocket()
 
         // read
-        _ = socket.timeTagMode
         _ = socket.remoteHost
         _ = socket.remotePort
         _ = socket.localPort
@@ -95,7 +103,6 @@ struct OSCUDPSocket_API_Tests {
         _ = socket.isStarted
 
         // set mutable properties
-        socket.timeTagMode = .osc1_0
         socket.remoteHost = "someplace"
         socket.remotePort = 8080
     }
@@ -133,6 +140,6 @@ struct OSCUDPSocket_API_Tests {
         try? socket.send(Self.message, port: 8000)
 
         // setReceiveHandler { }
-        socket.setReceiveHandler { _, _, _, _ in }
+        socket.setReceiveHandler(.messages { _, _, _, _ in })
     }
 }

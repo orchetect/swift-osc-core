@@ -56,9 +56,10 @@ The [Examples](https://github.com/orchetect/swift-osc/tree/main/Examples) folder
 
 ### Common
 
+- ``OSCPacketHandler``
+- ``OSCPacketHandlerBlock``
+- ``OSCMessageHandlerBlock``
 - ``OSCTimeTagMode``
-- ``OSCHandlerBlock``
-- ``OSCTCPFramingMode``
 - ``OSCIOError``
 
 ### UDP Client
@@ -91,6 +92,7 @@ The [Examples](https://github.com/orchetect/swift-osc/tree/main/Examples) folder
 
 ### TCP Frame Encoding
 
+- ``OSCTCPFramingMode``
 - ``TCPSLIPCoding``
 - ``TCPSLIPDecodingError``
 - ``TCPPacketLengthHeaderCoding``

@@ -8,27 +8,24 @@ import class Foundation.DispatchQueue
 
 /// A no-op OSC TCP server implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCTCPServer: OSCTCPServerProtocol {
-    open var timeTagMode: OSCTimeTagMode
     open private(set) var localPort: UInt16
     open private(set) var interface: String?
     open private(set) var isStarted: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     open private(set) var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] = [:]
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCPacketHandler?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
         port: UInt16?,
         interface: String?,
-        timeTagMode: OSCTimeTagMode,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     ) {
         localPort = port ?? 0
         self.interface = interface
-        self.timeTagMode = timeTagMode
         self.framingMode = framingMode
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
@@ -68,7 +65,7 @@ open class NoOpOSCTCPServer: OSCTCPServerProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
         }

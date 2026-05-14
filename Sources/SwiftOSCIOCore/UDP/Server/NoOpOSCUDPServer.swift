@@ -8,26 +8,23 @@ import class Foundation.DispatchQueue
 
 /// A no-op OSC UDP server implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCUDPServer: OSCUDPServerProtocol {
-    open var timeTagMode: OSCTimeTagMode
     open private(set) var localPort: UInt16
     open private(set) var interface: String?
     open var isPortReuseEnabled: Bool
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
-    var receiveHandler: OSCHandlerBlock?
+    var receiveHandler: OSCPacketHandler?
 
     required public init(
         port: UInt16?,
         interface: String?,
         isPortReuseEnabled: Bool,
-        timeTagMode: OSCTimeTagMode,
         queue: DispatchQueue?,
-        receiveHandler: OSCHandlerBlock?
+        receiveHandler: OSCPacketHandler?
     ) {
         localPort = port ?? 0
         self.interface = interface
         self.isPortReuseEnabled = isPortReuseEnabled
-        self.timeTagMode = timeTagMode
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
     }
@@ -44,7 +41,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
 
     // MARK: - Properties
 
-    open func setReceiveHandler(_ handler: OSCHandlerBlock?) {
+    open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
         }

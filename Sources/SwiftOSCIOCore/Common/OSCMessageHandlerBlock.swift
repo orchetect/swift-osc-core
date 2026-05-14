@@ -1,11 +1,11 @@
 //
-//  OSCHandlerBlock.swift
+//  OSCMessageHandlerBlock.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Received-message handler closure used by SwiftOSC I/O socket classes.
-public typealias OSCHandlerBlock = @Sendable (
+public typealias OSCMessageHandlerBlock = @Sendable (
     _ message: OSCMessage,
     _ timeTag: OSCTimeTag,
     _ host: String,
