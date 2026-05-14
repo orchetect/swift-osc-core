@@ -12,6 +12,10 @@ public enum OSCTCPClientNotification {
     /// The client was disconnected from the remote server.
     /// If the disconnection was a result of an error, the error will be non-nil.
     case disconnected(error: (any Error)?)
+
+    /// The socket closed.
+    /// If the closure was a result of an error, the error will be non-nil.
+    case socketClosed(error: (any Error)?)
 }
 
 extension OSCTCPClientNotification: Equatable {
@@ -34,10 +38,18 @@ extension OSCTCPClientNotification: Hashable {
         switch self {
         // no associated values, hash as normal
         case .connected:
+            // combine a unique case index to distinguish from other cases
             hasher.combine(0)
+
         case let .disconnected(error):
-            // combine 1 in has to distinguish from `.connected`
+            // combine a unique case index to distinguish from other cases
             hasher.combine(1)
+            // combine error.localizedDescription in hash to distinguish errors
+            hasher.combine(error?.localizedDescription)
+
+        case let .socketClosed(error):
+            // combine a unique case index to distinguish from other cases
+            hasher.combine(2)
             // combine error.localizedDescription in hash to distinguish errors
             hasher.combine(error?.localizedDescription)
         }
