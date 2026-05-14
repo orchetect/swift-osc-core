@@ -14,6 +14,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?
+    var receiveErrorHandler: OSCDecodeErrorHandlerBlock?
 
     required public init(
         port: UInt16?,
@@ -44,6 +45,12 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
     open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
+        }
+    }
+
+    open func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?) {
+        queue.sync {
+            receiveErrorHandler = handler
         }
     }
 }

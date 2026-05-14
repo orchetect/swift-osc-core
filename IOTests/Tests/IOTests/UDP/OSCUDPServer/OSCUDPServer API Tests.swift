@@ -93,5 +93,8 @@ struct OSCUDPServer_API_Tests {
 
         // setReceiveHandler { }
         server.setReceiveHandler(.messages { _, _, _, _ in })
+        
+        // setReceiveErrorHandler { }
+        server.setReceiveErrorHandler { _, _, _ , _ in }
     }
 }

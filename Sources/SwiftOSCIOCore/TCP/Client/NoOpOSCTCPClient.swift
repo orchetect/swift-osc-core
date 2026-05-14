@@ -16,6 +16,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
     open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?
+    var receiveErrorHandler: OSCDecodeErrorHandlerBlock?
     var notificationHandler: NotificationHandlerBlock?
 
     required public init(
@@ -56,6 +57,12 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
     open func setReceiveHandler(_ handler: OSCPacketHandler?) {
         queue.sync {
             receiveHandler = handler
+        }
+    }
+
+    open func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?) {
+        queue.sync {
+            receiveErrorHandler = handler
         }
     }
 

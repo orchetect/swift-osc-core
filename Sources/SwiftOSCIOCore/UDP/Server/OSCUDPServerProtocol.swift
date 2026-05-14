@@ -74,6 +74,10 @@ public protocol OSCUDPServerProtocol: Sendable {
     /// Set the receive handler closure.
     /// This closure will be called when OSC packets are received.
     func setReceiveHandler(_ handler: OSCPacketHandler?)
+
+    /// Set the receive error handler closure.
+    /// This closure will be called when receiving OSC packets that produce errors while decoding.
+    func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?)
 }
 
 // MARK: - Defaulted Parameters

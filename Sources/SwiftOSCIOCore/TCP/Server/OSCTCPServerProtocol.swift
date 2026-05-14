@@ -118,16 +118,20 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// > queried from the OSC TCP server when a client connects or analyzing currently-connected clients.
     var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] { get }
 
+    /// Disconnect a connected client from the server.
+    func disconnectClient(clientID: OSCTCPClientSessionID)
+
     /// Set the receive handler closure.
     /// This closure will be called when OSC packets are received.
     func setReceiveHandler(_ handler: OSCPacketHandler?)
 
+    /// Set the receive error handler closure.
+    /// This closure will be called when receiving OSC packets that produce errors while decoding.
+    func setReceiveErrorHandler(_ handler: OSCDecodeErrorHandlerBlock?)
+
     /// Set the notification handler closure.
     /// This closure will be called when a notification is generated, such as connection and disconnection events.
     func setNotificationHandler(_ handler: NotificationHandlerBlock?)
-
-    /// Disconnect a connected client from the server.
-    func disconnectClient(clientID: OSCTCPClientSessionID)
 }
 
 // MARK: - Defaulted Parameters
