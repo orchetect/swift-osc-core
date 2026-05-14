@@ -30,7 +30,7 @@ extension OSCPacketDispatcherProtocol {
         switch receiveHandler {
         case let .packets(handler):
             // dispatch immediately without unpacking bundles or scheduling - let consumer handle those tasks
-            handler(packet, remoteHost, remotePort)
+            _dispatch(packet: packet, remoteHost: remoteHost, remotePort: remotePort, handler: handler)
             
         case let .messages(timeTagMode: timeTagMode, handler):
             // unpack into individual messages and schedule dispatch based on time-tag mode
@@ -42,6 +42,18 @@ extension OSCPacketDispatcherProtocol {
                 remotePort: remotePort,
                 handler: handler
             )
+        }
+    }
+    
+    /// Internal: Dispatch an OSC packet immediately without unpacking bundles or scheduling.
+    func _dispatch(
+        packet: OSCPacket,
+        remoteHost: String,
+        remotePort: UInt16,
+        handler: @escaping OSCPacketHandlerBlock
+    ) {
+        queue.async {
+            handler(packet, remoteHost, remotePort)
         }
     }
     
