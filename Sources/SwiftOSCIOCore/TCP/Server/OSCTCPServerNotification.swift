@@ -12,6 +12,10 @@ public enum OSCTCPServerNotification {
     /// The server was notified that a remote client connection has closed.
     /// If the disconnection was a result of an error, the error will be non-nil.
     case disconnected(remoteHost: String, remotePort: UInt16, clientID: OSCTCPClientSessionID, error: (any Error)?)
+
+    /// The socket closed.
+    /// If the closure was a result of an error, the error will be non-nil.
+    case socketClosed(error: (any Error)?)
 }
 
 extension OSCTCPServerNotification: Equatable {
@@ -46,20 +50,27 @@ extension OSCTCPServerNotification: Hashable {
     public func hash(into hasher: inout Hasher) {
         switch self {
         case let .connected(host, port, id):
-            // combine 0 to distinguish from `.disconnected`
+            // combine a unique case index to distinguish from other cases
             hasher.combine(0)
             // combine variables for unique hash
             hasher.combine(host)
             hasher.combine(port)
             hasher.combine(id)
+
         case let .disconnected(host, port, id, err):
-            // combine 1 to distinguish from `.connected`
+            // combine a unique case index to distinguish from other cases
             hasher.combine(1)
             // combine variables for unique hash
             hasher.combine(host)
             hasher.combine(port)
             hasher.combine(id)
             hasher.combine(err?.localizedDescription)
+
+        case let .socketClosed(error):
+            // combine a unique case index to distinguish from other cases
+            hasher.combine(2)
+            // combine error.localizedDescription in hash to distinguish errors
+            hasher.combine(error?.localizedDescription)
         }
     }
 }
