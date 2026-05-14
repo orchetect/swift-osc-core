@@ -6,6 +6,32 @@ Receiving OSC messages and bundles.
 
 SwiftOSC offers a set of classes for both UDP and TCP network communication.
 
+## Packet Handlers
+
+Two packet handlers are available for I/O classes that receive OSC data:
+
+- ``OSCPacketHandler/messages(timeTagMode:_:)``:
+
+  Unpacks OSC bundles and schedules dispatch of each individual message according to the time-tag mode.
+
+  This is the most common receiver and is ideal for most use cases.
+
+  ```swift
+  server.setReceiveHandler(.messages { message, timeTag, host, port in
+      // ...
+  })
+  ```
+
+- ``OSCPacketHandler/packets(_:)``:
+
+  Passes packets to the handler without unpacking OSC bundles or scheduling based on time-tag.
+
+  ```swift
+  server.setReceiveHandler(.packets { packet, host, port in
+      // ...
+  })
+  ```
+
 ## UDP
 
 Both ``OSCUDPServerProtocol`` and ``OSCUDPSocketProtocol`` are capable of receiving messages using the same API.
@@ -13,9 +39,9 @@ Both ``OSCUDPServerProtocol`` and ``OSCUDPSocketProtocol`` are capable of receiv
 If not already set during initialization, you may set the receiver handler using the ``OSCUDPServerProtocol/setReceiveHandler(_:)`` or ``OSCUDPServerProtocol/setReceiveHandler(_:)`` method.
 
 ```swift
-server.setReceiveHandler { [weak self] message, timeTag, host, port in
+server.setReceiveHandler(.messages { [weak self] message, timeTag, host, port in
     self?.handle(message: message, host: host, port: port)
-}
+})
 
 private func handle(message: OSCMessage, host: String, port: UInt16) {
     // handle received messages here
@@ -40,9 +66,9 @@ Both ``OSCTCPClientProtocol`` and ``OSCTCPServerProtocol`` are capable of receiv
 If not already set during initialization, you may set the receiver handler using the ``OSCTCPClientProtocol/setReceiveHandler(_:)`` or ``OSCTCPServerProtocol/setReceiveHandler(_:)`` method.
 
 ```swift
-server.setReceiveHandler { [weak self] message, timeTag, host, port in
+server.setReceiveHandler(.messages { [weak self] message, timeTag, host, port in
     self?.handle(message: message, host: host, port: port)
-}
+})
 
 private func handle(message: OSCMessage, host: String, port: UInt16) {
     // handle received messages here
