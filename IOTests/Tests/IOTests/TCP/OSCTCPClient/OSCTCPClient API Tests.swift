@@ -19,10 +19,27 @@ struct OSCTCPClient_API_Tests {
             remoteHost: "",
             remotePort: 8000,
             interface: "en1",
-            timeTagMode: .ignore,
             framingMode: .osc1_1,
             queue: nil,
-            receiveHandler: { _, _, _, _ in }
+            receiveHandler: .messages { _, _, _, _ in }
+        )
+        
+        _ = OSCTCPClient(
+            remoteHost: "",
+            remotePort: 8000,
+            interface: "en1",
+            framingMode: .osc1_1,
+            queue: nil,
+            receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
+        )
+        
+        _ = OSCTCPClient(
+            remoteHost: "",
+            remotePort: 8000,
+            interface: "en1",
+            framingMode: .osc1_1,
+            queue: nil,
+            receiveHandler: .packets { _, _, _ in }
         )
     }
 
@@ -43,14 +60,6 @@ struct OSCTCPClient_API_Tests {
             remoteHost: "",
             remotePort: 8000,
             interface: nil,
-            timeTagMode: .ignore
-        )
-
-        _ = OSCTCPClient(
-            remoteHost: "",
-            remotePort: 8000,
-            interface: nil,
-            timeTagMode: .ignore,
             framingMode: .osc1_1
         )
 
@@ -58,7 +67,6 @@ struct OSCTCPClient_API_Tests {
             remoteHost: "",
             remotePort: 8000,
             interface: nil,
-            timeTagMode: .ignore,
             framingMode: .osc1_1,
             queue: nil
         )
@@ -72,7 +80,6 @@ struct OSCTCPClient_API_Tests {
         )
 
         // read
-        _ = client.timeTagMode
         _ = client.remoteHost
         _ = client.remotePort
         _ = client.interface
@@ -80,7 +87,7 @@ struct OSCTCPClient_API_Tests {
         _ = client.framingMode
 
         // set mutable properties
-        client.timeTagMode = .osc1_0
+        // (none)
     }
 
     @Test
@@ -108,7 +115,7 @@ struct OSCTCPClient_API_Tests {
         try? client.send(Self.message)
 
         // setReceiveHandler { }
-        client.setReceiveHandler { _, _, _, _ in }
+        client.setReceiveHandler(.messages { _, _, _, _ in })
 
         // setNotificationHandler { }
         client.setNotificationHandler { _ in }

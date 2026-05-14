@@ -18,10 +18,17 @@ struct OSCTCPServer_API_Tests {
         _ = OSCTCPServer(
             port: nil,
             interface: nil,
-            timeTagMode: .ignore,
             framingMode: .osc1_1,
             queue: nil,
-            receiveHandler: { _, _, _, _ in }
+            receiveHandler: .messages { _, _, _, _ in }
+        )
+        
+        _ = OSCTCPServer(
+            port: nil,
+            interface: nil,
+            framingMode: .osc1_1,
+            queue: nil,
+            receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
         )
     }
 
@@ -37,20 +44,12 @@ struct OSCTCPServer_API_Tests {
         _ = OSCTCPServer(
             port: nil,
             interface: nil,
-            timeTagMode: .ignore
-        )
-
-        _ = OSCTCPServer(
-            port: nil,
-            interface: nil,
-            timeTagMode: .ignore,
             framingMode: .osc1_1
         )
 
         _ = OSCTCPServer(
             port: nil,
             interface: nil,
-            timeTagMode: .ignore,
             framingMode: .osc1_1,
             queue: nil
         )
@@ -61,7 +60,6 @@ struct OSCTCPServer_API_Tests {
         let server = OSCTCPServer(port: nil)
 
         // read
-        _ = server.timeTagMode
         _ = server.localPort
         _ = server.interface
         _ = server.isStarted
@@ -69,7 +67,7 @@ struct OSCTCPServer_API_Tests {
         _ = server.clients
 
         // set mutable properties
-        server.timeTagMode = .osc1_0
+        // (none)
     }
 
     @Test
@@ -108,7 +106,7 @@ struct OSCTCPServer_API_Tests {
         server.disconnectClient(clientID: 0)
 
         // setReceiveHandler { }
-        server.setReceiveHandler { _, _, _, _ in }
+        server.setReceiveHandler(.messages { _, _, _, _ in })
 
         // setNotificationHandler { }
         server.setNotificationHandler { _ in }

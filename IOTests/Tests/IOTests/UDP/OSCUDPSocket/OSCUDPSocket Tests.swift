@@ -16,13 +16,14 @@ struct OSCUDPSocket_Tests {
         try await confirmation(expectedCount: 0) { confirmation in
             let socket = OSCUDPSocket(remoteHost: "127.0.0.1")
 
-            socket.setReceiveHandler { _, _, _, _ in
+            socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle()
 
-            socket.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            socket.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 1)
         }
@@ -44,12 +45,12 @@ struct OSCUDPSocket_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
-            // print("Handler received:", message.addressPattern)
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message, host: host, port: port)
             }
-        }
+        })
 
         let msg1 = OSCMessage("/one", values: [123, "string", 500.5, 1, 2, 3, 4, "string2", true, 12345])
         let msg2 = OSCMessage("/two")
@@ -57,9 +58,9 @@ struct OSCUDPSocket_Tests {
 
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
-            server.core.handle(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
-            server.core.handle(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
-            server.core.handle(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
+            server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
+            server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
         }
 
         try await wait(require: { await receiver.messages.count == 3 }, timeout: 5.0)
@@ -87,7 +88,6 @@ struct OSCUDPSocket_Tests {
             localPort: nil,
             remoteHost: "127.0.0.1",
             remotePort: nil,
-            timeTagMode: .ignore,
             isIPv4BroadcastEnabled: false,
             queue: nil,
             receiveHandler: nil
@@ -103,11 +103,12 @@ struct OSCUDPSocket_Tests {
 
         let receiver = Receiver()
 
-        socket.setReceiveHandler { message, timeTag, host, port in
+        socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message)
             }
-        }
+        })
 
         let possibleValuePacks: [OSCValues] = [
             [],
@@ -123,7 +124,7 @@ struct OSCUDPSocket_Tests {
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
             for message in sourceMessages {
-                socket.core.handle(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
+                socket.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
             }
         }
 
@@ -143,7 +144,6 @@ struct OSCUDPSocket_Tests {
             localPort: nil, // selects a random available port
             remoteHost: "127.0.0.1",
             remotePort: nil, // gets set to same port as localPort
-            timeTagMode: .ignore,
             isIPv4BroadcastEnabled: false,
             queue: nil,
             receiveHandler: nil
@@ -164,11 +164,12 @@ struct OSCUDPSocket_Tests {
 
         let receiver = Receiver()
 
-        socket.setReceiveHandler { message, timeTag, host, port in
+        socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message)
             }
-        }
+        })
 
         let possibleValuePacks: [OSCValues] = [
             [],

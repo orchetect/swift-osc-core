@@ -16,13 +16,14 @@ struct OSCUDPServer_Tests {
         try await confirmation(expectedCount: 0) { confirmation in
             let server = OSCUDPServer()
 
-            server.setReceiveHandler { _, _, _, _ in
+            server.setReceiveHandler(.messages { _, _, _, _ in
+                guard !Task.isCancelled else { return }
                 confirmation()
-            }
+            })
 
             let bundle = OSCBundle()
 
-            server.core.handle(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
 
             try await Task.sleep(seconds: 1)
         }
@@ -44,12 +45,12 @@ struct OSCUDPServer_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
-            // print("Handler received:", message.addressPattern)
+        server.setReceiveHandler(.messages { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message, host: host, port: port)
             }
-        }
+        })
 
         let msg1 = OSCMessage("/one", values: [123, "string", 500.5, 1, 2, 3, 4, "string2", true, 12345])
         let msg2 = OSCMessage("/two")
@@ -57,9 +58,9 @@ struct OSCUDPServer_Tests {
 
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
-            server.core.handle(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
-            server.core.handle(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
-            server.core.handle(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
+            server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
+            server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
         }
 
         try await wait(require: { await receiver.messages.count == 3 }, timeout: 5.0)
@@ -94,11 +95,12 @@ struct OSCUDPServer_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
+        server.setReceiveHandler(.messages { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message)
             }
-        }
+        })
 
         var possibleValuePacks: [OSCValues] {
             [
@@ -116,7 +118,7 @@ struct OSCUDPServer_Tests {
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
             for message in sourceMessages {
-                server.core.handle(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
             }
         }
 
@@ -133,7 +135,7 @@ struct OSCUDPServer_Tests {
         let isFlakey = !isSystemTimingStable()
 
         // selects a random available port
-        let server = OSCUDPServer(port: nil, timeTagMode: .ignore, queue: nil, receiveHandler: nil)
+        let server = OSCUDPServer(port: nil, queue: nil, receiveHandler: nil)
         try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
 
         try server.start()
@@ -151,11 +153,12 @@ struct OSCUDPServer_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message)
             }
-        }
+        })
 
         var possibleValuePacks: [OSCValues] {
             [

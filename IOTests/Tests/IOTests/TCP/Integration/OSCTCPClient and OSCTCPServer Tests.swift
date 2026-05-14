@@ -18,7 +18,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
 
         // we aren't starting the server, so passing port 0 or nil has no meaningful effect
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore)
+        let server = OSCTCPServer(port: nil)
 
         final actor Receiver {
             var messages: [(message: OSCMessage, host: String, port: UInt16)] = []
@@ -29,12 +29,12 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
-            // print("Handler received:", message.addressPattern)
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message, host: host, port: port)
             }
-        }
+        })
 
         let msg1 = OSCMessage("/one", values: [123, "string", 500.5, 1, 2, 3, 4, "string2", true, 12345])
         let msg2 = OSCMessage("/two")
@@ -42,9 +42,9 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
-            server.core.handle(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
-            server.core.handle(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
-            server.core.handle(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
+            server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
+            server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
+            server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
         }
 
         try await wait(require: { await receiver.messages.count == 3 }, timeout: 10.0)
@@ -69,7 +69,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     @MainActor @Test
     func stressTestOffline() async throws {
         // we aren't starting the server, so passing port 0 or nil has no meaningful effect
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore)
+        let server = OSCTCPServer(port: nil)
 
         final actor Receiver {
             var messages: [OSCMessage] = []
@@ -80,11 +80,12 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         let receiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await receiver.received(message)
             }
-        }
+        })
 
         var possibleValuePacks: [OSCValues] {
             [
@@ -102,7 +103,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // use global thread to simulate internal network thread being a dedicated thread
         DispatchQueue.global().async {
             for message in sourceMessages {
-                server.core.handle(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
             }
         }
 
@@ -124,7 +125,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup server
 
         // binding to port 0 or nil will cause the system to assign a random available port
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore, framingMode: framingMode)
+        let server = OSCTCPServer(port: nil, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try server.start()
@@ -138,7 +139,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup client
         // (must be done after calling start on server so we have a non-zero local server port to use)
 
-        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: framingMode)
+        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client.connect()
@@ -173,11 +174,12 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         let serverReceiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await serverReceiver.received(message)
             }
-        }
+        })
 
         // use global thread to simulate internal network thread being a dedicated thread
         let srcLocSendToServer: SourceLocation = #_sourceLocation
@@ -197,11 +199,12 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         let clientReceiver = Receiver()
 
-        client.setReceiveHandler { message, timeTag, host, port in
+        client.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await clientReceiver.received(message)
             }
-        }
+        })
 
         // use global thread to simulate internal network thread being a dedicated thread
         let srcLocSendToClient: SourceLocation = #_sourceLocation
@@ -232,7 +235,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup server
 
         // binding to port 0 or nil will cause the system to assign a random available port
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore, framingMode: .osc1_1)
+        let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try server.start()
@@ -246,7 +249,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup client 1
         // (must be done after calling start on server so we have a non-zero local server port to use)
 
-        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: .osc1_1)
+        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client1.connect()
@@ -257,7 +260,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup client 2
         // (must be done after calling start on server so we have a non-zero local server port to use)
 
-        let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: .osc1_1)
+        let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client2.connect()
@@ -286,7 +289,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         let isStable = isSystemTimingStable()
 
         // binding to port 0 or nil will cause the system to assign a random available port
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore, framingMode: .osc1_1)
+        let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try server.start()
@@ -306,7 +309,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup client 1
         // (must be done after calling start on server so we have a non-zero local server port to use)
 
-        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: .osc1_1)
+        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client1.connect()
@@ -324,7 +327,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
         // setup server
 
         // binding to port 0 or nil will cause the system to assign a random available port
-        let server = OSCTCPServer(port: nil, timeTagMode: .ignore, framingMode: framingMode)
+        let server = OSCTCPServer(port: nil, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try server.start()
@@ -337,7 +340,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         // client 1
 
-        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: framingMode)
+        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client1.connect()
@@ -348,7 +351,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         // client 2
 
-        let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, timeTagMode: .ignore, framingMode: framingMode)
+        let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client2.connect()
@@ -372,27 +375,30 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         let serverReceiver = Receiver()
 
-        server.setReceiveHandler { message, timeTag, host, port in
+        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await serverReceiver.received(message)
             }
-        }
+        })
 
         let client1Receiver = Receiver()
 
-        client1.setReceiveHandler { message, timeTag, host, port in
+        client1.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await client1Receiver.received(message)
             }
-        }
+        })
 
         let client2Receiver = Receiver()
 
-        client2.setReceiveHandler { message, timeTag, host, port in
+        client2.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+            guard !Task.isCancelled else { return }
             Task { @MainActor in
                 await client2Receiver.received(message)
             }
-        }
+        })
 
         // test server -> client 1
 
