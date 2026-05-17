@@ -11,7 +11,7 @@ import Testing
 @Suite(.serialized)
 struct OSCUDPSocket_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @MainActor @Test
+    @Test
     func interfaceBinding_interfaceAddress() throws {
         let interfaces = try ipV4NetworkDevices(includeLoopback: false)
 
@@ -36,7 +36,7 @@ struct OSCUDPSocket_Interface_Tests {
     }
 
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @MainActor @Test
+    @Test
     func interfaceBinding_interfaceName() throws {
         let interfaces = try ipV4NetworkDevices(includeLoopback: false)
 
@@ -61,7 +61,7 @@ struct OSCUDPSocket_Interface_Tests {
     }
 
     /// Attempt to bind to an invalid network interface.
-    @MainActor @Test
+    @Test
     func interfaceBinding_invalid() throws {
         let interface = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 

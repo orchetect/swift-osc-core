@@ -11,7 +11,7 @@ import Testing
 @Suite(.serialized)
 struct OSCTCPClient_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @MainActor @Test
+    @Test
     func interfaceBinding_interfaceAddress() throws {
         guard let (_, interfaceAddress) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
             withKnownIssue {
@@ -36,7 +36,7 @@ struct OSCTCPClient_Interface_Tests {
     }
 
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @MainActor @Test
+    @Test
     func interfaceBinding_interfaceName() throws {
         guard let (interfaceName, _) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
             withKnownIssue {
@@ -61,7 +61,7 @@ struct OSCTCPClient_Interface_Tests {
     }
 
     /// Attempt to bind to an invalid network interface.
-    @MainActor @Test
+    @Test
     func interfaceBinding_invalid() throws {
         let interface = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 

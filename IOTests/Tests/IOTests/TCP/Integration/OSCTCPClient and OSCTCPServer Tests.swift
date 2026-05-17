@@ -11,7 +11,7 @@ import Testing
 @Suite(.enabled(if: isSystemTimingStable()), .serialized)
 struct OSCTCPClient_and_OSCTCPServer_Tests {
     /// Ensure rapidly received messages are dispatched in the order they are received.
-    @MainActor @Test(arguments: 0 ... 10)
+    @Test(arguments: 0 ... 10)
     func messageOrdering(iteration: Int) async throws {
         _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
 
@@ -29,7 +29,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await receiver.received(message, host: host, port: port)
             }
         })
@@ -64,7 +64,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     }
 
     /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @MainActor @Test
+    @Test
     func stressTestOffline() async throws {
         // we aren't starting the server, so passing port 0 or nil has no meaningful effect
         let server = OSCTCPServer(port: nil)
@@ -80,7 +80,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await receiver.received(message)
             }
         })
@@ -116,7 +116,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     /// - This test is repeated for each TCP framing mode.
     /// - This also tests that when passing local port 0 to server's init, after calling `start()` the `localPort`
     ///   property is then populated with the system-assigned port.
-    @MainActor @Test(.serialized, arguments: OSCTCPFramingMode.allCases)
+    @Test(.serialized, arguments: OSCTCPFramingMode.allCases)
     func stressTestOnline(framingMode: OSCTCPFramingMode) async throws {
         let isStable = isSystemTimingStable()
 
@@ -174,7 +174,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await serverReceiver.received(message)
             }
         })
@@ -199,7 +199,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await clientReceiver.received(message)
             }
         })
@@ -226,7 +226,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
     /// Check that connections are added when an incoming connection is made,
     /// and check that connections are removed when a connection is closed remotely.
-    @MainActor @Test
+    @Test
     func clientConnectDisconnect() async throws {
         let isStable = isSystemTimingStable()
 
@@ -282,7 +282,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     }
 
     /// Tests starting TCP server, then stopping it, then restarting it again.
-    @MainActor @Test
+    @Test
     func startStopTCPServer() async throws {
         let isStable = isSystemTimingStable()
 
@@ -317,7 +317,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     }
 
     /// Tests multiple connected clients.
-    @MainActor @Test
+    @Test
     func multipleClientTestOnline() async throws {
         let isStable = isSystemTimingStable()
         let framingMode: OSCTCPFramingMode = .osc1_1
@@ -375,7 +375,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await serverReceiver.received(message)
             }
         })
@@ -384,7 +384,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client1.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await client1Receiver.received(message)
             }
         })
@@ -393,7 +393,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client2.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await client2Receiver.received(message)
             }
         })

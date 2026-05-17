@@ -30,7 +30,7 @@ struct OSCUDPSocket_Tests {
     }
 
     /// Ensure rapidly received messages are dispatched in the order they are received.
-    @MainActor @Test(arguments: 0 ... 10)
+    @Test(arguments: 0 ... 10)
     func messageOrdering(iteration: Int) async throws {
         _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
 
@@ -47,7 +47,7 @@ struct OSCUDPSocket_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await receiver.received(message, host: host, port: port)
             }
         })
@@ -82,7 +82,7 @@ struct OSCUDPSocket_Tests {
     }
 
     /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @MainActor @Test
+    @Test
     func stressTestOffline() async throws {
         let socket = OSCUDPSocket(
             localPort: nil,
@@ -105,7 +105,7 @@ struct OSCUDPSocket_Tests {
 
         socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await receiver.received(message)
             }
         })
@@ -136,7 +136,7 @@ struct OSCUDPSocket_Tests {
     // This test is especially flakey on GitHub Actions runners, so we'll only run it in a local context.
     #if !GITHUB_ACTIONS
     /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @MainActor @Test
+    @Test
     func stressTestOnline() async throws {
         let isFlakey = !isSystemTimingStable()
 
@@ -166,7 +166,7 @@ struct OSCUDPSocket_Tests {
 
         socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task { @MainActor in
+            Task {
                 await receiver.received(message)
             }
         })
