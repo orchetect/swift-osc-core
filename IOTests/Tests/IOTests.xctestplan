@@ -1,23 +1,23 @@
 {
   "configurations" : [
     {
-      "id" : "B651DAB4-28E7-4A07-9C12-F1651C8B223A",
-      "name" : "Configuration 1",
+      "id" : "4E3DCBEC-BB34-42FB-8C66-43C78237133C",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-
+    "performanceAntipatternCheckerEnabled" : true
   },
   "testTargets" : [
     {
       "parallelizable" : false,
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "IOTests",
-        "name" : "IOTests"
+        "identifier" : "SwiftOSCIOTests",
+        "name" : "SwiftOSCIOTests"
       }
     }
   ],

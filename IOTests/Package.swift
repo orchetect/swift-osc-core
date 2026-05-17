@@ -23,7 +23,7 @@ let package = Package(
     ],
     targets: [
         .testTarget(
-            name: "IOTests",
+            name: "SwiftOSCIOTests",
             dependencies: [
                 .product(name: "NIOCore", package: "swift-nio")
 
