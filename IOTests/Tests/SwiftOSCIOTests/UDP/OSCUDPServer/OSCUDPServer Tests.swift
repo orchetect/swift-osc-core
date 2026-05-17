@@ -9,187 +9,189 @@ import NIOCore
 @testable import SwiftOSCIO
 import Testing
 
-@Suite(.enabled(if: isSystemTimingStable()), .serialized)
-struct OSCUDPServer_Tests {
-    /// Check that an empty OSC bundle does not produce any OSC messages.
-    @Test
-    func emptyBundle() async throws {
-        try await confirmation(expectedCount: 0) { confirmation in
-            let server = OSCUDPServer()
-
-            server.setReceiveHandler(.messages { _, _, _, _ in
-                guard !Task.isCancelled else { return }
-                confirmation()
-            })
-
-            let bundle = OSCBundle()
-
-            server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
-
-            try await Task.sleep(seconds: 1)
-        }
-    }
-
-    /// Ensure rapidly received messages are dispatched in the order they are received.
-    @Test(arguments: 0 ... 10)
-    func messageOrdering(iteration: Int) async throws {
-        _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
-
-        let server = OSCUDPServer()
-
-        final actor Receiver {
-            var messages: [(message: OSCMessage, host: String, port: UInt16)] = []
-            func received(_ message: OSCMessage, host: String, port: UInt16) {
-                messages.append((message, host, port))
+extension SerializedTests {
+    @Suite(.enabled(if: isSystemTimingStable()))
+    struct OSCUDPServer_Tests {
+        /// Check that an empty OSC bundle does not produce any OSC messages.
+        @Test
+        func emptyBundle() async throws {
+            try await confirmation(expectedCount: 0) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle()
+                
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                
+                try await Task.sleep(seconds: 1)
             }
         }
-
-        let receiver = Receiver()
-
-        server.setReceiveHandler(.messages { message, timeTag, host, port in
-            guard !Task.isCancelled else { return }
-            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                await receiver.received(message, host: host, port: port)
-            }
-        })
-
-        let msg1 = OSCMessage("/one", values: [123, "string", 500.5, 1, 2, 3, 4, "string2", true, 12345])
-        let msg2 = OSCMessage("/two")
-        let msg3 = OSCMessage("/three")
-
-        // use global thread to simulate internal network thread being a dedicated thread
-        DispatchQueue.global().async {
-            server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
-            server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
-            server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
-        }
-
-        try await wait(require: { await receiver.messages.count == 3 }, timeout: 5.0)
-
-        let message1 = await receiver.messages[0]
-        #expect(message1.message == msg1)
-        #expect(message1.host == "127.0.0.1")
-        #expect(message1.port == 8000)
-
-        let message2 = await receiver.messages[1]
-        #expect(message2.message == msg2)
-        #expect(message2.host == "192.168.0.25")
-        #expect(message2.port == 8001)
-
-        let message3 = await receiver.messages[2]
-        #expect(message3.message == msg3)
-        #expect(message3.host == "10.0.0.50")
-        #expect(message3.port == 8080)
-    }
-
-    /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @Test
-    func stressTestOffline() async throws {
-        let server = OSCUDPServer()
-
-        final actor Receiver {
-            var messages: [OSCMessage] = []
-            func received(_ message: OSCMessage) {
-                messages.append(message)
-            }
-        }
-
-        let receiver = Receiver()
-
-        server.setReceiveHandler(.messages { message, timeTag, host, port in
-            guard !Task.isCancelled else { return }
-            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                await receiver.received(message)
-            }
-        })
-
-        var possibleValuePacks: [OSCValues] {
-            [
-                [],
-                [UUID().uuidString],
-                [Int.random(in: 10000 ... 10_000_000)],
-                [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
-            ]
-        }
-
-        let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
-            OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
-        }
-
-        // use global thread to simulate internal network thread being a dedicated thread
-        DispatchQueue.global().async {
-            for message in sourceMessages {
-                server.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
-            }
-        }
-
-        try await wait(require: { await receiver.messages.count == 1000 }, timeout: 10.0)
-
-        await #expect(receiver.messages == sourceMessages)
-    }
-
-    /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @Test(.serialized, arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-    func stressTestOnline(remoteHost: String) async throws {
-        let isFlakey = !isSystemTimingStable()
-
-        // provide the interface because the server can't bind to both IPv4 and IPv6 layers at the same time
-        let address = try SocketAddress.makeAddressResolvingHost(remoteHost, port: 1) // port doesn't matter here
-        let intf = address.protocol == .inet6 ? "::" : "0.0.0.0"
         
-        let server = OSCUDPServer(port: nil, interface: intf, queue: nil, receiveHandler: nil)
-        try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
-
-        try server.start()
-        try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
-
-        let port = server.localPort
-        print("Using server listen port \(port)")
-
-        final actor Receiver {
-            var messages: [OSCMessage] = []
-            func received(_ message: OSCMessage) {
-                messages.append(message)
+        /// Ensure rapidly received messages are dispatched in the order they are received.
+        @Test(arguments: 0 ... 10)
+        func messageOrdering(iteration: Int) async throws {
+            _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
+            
+            let server = OSCUDPServer()
+            
+            final actor Receiver {
+                var messages: [(message: OSCMessage, host: String, port: UInt16)] = []
+                func received(_ message: OSCMessage, host: String, port: UInt16) {
+                    messages.append((message, host, port))
+                }
             }
-        }
-
-        let receiver = Receiver()
-
-        server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
-            guard !Task.isCancelled else { return }
-            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                await receiver.received(message)
+            
+            let receiver = Receiver()
+            
+            server.setReceiveHandler(.messages { message, timeTag, host, port in
+                guard !Task.isCancelled else { return }
+                Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
+                    await receiver.received(message, host: host, port: port)
+                }
+            })
+            
+            let msg1 = OSCMessage("/one", values: [123, "string", 500.5, 1, 2, 3, 4, "string2", true, 12345])
+            let msg2 = OSCMessage("/two")
+            let msg3 = OSCMessage("/three")
+            
+            // use global thread to simulate internal network thread being a dedicated thread
+            DispatchQueue.global().async {
+                server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
+                server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
             }
-        })
-
-        var possibleValuePacks: [OSCValues] {
-            [
-                [],
-                [UUID().uuidString],
-                [Int.random(in: 10000 ... 10_000_000)],
-                [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
-            ]
+            
+            try await wait(require: { await receiver.messages.count == 3 }, timeout: 5.0)
+            
+            let message1 = await receiver.messages[0]
+            #expect(message1.message == msg1)
+            #expect(message1.host == "127.0.0.1")
+            #expect(message1.port == 8000)
+            
+            let message2 = await receiver.messages[1]
+            #expect(message2.message == msg2)
+            #expect(message2.host == "192.168.0.25")
+            #expect(message2.port == 8001)
+            
+            let message3 = await receiver.messages[2]
+            #expect(message3.message == msg3)
+            #expect(message3.host == "10.0.0.50")
+            #expect(message3.port == 8080)
         }
-
-        let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
-            OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
-        }
-
-        let client = OSCUDPClient()
-        try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
-
-        // use global thread to simulate internal network thread being a dedicated thread
-        let srcLocSendToServer: SourceLocation = #_sourceLocation
-        DispatchQueue.global().async {
-            for message in sourceMessages {
-                do { try client.send(message, to: remoteHost, port: port) }
-                catch { Issue.record(error, sourceLocation: srcLocSendToServer) }
+        
+        /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
+        @Test
+        func stressTestOffline() async throws {
+            let server = OSCUDPServer()
+            
+            final actor Receiver {
+                var messages: [OSCMessage] = []
+                func received(_ message: OSCMessage) {
+                    messages.append(message)
+                }
             }
+            
+            let receiver = Receiver()
+            
+            server.setReceiveHandler(.messages { message, timeTag, host, port in
+                guard !Task.isCancelled else { return }
+                Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
+                    await receiver.received(message)
+                }
+            })
+            
+            var possibleValuePacks: [OSCValues] {
+                [
+                    [],
+                    [UUID().uuidString],
+                    [Int.random(in: 10000 ... 10_000_000)],
+                    [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
+                ]
+            }
+            
+            let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
+                OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
+            }
+            
+            // use global thread to simulate internal network thread being a dedicated thread
+            DispatchQueue.global().async {
+                for message in sourceMessages {
+                    server.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
+                }
+            }
+            
+            try await wait(require: { await receiver.messages.count == 1000 }, timeout: 10.0)
+            
+            await #expect(receiver.messages == sourceMessages)
         }
-
-        await wait(expect: { await receiver.messages.count == 1000 }, timeout: isFlakey ? 20.0 : 10.0)
-        try await #require(receiver.messages.count == 1000)
-
-        await #expect(receiver.messages == sourceMessages)
+        
+        /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
+        @Test(.serialized, arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+        func stressTestOnline(remoteHost: String) async throws {
+            let isFlakey = !isSystemTimingStable()
+            
+            // provide the interface because the server can't bind to both IPv4 and IPv6 layers at the same time
+            let address = try SocketAddress.makeAddressResolvingHost(remoteHost, port: 1) // port doesn't matter here
+            let intf = address.protocol == .inet6 ? "::" : "0.0.0.0"
+            
+            let server = OSCUDPServer(port: nil, interface: intf, queue: nil, receiveHandler: nil)
+            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
+            
+            try server.start()
+            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
+            
+            let port = server.localPort
+            print("Using server listen port \(port)")
+            
+            final actor Receiver {
+                var messages: [OSCMessage] = []
+                func received(_ message: OSCMessage) {
+                    messages.append(message)
+                }
+            }
+            
+            let receiver = Receiver()
+            
+            server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
+                guard !Task.isCancelled else { return }
+                Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
+                    await receiver.received(message)
+                }
+            })
+            
+            var possibleValuePacks: [OSCValues] {
+                [
+                    [],
+                    [UUID().uuidString],
+                    [Int.random(in: 10000 ... 10_000_000)],
+                    [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
+                ]
+            }
+            
+            let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
+                OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
+            }
+            
+            let client = OSCUDPClient()
+            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
+            
+            // use global thread to simulate internal network thread being a dedicated thread
+            let srcLocSendToServer: SourceLocation = #_sourceLocation
+            DispatchQueue.global().async {
+                for message in sourceMessages {
+                    do { try client.send(message, to: remoteHost, port: port) }
+                    catch { Issue.record(error, sourceLocation: srcLocSendToServer) }
+                }
+            }
+            
+            await wait(expect: { await receiver.messages.count == 1000 }, timeout: isFlakey ? 20.0 : 10.0)
+            try await #require(receiver.messages.count == 1000)
+            
+            await #expect(receiver.messages == sourceMessages)
+        }
     }
 }
