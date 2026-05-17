@@ -11,9 +11,13 @@ import Testing
 @Suite(.serialized)
 struct OSCTCPClient_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceAddress() throws {
-        guard let (_, interfaceAddress) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+    @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func interfaceBinding_interfaceAddress(localIP: String) throws {
+        guard let (_, interfaceAddress) = try networkDevice(
+            protocols: [localIP.contains(":") ? .inet6 : .inet],
+            includeLoopback: true,
+            forAddress: localIP
+        ) else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
@@ -29,16 +33,20 @@ struct OSCTCPClient_Interface_Tests {
         try server.start()
 
         // set up client
-        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface)
+        let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface)
         #expect(client.interface == interface)
         try client.connect()
         client.close()
     }
 
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceName() throws {
-        guard let (interfaceName, _) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+    @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func interfaceBinding_interfaceName(localIP: String) throws {
+        guard let (interfaceName, _) = try networkDevice(
+            protocols: [localIP.contains(":") ? .inet6 : .inet],
+            includeLoopback: true,
+            forAddress: localIP
+        ) else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
@@ -54,9 +62,16 @@ struct OSCTCPClient_Interface_Tests {
         try server.start()
 
         // set up client
-        let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, interface: interface)
+        let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface)
         #expect(client.interface == interface)
-        try client.connect()
+        if localIP == "::1" {
+            withKnownIssue("When requesting an interface by its name, we can't infer the IP protocol to bind to, so we defer to IPv4") {
+                try client.connect()
+            }
+        } else {
+            try client.connect()
+        }
+        
         client.close()
     }
 

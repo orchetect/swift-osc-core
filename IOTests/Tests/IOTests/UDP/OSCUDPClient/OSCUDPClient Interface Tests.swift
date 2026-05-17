@@ -11,9 +11,13 @@ import Testing
 @Suite(.serialized)
 struct OSCUDPClient_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceAddress() throws {
-        guard let (_, interfaceAddress) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+    @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func interfaceBinding_interfaceAddress(localIP: String) throws {
+        guard let (_, interfaceAddress) = try networkDevice(
+            protocols: [.inet, .inet6],
+            includeLoopback: true,
+            forAddress: localIP
+        ) else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
@@ -36,9 +40,13 @@ struct OSCUDPClient_Interface_Tests {
     }
 
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceName() throws {
-        guard let (interfaceName, _) = try ipV4NetworkDevice(forAddress: "127.0.0.1") else {
+    @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func interfaceBinding_interfaceName(localIP: String) throws {
+        guard let (interfaceName, _) = try networkDevice(
+            protocols: [.inet, .inet6],
+            includeLoopback: true,
+            forAddress: localIP
+        ) else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
@@ -59,7 +67,7 @@ struct OSCUDPClient_Interface_Tests {
         try client.start()
         client.stop()
     }
-
+    
     /// Attempt to bind to an invalid network interface.
     @Test
     func interfaceBinding_invalid() throws {

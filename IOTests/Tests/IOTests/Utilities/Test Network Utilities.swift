@@ -17,9 +17,12 @@ func networkDevices(includeLoopback: Bool) throws -> [(name: String, address: So
         }
 }
 
-func ipV4NetworkDevices(includeLoopback: Bool) throws -> [(name: String, address: String)] {
+func networkDevices(
+    protocols: [NIOBSDSocket.ProtocolFamily],
+    includeLoopback: Bool
+) throws -> [(name: String, address: String)] {
     try networkDevices(includeLoopback: includeLoopback)
-        .filter { $0.address.protocol == .inet } // IPv4 addresses
+        .filter { protocols.contains($0.address.protocol) }
         .compactMap {
             guard let address = $0.address.ipAddress else { return nil }
             return (name: $0.name, address: address)
@@ -29,8 +32,12 @@ func ipV4NetworkDevices(includeLoopback: Bool) throws -> [(name: String, address
         }
 }
 
-func ipV4NetworkDevice(forAddress: String) throws -> (name: String, address: String)? {
-    try ipV4NetworkDevices(includeLoopback: true)
+func networkDevice(
+    protocols: [NIOBSDSocket.ProtocolFamily],
+    includeLoopback: Bool,
+    forAddress: String,
+) throws -> (name: String, address: String)? {
+    try networkDevices(protocols: protocols, includeLoopback: includeLoopback)
         .filter { $0.address == forAddress }
         .first
 }

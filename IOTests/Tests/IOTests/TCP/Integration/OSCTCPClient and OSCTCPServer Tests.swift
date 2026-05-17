@@ -317,8 +317,8 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     }
 
     /// Tests multiple connected clients.
-    @Test
-    func multipleClientTestOnline() async throws {
+    @Test(arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func multipleClientTestOnline(remoteHost: String) async throws {
         let isStable = isSystemTimingStable()
         let framingMode: OSCTCPFramingMode = .osc1_1
 
@@ -338,7 +338,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         // client 1
 
-        let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
+        let client1 = OSCTCPClient(remoteHost: remoteHost, remotePort: server.localPort, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client1.connect()
@@ -349,7 +349,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         // client 2
 
-        let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
+        let client2 = OSCTCPClient(remoteHost: remoteHost, remotePort: server.localPort, framingMode: framingMode)
         try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
         try client2.connect()

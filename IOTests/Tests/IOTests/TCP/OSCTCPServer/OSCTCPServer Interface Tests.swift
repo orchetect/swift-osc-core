@@ -5,20 +5,27 @@
 //
 
 import Foundation
+import NIOCore
 @testable import SwiftOSCIO
 import Testing
 
 @Suite(.serialized)
 struct OSCTCPServer_Interface_Tests {
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceAddress() throws {
-        let interfaces = try ipV4NetworkDevices(includeLoopback: false)
+    @Test(arguments: [.inet, .inet6] as [NIOBSDSocket.ProtocolFamily]) // IPv4 and IPv6
+    func interfaceBinding_interfaceAddress(proto: NIOBSDSocket.ProtocolFamily) throws {
+        let interfaces = try networkDevices(protocols: [proto], includeLoopback: false)
 
-        print("Found interfaces:")
+        print("Found \(proto) interfaces:")
         dump(interfaces)
 
-        guard let (_, interfaceAddress) = interfaces.first else {
+        let enInterfaces = interfaces.filter {
+            $0.name.hasPrefix("en")
+                && !$0.address.lowercased().hasPrefix("169.") // ignore default IPv4 gateway
+                && !$0.address.lowercased().hasPrefix("fe80:") // ignore default IPv6 gateway
+        }
+
+        guard let (_, interfaceAddress) = enInterfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
@@ -36,14 +43,16 @@ struct OSCTCPServer_Interface_Tests {
     }
 
     /// Attempt to bind to a network interface, if one is present that can be used.
-    @Test
-    func interfaceBinding_interfaceName() throws {
-        let interfaces = try ipV4NetworkDevices(includeLoopback: false)
+    @Test(arguments: [.inet, .inet6] as [NIOBSDSocket.ProtocolFamily]) // IPv4 and IPv6
+    func interfaceBinding_interfaceName(proto: NIOBSDSocket.ProtocolFamily) throws {
+        let interfaces = try networkDevices(protocols: [proto], includeLoopback: false)
 
-        print("Found interfaces:")
+        print("Found \(proto) interfaces:")
         dump(interfaces)
 
-        guard let (interfaceName, _) = interfaces.first else {
+        let enInterfaces = interfaces.filter { $0.name.hasPrefix("en") }
+
+        guard let (interfaceName, _) = enInterfaces.first else {
             withKnownIssue {
                 Issue.record("No available network interfaces to test. Skipping test.")
             }
