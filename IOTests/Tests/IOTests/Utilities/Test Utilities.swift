@@ -7,6 +7,12 @@
 import Foundation
 import Testing
 
+@globalActor
+actor TestActor {
+    static let shared = TestActor()
+}
+
+
 /// Test expectation that waits synchronously (non-blocking) for an expression to evaluate true,
 /// failing if a timeout period is exceeded.
 func wait(

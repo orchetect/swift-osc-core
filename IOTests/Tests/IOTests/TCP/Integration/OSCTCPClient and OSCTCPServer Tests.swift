@@ -29,7 +29,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await receiver.received(message, host: host, port: port)
             }
         })
@@ -80,7 +80,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await receiver.received(message)
             }
         })
@@ -174,7 +174,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await serverReceiver.received(message)
             }
         })
@@ -199,7 +199,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await clientReceiver.received(message)
             }
         })
@@ -375,7 +375,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await serverReceiver.received(message)
             }
         })
@@ -384,7 +384,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client1.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await client1Receiver.received(message)
             }
         })
@@ -393,7 +393,7 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
 
         client2.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await client2Receiver.received(message)
             }
         })

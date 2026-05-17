@@ -47,7 +47,7 @@ struct OSCUDPSocket_Tests {
 
         server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await receiver.received(message, host: host, port: port)
             }
         })
@@ -105,7 +105,7 @@ struct OSCUDPSocket_Tests {
 
         socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await receiver.received(message)
             }
         })
@@ -166,7 +166,7 @@ struct OSCUDPSocket_Tests {
 
         socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
             guard !Task.isCancelled else { return }
-            Task {
+            Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                 await receiver.received(message)
             }
         })
