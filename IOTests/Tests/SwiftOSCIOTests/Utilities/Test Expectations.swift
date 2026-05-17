@@ -1,17 +1,11 @@
 //
-//  Test Utilities.swift
+//  Test Expectations.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
 import Testing
-
-@globalActor
-actor TestActor {
-    static let shared = TestActor()
-}
-
 
 /// Test expectation that waits synchronously (non-blocking) for an expression to evaluate true,
 /// failing if a timeout period is exceeded.
@@ -49,27 +43,4 @@ func wait(
     }
 
     try #require(await condition(), comment, sourceLocation: sourceLocation)
-}
-
-/// Use as a condition for individual tests that rely on stable/precise system timing.
-func isSystemTimingStable(
-    duration: TimeInterval = 0.1,
-    tolerance: TimeInterval = 0.01
-) -> Bool {
-    let start = Date()
-    Thread.sleep(forTimeInterval: duration)
-    let end = Date()
-    let diff = end.timeIntervalSince(start)
-
-    let range = (duration - tolerance) ... (duration + tolerance)
-    return range.contains(diff)
-}
-
-extension BinaryInteger {
-    /// Returns an integer as a hex string.
-    /// Prefix optional.
-    func hexString(prefix: Bool = true) -> String {
-        (prefix ? "0x" : "")
-            + String(self, radix: 16, uppercase: true)
-    }
 }
