@@ -4,8 +4,6 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-#if canImport(Darwin) && !os(watchOS)
-
 import Foundation
 @testable import SwiftOSCIO
 import Testing
@@ -454,5 +452,3 @@ struct OSCTCPClient_and_OSCTCPServer_Tests {
     }
     // TODO: add tests for clients connecting, disconnecting, and reconnecting (check for memory leaks?)
 }
-
-#endif

@@ -4,8 +4,6 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-#if canImport(Darwin) && !os(watchOS)
-
 import Foundation
 @testable import SwiftOSCIO
 import Testing
@@ -74,5 +72,3 @@ struct OSCUDPServer_Interface_Tests {
         }
     }
 }
-
-#endif
