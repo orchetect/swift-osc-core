@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import NIOCore
 @testable import SwiftOSCIO
 import Testing
 
@@ -127,15 +128,16 @@ struct OSCUDPServer_Tests {
         await #expect(receiver.messages == sourceMessages)
     }
 
-    // This test is especially flakey on GitHub Actions runners, so we'll only run it in a local context.
-    #if !GITHUB_ACTIONS
     /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @Test
-    func stressTestOnline() async throws {
+    @Test(.serialized, arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func stressTestOnline(remoteHost: String) async throws {
         let isFlakey = !isSystemTimingStable()
 
-        // selects a random available port
-        let server = OSCUDPServer(port: nil, queue: nil, receiveHandler: nil)
+        // provide the interface because the server can't bind to both IPv4 and IPv6 layers at the same time
+        let address = try SocketAddress.makeAddressResolvingHost(remoteHost, port: 1) // port doesn't matter here
+        let intf = address.protocol == .inet6 ? "::" : "0.0.0.0"
+        
+        let server = OSCUDPServer(port: nil, interface: intf, queue: nil, receiveHandler: nil)
         try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
 
         try server.start()
@@ -180,7 +182,7 @@ struct OSCUDPServer_Tests {
         let srcLocSendToServer: SourceLocation = #_sourceLocation
         DispatchQueue.global().async {
             for message in sourceMessages {
-                do { try client.send(message, to: "127.0.0.1", port: port) }
+                do { try client.send(message, to: remoteHost, port: port) }
                 catch { Issue.record(error, sourceLocation: srcLocSendToServer) }
             }
         }
@@ -190,5 +192,4 @@ struct OSCUDPServer_Tests {
 
         await #expect(receiver.messages == sourceMessages)
     }
-    #endif
 }

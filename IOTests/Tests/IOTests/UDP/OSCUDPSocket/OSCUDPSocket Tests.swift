@@ -133,16 +133,14 @@ struct OSCUDPSocket_Tests {
         await #expect(receiver.messages == sourceMessages)
     }
 
-    // This test is especially flakey on GitHub Actions runners, so we'll only run it in a local context.
-    #if !GITHUB_ACTIONS
     /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-    @Test
-    func stressTestOnline() async throws {
+    @Test(.serialized, arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
+    func stressTestOnline(remoteHost: String) async throws {
         let isFlakey = !isSystemTimingStable()
 
         let socket = OSCUDPSocket(
             localPort: nil, // selects a random available port
-            remoteHost: "127.0.0.1",
+            remoteHost: remoteHost,
             remotePort: nil, // gets set to same port as localPort
             isIPv4BroadcastEnabled: false,
             queue: nil,
@@ -196,5 +194,4 @@ struct OSCUDPSocket_Tests {
 
         await #expect(receiver.messages == sourceMessages)
     }
-    #endif
 }
