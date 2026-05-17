@@ -9,6 +9,10 @@ import PackageDescription
 
 let package = Package(
     name: "IOTests",
+    products: [
+        // This is an empty dummy target simply to coerce Xcode to synthesize an Xcode scheme with the package name "IOTests"
+        .library(name: "DummyLib", targets: ["EmptyTarget"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio", from: "2.87.0") // lowest version that supports Swift 6.0
 
@@ -22,6 +26,9 @@ let package = Package(
         //     .package(url: "https://github.com/user/swift-osc-io-nio", branch: "main")
     ],
     targets: [
+        .target(
+            name: "EmptyTarget"
+        ),
         .testTarget(
             name: "SwiftOSCIOTests",
             dependencies: [
