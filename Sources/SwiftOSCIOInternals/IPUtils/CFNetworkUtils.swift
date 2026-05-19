@@ -16,33 +16,19 @@ enum CFNetworkUtils {
     nonisolated
     static func sockaddrDataArray(
         forHostnameOrIPAddress host: String,
-        info infoTypes: Set<CFHostInfoType> = [.addresses],
-        timeout: TimeInterval = 5.0
+        info infoTypes: Set<CFHostInfoType> = [.addresses]
     ) -> NSArray? {
-        // sanitize inputs
-        let timeout = max(1.0, timeout)
-        
         let host = CFHostCreateWithName(nil, host as CFString).takeRetainedValue()
         
-        // Xcode 26 building on macOS 26 throws purple runtime warnings about
+        // Building with Xcode 26 on macOS 26 throws purple runtime warnings about
         // thread priority inversion when calling CFHostStartInfoResolution
-        // synchronously. Using a dispatch group to offload the work and wait
-        // synchronously is one potential solution without introducing async/await.
-        //
-        // Adding the DispatchGroup only adds an 8.6% performance overhead in a debug build
-        // when measuring 10,000 sequential calls with it vs. without it.
-        let g = DispatchGroup()
-        g.enter()
-        DispatchQueue.global().async { [host] in
+        // synchronously. Ideally there is a safe way to make this call synchronously
+        // without having to introduce async/await to the public API.
+        
+        Task.sync {
             for infoType in infoTypes {
                 _ = CFHostStartInfoResolution(host, infoType, nil)
             }
-            g.leave()
-        }
-        let result = g.wait(timeout: .now() + timeout)
-        switch result {
-        case .success: break
-        case .timedOut: return nil
         }
         
         var isSuccess: DarwinBoolean = false
