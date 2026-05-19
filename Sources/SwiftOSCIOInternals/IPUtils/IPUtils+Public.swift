@@ -10,6 +10,7 @@ import CoreFoundation
 import CFNetwork
 
 extension IPUtils {
+    /// Performs a lookup of the specified host or IP address and returns all known hostnames associated with it.
     public static func hostnames(forHostnameOrIPAddress host: String) -> [String] {
         guard let addresses = CFNetworkUtils.sockaddrDataArray(forHostnameOrIPAddress: host, info: [.addresses])
         else { return [] }
@@ -22,6 +23,7 @@ extension IPUtils {
         return ipStrings
     }
     
+    /// Performs a lookup of the specified host or IP address and returns all known IP addresses associated with it.
     public static func ipAddresses(forHostnameOrIPAddress host: String, families: Set<AddressFamily> = .all) -> [IPAddress] {
         var ipAddresses: [IPAddress] = []
         
@@ -45,7 +47,9 @@ extension IPUtils {
         return ipAddresses
     }
     
-    public static func ipAddress(forHostnameOrIPAddress host: String, family: AddressFamily = .ipv4) -> String? {
+    /// Performs a lookup of the specified host or IP address and returns the first known IP address associated with it
+    /// matching the specified family.
+    public static func ipAddress(forHostnameOrIPAddress host: String, family: AddressFamily) -> String? {
         let ipAddress: String? = sockaddrIterator(returning: String.self, forHostnameOrIPAddress: host, info: [.addresses]) { pointer, length in
             guard let addrFamily = AddressFamily(from: pointer.pointee.sa_family) else { return nil }
             guard addrFamily == family else { return nil }
