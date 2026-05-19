@@ -56,4 +56,25 @@ extension IPUtils {
         guard let ipAddress else { return nil }
         return ipAddress
     }
+    
+    /// Performs a lookup of the specified host or IP address and returns the first known IP address associated with it
+    /// matching the specified family.
+    /// If the lookup returns no initial matches, all hostnames associated are used to find additional IP addresses that
+    /// match the specified family.
+    ///
+    /// For example, if `::1` is passed as the `host` and the desired family is IPv4, this method will reverse-lookup hostnames
+    /// which in most cases will include `localhost`, which in turn provides the IPv4 family address `127.0.0.1` which is then returned.
+    public static func ipAddressUsingReverseLookup(forHostnameOrIPAddress host: String, family: AddressFamily) -> String? {
+        // first try resolving host or IP to an IP address of specified family
+        if let ipv4Address = ipAddress(forHostnameOrIPAddress: host, family: family) {
+            ipv4Address
+        } else {
+            // otherwise, resolve host or IP to a hostname and see if it has any alternative IP addresses of specified family
+            hostnames(forHostnameOrIPAddress: host)
+                .lazy
+                .compactMap { IPUtils.ipAddress(forHostnameOrIPAddress: $0, family: family) }
+                .first
+        }
+    }
+
 }
