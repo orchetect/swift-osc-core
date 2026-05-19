@@ -17,7 +17,7 @@ extension Task {
     /// > if the closure - or anything it calls transitively via `await` - might be bound to that same isolation context.
     /// > Doing so may result in deadlock.
     static func sync(
-        priority: TaskPriority = .userInitiated,
+        priority: TaskPriority? = .userInitiated,
         _ block: sending () async throws(Failure) -> Success
     ) throws(Failure) -> Success {
         let semaphore = DispatchSemaphore(value: 0)

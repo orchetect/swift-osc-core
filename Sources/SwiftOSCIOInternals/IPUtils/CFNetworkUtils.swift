@@ -25,9 +25,13 @@ enum CFNetworkUtils {
         // synchronously. Ideally there is a safe way to make this call synchronously
         // without having to introduce async/await to the public API.
         
-        Task.sync {
+        // wrap in a task at the current priority (usually userInteractive)
+        Task.sync(priority: Task.currentPriority) {
             for infoType in infoTypes {
-                _ = CFHostStartInfoResolution(host, infoType, nil)
+                // call out synchronously to sub-task at the expected priority of CFHostStartInfoResolution ("default" QoS)
+                _ = await Task(priority: .medium /* a.k.a. "default" QoS */) {
+                    _ = CFHostStartInfoResolution(host, infoType, nil)
+                }.value
             }
         }
         
