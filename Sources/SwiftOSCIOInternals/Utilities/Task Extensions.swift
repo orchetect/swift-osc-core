@@ -16,23 +16,26 @@ extension Task {
     /// > Do not call this from a thread used by Swift Concurrency (e.g. an actor, including global actors like MainActor)
     /// > if the closure - or anything it calls transitively via `await` - might be bound to that same isolation context.
     /// > Doing so may result in deadlock.
-    static func sync(_ code: sending () async throws(Failure) -> Success) throws(Failure) -> Success {
+    static func sync(
+        priority: TaskPriority = .userInitiated,
+        _ block: sending () async throws(Failure) -> Success
+    ) throws(Failure) -> Success {
         let semaphore = DispatchSemaphore(value: 0)
         
         nonisolated(unsafe) var result: Result<Success, Failure>! = nil
         
-        withoutActuallyEscaping(code) {
+        withoutActuallyEscaping(block) {
             nonisolated(unsafe) let sendableCode = $0
             
-            let coreTask = Task<Void, Never>.detached(priority: .userInitiated) { @Sendable () async -> Void in
-                do {
+            let coreTask = Task<Void, Never>.detached(priority: priority) { @Sendable () async -> Void in
+                do throws(Failure) {
                     result = .success(try await sendableCode())
                 } catch {
-                    result = .failure(error as! Failure)
+                    result = .failure(error)
                 }
             }
             
-            Task<Void, Never>.detached(priority: .userInitiated) {
+            Task<Void, Never>.detached(priority: priority) {
                 await coreTask.value
                 semaphore.signal()
             }
