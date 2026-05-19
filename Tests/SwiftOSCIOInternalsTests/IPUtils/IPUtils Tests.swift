@@ -131,11 +131,11 @@ struct IPUtilsTests {
     @Test
     func performance() {
         // Baseline tests on an M1 Max MacBook Pro:
-        // - Debug build with all sanitizers off, code coverage off, without DispatchGroup: 1.335 sec
-        // - Debug build with all sanitizers off, code coverage off, with DispatchGroup: 1.450 sec
-        // Ergo, adding the DispatchGroup only adds a 8.6% performance overhead on average.
+        // - Debug build with all sanitizers off, code coverage off, without Task: 1.335 sec (0.1335 ms per call)
+        // - Debug build with all sanitizers off, code coverage off, with Task: 1.524 sec (0.1524 ms per call)
+        // Ergo, adding the Task only adds a 14% performance overhead on average.
 
-        // By contrast, SwiftNIO's `SocketAddress.makeAddressResolvingHost()` completes this in 1.041 sec
+        // By contrast, SwiftNIO's `SocketAddress.makeAddressResolvingHost()` completes this in 1.041 sec (0.1041 ms per call)
         // However, that method does not let you specify address/protocol family; it only returns the first address found.
 
         for _ in 0 ..< 10_000 {
