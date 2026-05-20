@@ -25,16 +25,42 @@ extension SerializedTests {
                 localPort: 8001,
                 interface: "en1",
                 isPortReuseEnabled: true,
-                isIPv4BroadcastEnabled: true
+                isIPv4BroadcastEnabled: true,
+                isIPv6Enabled: true
             )
         }
         
         @Test
         func initParameterized_DefaultedOverloads() {
-            _ = OSCUDPClient(localPort: 8002)
-            _ = OSCUDPClient(localPort: 8002, interface: nil)
-            _ = OSCUDPClient(localPort: 8003, interface: nil, isPortReuseEnabled: true)
-            _ = OSCUDPClient(localPort: 8004, interface: nil, isPortReuseEnabled: true, isIPv4BroadcastEnabled: true)
+            _ = OSCUDPClient(
+                localPort: 8002
+            )
+            
+            _ = OSCUDPClient(
+                localPort: 8002,
+                interface: nil
+            )
+            
+            _ = OSCUDPClient(
+                localPort: 8003,
+                interface: nil,
+                isPortReuseEnabled: true
+            )
+            
+            _ = OSCUDPClient(
+                localPort: 8004,
+                interface: nil,
+                isPortReuseEnabled: true,
+                isIPv4BroadcastEnabled: true
+            )
+            
+            _ = OSCUDPClient(
+                localPort: 8004,
+                interface: nil,
+                isPortReuseEnabled: true,
+                isIPv4BroadcastEnabled: true,
+                isIPv6Enabled: true
+            )
         }
         
         @Test
@@ -46,11 +72,13 @@ extension SerializedTests {
             _ = client.interface
             _ = client.isPortReuseEnabled // mutable
             _ = client.isIPv4BroadcastEnabled // mutable
+            _ = client.isIPv6Enabled
             _ = client.isStarted
             
             // set mutable properties
-            client.isIPv4BroadcastEnabled = true
             client.isPortReuseEnabled = true
+            client.isIPv4BroadcastEnabled = true
+            client.isIPv6Enabled = true
         }
         
         @Test

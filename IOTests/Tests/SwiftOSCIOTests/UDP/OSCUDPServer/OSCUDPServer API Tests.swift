@@ -20,6 +20,7 @@ extension SerializedTests {
                 port: 8000,
                 interface: "en1",
                 isPortReuseEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .messages { _, _, _, _ in }
             )
@@ -28,6 +29,7 @@ extension SerializedTests {
                 port: 8000,
                 interface: "en1",
                 isPortReuseEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
             )
@@ -36,6 +38,7 @@ extension SerializedTests {
                 port: 8000,
                 interface: "en1",
                 isPortReuseEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .packets { _, _, _ in }
             )
@@ -64,6 +67,14 @@ extension SerializedTests {
                 port: 8000,
                 interface: "en1",
                 isPortReuseEnabled: true,
+                isIPv6Enabled: true
+            )
+            
+            _ = OSCUDPServer(
+                port: 8000,
+                interface: "en1",
+                isPortReuseEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil
             )
         }
@@ -76,10 +87,12 @@ extension SerializedTests {
             _ = server.localPort
             _ = server.interface
             _ = server.isPortReuseEnabled
+            _ = server.isIPv6Enabled
             _ = server.isStarted
             
             // set mutable properties
             server.isPortReuseEnabled = true
+            server.isIPv6Enabled = true
         }
         
         @Test

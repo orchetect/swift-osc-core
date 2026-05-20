@@ -20,6 +20,7 @@ extension SerializedTests {
                 remoteHost: "",
                 remotePort: 8000,
                 interface: "en1",
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil,
                 receiveHandler: .messages { _, _, _, _ in }
@@ -29,6 +30,7 @@ extension SerializedTests {
                 remoteHost: "",
                 remotePort: 8000,
                 interface: "en1",
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil,
                 receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
@@ -38,6 +40,7 @@ extension SerializedTests {
                 remoteHost: "",
                 remotePort: 8000,
                 interface: "en1",
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil,
                 receiveHandler: .packets { _, _, _ in }
@@ -61,6 +64,14 @@ extension SerializedTests {
                 remoteHost: "",
                 remotePort: 8000,
                 interface: nil,
+                isIPv6Enabled: true
+            )
+            
+            _ = OSCTCPClient(
+                remoteHost: "",
+                remotePort: 8000,
+                interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1
             )
             
@@ -68,6 +79,7 @@ extension SerializedTests {
                 remoteHost: "",
                 remotePort: 8000,
                 interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil
             )
@@ -86,9 +98,12 @@ extension SerializedTests {
             _ = client.interface
             _ = client.isConnected
             _ = client.framingMode
+            _ = client.isIPv6Enabled
+            // _ = client.isIPv6AddressTranslationToIPv4Enabled // TODO: not protocolized yet
             
             // set mutable properties
-            // (none)
+            client.isIPv6Enabled = true
+            // client.isIPv6AddressTranslationToIPv4Enabled // TODO: not protocolized yet
         }
         
         @Test

@@ -22,6 +22,7 @@ extension SerializedTests {
                 remotePort: nil,
                 interface: nil,
                 isIPv4BroadcastEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .messages { _, _, _, _ in }
             )
@@ -32,6 +33,7 @@ extension SerializedTests {
                 remotePort: nil,
                 interface: nil,
                 isIPv4BroadcastEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
             )
@@ -42,6 +44,7 @@ extension SerializedTests {
                 remotePort: nil,
                 interface: nil,
                 isIPv4BroadcastEnabled: true,
+                isIPv6Enabled: true,
                 queue: nil,
                 receiveHandler: .packets { _, _, _ in }
             )
@@ -87,6 +90,16 @@ extension SerializedTests {
                 remotePort: 9000,
                 interface: "en1",
                 isIPv4BroadcastEnabled: false,
+                isIPv6Enabled: true
+            )
+            
+            _ = OSCUDPSocket(
+                localPort: 8000,
+                remoteHost: "nowhere",
+                remotePort: 9000,
+                interface: "en1",
+                isIPv4BroadcastEnabled: false,
+                isIPv6Enabled: true,
                 queue: nil
             )
         }
@@ -101,11 +114,13 @@ extension SerializedTests {
             _ = socket.localPort
             _ = socket.interface
             _ = socket.isIPv4BroadcastEnabled
+            _ = socket.isIPv6Enabled
             _ = socket.isStarted
             
             // set mutable properties
             socket.remoteHost = "someplace"
             socket.remotePort = 8080
+            socket.isIPv6Enabled = true
         }
         
         @Test

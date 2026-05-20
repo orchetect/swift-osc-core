@@ -19,6 +19,7 @@ extension SerializedTests {
             _ = OSCTCPServer(
                 port: nil,
                 interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil,
                 receiveHandler: .messages { _, _, _, _ in }
@@ -27,6 +28,7 @@ extension SerializedTests {
             _ = OSCTCPServer(
                 port: nil,
                 interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil,
                 receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
@@ -45,12 +47,20 @@ extension SerializedTests {
             _ = OSCTCPServer(
                 port: nil,
                 interface: nil,
+                isIPv6Enabled: true
+            )
+            
+            _ = OSCTCPServer(
+                port: nil,
+                interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1
             )
             
             _ = OSCTCPServer(
                 port: nil,
                 interface: nil,
+                isIPv6Enabled: true,
                 framingMode: .osc1_1,
                 queue: nil
             )
@@ -66,9 +76,10 @@ extension SerializedTests {
             _ = server.isStarted
             _ = server.framingMode
             _ = server.clients
+            _ = server.isIPv6Enabled
             
             // set mutable properties
-            // (none)
+            server.isIPv6Enabled = true
         }
         
         @Test
