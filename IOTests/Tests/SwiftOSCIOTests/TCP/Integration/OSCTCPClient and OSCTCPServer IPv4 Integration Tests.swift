@@ -32,6 +32,9 @@ extension SerializedTests {
             let server = OSCTCPServer(port: nil, framingMode: framingMode)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
             
@@ -45,6 +48,9 @@ extension SerializedTests {
             
             let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client.isIPv6Enabled)
             
             try client.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
@@ -141,6 +147,9 @@ extension SerializedTests {
             let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
             
@@ -155,8 +164,14 @@ extension SerializedTests {
             let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client1.isIPv6Enabled)
+            
             try client1.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client1.isIPv6Enabled)
             
             #expect(server.clients.count == 1)
             
@@ -165,6 +180,9 @@ extension SerializedTests {
             
             let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client2.isIPv6Enabled)
             
             try client2.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
@@ -195,6 +213,9 @@ extension SerializedTests {
             let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
             
@@ -215,8 +236,14 @@ extension SerializedTests {
             let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client1.isIPv6Enabled)
+            
             try client1.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client1.isIPv6Enabled)
             
             #expect(server.clients.count == 1)
         }
@@ -233,6 +260,9 @@ extension SerializedTests {
             let server = OSCTCPServer(port: nil, framingMode: framingMode)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
             
@@ -246,6 +276,9 @@ extension SerializedTests {
             let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client1.isIPv6Enabled)
+            
             try client1.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
             
@@ -256,6 +289,9 @@ extension SerializedTests {
             
             let client2 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: framingMode)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client2.isIPv6Enabled)
             
             try client2.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)

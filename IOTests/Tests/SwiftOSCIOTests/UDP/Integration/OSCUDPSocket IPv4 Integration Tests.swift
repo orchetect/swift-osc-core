@@ -34,6 +34,9 @@ extension SerializedTests {
             )
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCUDPSocketProtocol spec.
+            #expect(!socket.isIPv6Enabled)
+            
             try socket.start()
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
             

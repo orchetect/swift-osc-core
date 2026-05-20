@@ -30,6 +30,9 @@ extension SerializedTests {
             let server = OSCUDPServer(port: nil, interface: "0.0.0.0", queue: nil, receiveHandler: nil)
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
             
+            // sanity check - IPv6 should be disabled by default, as per the OSCUDPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
             try server.start()
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
             
@@ -67,6 +70,9 @@ extension SerializedTests {
             
             let client = OSCUDPClient()
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCUDPClientProtocol spec.
+            #expect(!client.isIPv6Enabled)
             
             // use global thread to simulate internal network thread being a dedicated thread
             let srcLocSendToServer: SourceLocation = #_sourceLocation
