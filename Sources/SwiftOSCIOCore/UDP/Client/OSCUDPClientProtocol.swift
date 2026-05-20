@@ -127,6 +127,11 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// therefore does not define broadcast addresses. Instead, IPv6 uses multicast addressing.
     var isIPv4BroadcastEnabled: Bool { get set }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC client has been started.
     var isStarted: Bool { get }
 }

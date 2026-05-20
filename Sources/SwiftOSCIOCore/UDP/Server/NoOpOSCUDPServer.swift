@@ -11,6 +11,7 @@ open class NoOpOSCUDPServer: OSCUDPServerProtocol {
     open private(set) var localPort: UInt16
     open private(set) var interface: String?
     open var isPortReuseEnabled: Bool
+    open var isIPv6Enabled: Bool = false
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?

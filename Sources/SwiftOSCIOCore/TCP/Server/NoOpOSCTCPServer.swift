@@ -10,6 +10,7 @@ import class Foundation.DispatchQueue
 open class NoOpOSCTCPServer: OSCTCPServerProtocol {
     open private(set) var localPort: UInt16
     open private(set) var interface: String?
+    open var isIPv6Enabled: Bool = false
     open private(set) var isStarted: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     open private(set) var clients: [OSCTCPClientSessionID: (host: String, port: UInt16)] = [:]

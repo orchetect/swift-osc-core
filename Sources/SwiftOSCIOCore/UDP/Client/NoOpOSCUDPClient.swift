@@ -12,6 +12,7 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
     open private(set) var interface: String?
     open var isPortReuseEnabled: Bool
     open var isIPv4BroadcastEnabled: Bool
+    open var isIPv6Enabled: Bool = false
     open private(set) var isStarted: Bool = false
     private var _isStartNeededToOperate: Bool
 

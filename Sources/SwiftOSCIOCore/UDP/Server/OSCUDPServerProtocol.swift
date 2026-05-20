@@ -68,6 +68,11 @@ public protocol OSCUDPServerProtocol: Sendable {
     /// messages are only received by the first socket to bind.
     var isPortReuseEnabled: Bool { get set }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC server has been started.
     var isStarted: Bool { get }
 

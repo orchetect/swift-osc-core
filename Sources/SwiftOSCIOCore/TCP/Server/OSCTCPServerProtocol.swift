@@ -103,6 +103,11 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// Network interface to restrict connections to.
     var interface: String? { get }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC server has been started.
     var isStarted: Bool { get }
 

@@ -83,6 +83,11 @@ public protocol OSCTCPClientProtocol: Sendable {
     /// Network interface to restrict connections to.
     var interface: String? { get }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``connect(timeout:)``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC socket is connected to the remote host.
     var isConnected: Bool { get }
 

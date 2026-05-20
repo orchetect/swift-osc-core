@@ -12,6 +12,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
     open private(set) var remoteHost: String
     open private(set) var remotePort: UInt16
     open private(set) var interface: String?
+    open var isIPv6Enabled: Bool = false
     open private(set) var isConnected: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue

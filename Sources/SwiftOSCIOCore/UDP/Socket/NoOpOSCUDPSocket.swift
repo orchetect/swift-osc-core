@@ -18,6 +18,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
 
     open private(set) var interface: String?
     open private(set) var isIPv4BroadcastEnabled: Bool
+    open var isIPv6Enabled: Bool = false
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?
