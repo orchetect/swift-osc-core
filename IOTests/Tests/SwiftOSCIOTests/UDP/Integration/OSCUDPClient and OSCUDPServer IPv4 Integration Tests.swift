@@ -24,9 +24,6 @@ extension SerializedTests {
         func onlineStressTest() async throws {
             let isFlakey = !isSystemTimingStable()
             
-            // provide the interface because the server can't bind to both IPv4 and IPv6 layers at the same time
-            let address = try SocketAddress.makeAddressResolvingHost("127.0.0.1", port: 1) // port doesn't matter here
-            
             let server = OSCUDPServer(port: nil, interface: "0.0.0.0", queue: nil, receiveHandler: nil)
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
             
