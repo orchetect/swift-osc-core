@@ -43,6 +43,7 @@ extension SerializedTests {
                         Task { await receiver.addError((data, error, host, port)) }
                     }
                     
+                    // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8000)
                     
                     // allow a little time to wait for any asynchronous callbacks
@@ -82,6 +83,7 @@ extension SerializedTests {
                         Task { await receiver.addError((data, error, host, port)) }
                     }
                     
+                    // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8000)
                     
                     await wait(expect: { await !receiver.errors.isEmpty }, timeout: 2.0)

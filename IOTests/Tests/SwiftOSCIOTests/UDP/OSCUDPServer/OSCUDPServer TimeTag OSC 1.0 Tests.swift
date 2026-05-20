@@ -24,6 +24,7 @@ extension SerializedTests {
                     [.message("/test", values: [Int32(123)])]
                 )
                 
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 0.5)
@@ -45,6 +46,7 @@ extension SerializedTests {
                     [.message("/test", values: [Int32(123)])]
                 )
                 
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 0.5)
@@ -66,6 +68,7 @@ extension SerializedTests {
                     [.message("/test", values: [Int32(123)])]
                 )
                 
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 0.5)
@@ -88,6 +91,7 @@ extension SerializedTests {
                     [.message("/test", values: [Int32(123)])]
                 )
                 
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 0.9) // just under 1 second
@@ -112,6 +116,7 @@ extension SerializedTests {
                     timeTag: .timeIntervalSinceNow(1.0),
                     [.message("/test1", values: [Int32(123)])]
                 )
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle1), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 // this message should NOT arrive, as it is scheduled in the future after the test has ended
@@ -119,6 +124,7 @@ extension SerializedTests {
                     timeTag: .timeIntervalSinceNow(1.5),
                     [.message("/test2", values: [Int32(123)])]
                 )
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle2), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 1.1) // allow for just over 1 second to accommodate testing overhead
@@ -141,6 +147,7 @@ extension SerializedTests {
                     [.message("/test", values: [Int32(123)])]
                 )
                 
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
                 
                 try await Task.sleep(seconds: 0.5)
