@@ -15,8 +15,10 @@ extension SerializedTests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
         func interfaceBinding_interfaceAddress(toLocalIP localIP: String) throws {
+            let isIPv6 = localIP.contains(":")
+            
             guard let (_, interfaceAddress) = try networkDevice(
-                protocols: [localIP.contains(":") ? .inet6 : .inet],
+                protocols: [isIPv6 ? .inet6 : .inet],
                 includeLoopback: true,
                 forAddress: localIP
             ) else {
@@ -30,12 +32,12 @@ extension SerializedTests {
             print("Using interface \"\(interface)\"")
             
             // create a server to connect to
-            let server = OSCTCPServer(port: nil, interface: interface)
+            let server = OSCTCPServer(port: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(server.interface == interface)
             try server.start()
             
             // set up client
-            let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface)
+            let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
             try client.connect()
             client.close()
@@ -44,8 +46,10 @@ extension SerializedTests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
         func interfaceBinding_interfaceName(toInterfaceNameOfLocalIP localIP: String) throws {
+            let isIPv6 = localIP.contains(":")
+            
             guard let (interfaceName, _) = try networkDevice(
-                protocols: [localIP.contains(":") ? .inet6 : .inet],
+                protocols: [isIPv6 ? .inet6 : .inet],
                 includeLoopback: true,
                 forAddress: localIP
             ) else {
@@ -59,20 +63,14 @@ extension SerializedTests {
             print("Using interface \"\(interface)\"")
             
             // create a server to connect to
-            let server = OSCTCPServer(port: nil, interface: interface)
+            let server = OSCTCPServer(port: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(server.interface == interface)
             try server.start()
             
             // set up client
-            let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface)
+            let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
-            if localIP == "::1" {
-                withKnownIssue("When requesting an interface by its name, we can't infer the IP protocol to bind to, so we defer to IPv4") {
-                    try client.connect()
-                }
-            } else {
-                try client.connect()
-            }
+            try client.connect()
             
             client.close()
         }

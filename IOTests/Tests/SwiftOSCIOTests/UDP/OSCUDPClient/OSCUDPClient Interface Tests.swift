@@ -15,8 +15,10 @@ extension SerializedTests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
         func interfaceBinding_interfaceAddress(toLocalIP localIP: String) throws {
+            let isIPv6 = localIP.contains(":")
+            
             guard let (_, interfaceAddress) = try networkDevice(
-                protocols: [.inet, .inet6],
+                protocols: [isIPv6 ? .inet6 : .inet],
                 includeLoopback: true,
                 forAddress: localIP
             ) else {
@@ -30,12 +32,12 @@ extension SerializedTests {
             print("Using interface \"\(interface)\"")
             
             // create a server to connect to
-            let server = OSCUDPServer(port: nil, interface: interface)
+            let server = OSCUDPServer(port: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(server.interface == interface)
             try server.start()
             
             // set up client
-            let client = OSCUDPClient(localPort: nil, interface: interface)
+            let client = OSCUDPClient(localPort: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
             try client.start()
             client.stop()
@@ -44,8 +46,10 @@ extension SerializedTests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
         func interfaceBinding_interfaceName(toInterfaceNameOfLocalIP localIP: String) throws {
+            let isIPv6 = localIP.contains(":")
+            
             guard let (interfaceName, _) = try networkDevice(
-                protocols: [.inet, .inet6],
+                protocols: [isIPv6 ? .inet6 : .inet],
                 includeLoopback: true,
                 forAddress: localIP
             ) else {
@@ -59,12 +63,12 @@ extension SerializedTests {
             print("Using interface \"\(interface)\"")
             
             // create a server to connect to
-            let server = OSCUDPServer(port: nil, interface: interface)
+            let server = OSCUDPServer(port: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(server.interface == interface)
             try server.start()
             
             // set up client
-            let client = OSCUDPClient(localPort: nil, interface: interface)
+            let client = OSCUDPClient(localPort: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
             try client.start()
             client.stop()
