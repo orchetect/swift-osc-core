@@ -70,8 +70,8 @@ extension IPUtils {
     /// which in most cases will include `localhost`, which in turn provides the IPv4 family address `127.0.0.1` which is then returned.
     public static func ipAddressUsingReverseLookup(forHostnameOrIPAddress host: String, family: AddressFamily) -> String? {
         // first try resolving host or IP to an IP address of specified family
-        if let ipv4Address = ipAddress(forHostnameOrIPAddress: host, family: family) {
-            ipv4Address
+        if let ipAddress = ipAddress(forHostnameOrIPAddress: host, family: family) {
+            ipAddress
         } else {
             // otherwise, resolve host or IP to a hostname and see if it has any alternative IP addresses of specified family
             hostnames(forHostnameOrIPAddress: host)
