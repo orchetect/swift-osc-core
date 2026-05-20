@@ -18,6 +18,7 @@ extension OSCTCPClientProtocol {
         remoteHost: String,
         remotePort: UInt16,
         interface: String? = nil,
+        isIPv6Enabled: Bool = false,
         timeTagMode: OSCTimeTagMode = .ignore,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
@@ -33,6 +34,7 @@ extension OSCTCPClientProtocol {
             remoteHost: remoteHost,
             remotePort: remotePort,
             interface: interface,
+            isIPv6Enabled: isIPv6Enabled,
             framingMode: framingMode,
             queue: queue,
             receiveHandler: handler
@@ -67,6 +69,7 @@ extension OSCTCPServerProtocol {
     public init(
         port: UInt16?,
         interface: String? = nil,
+        isIPv6Enabled: Bool = false,
         timeTagMode: OSCTimeTagMode = .ignore,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
@@ -81,6 +84,7 @@ extension OSCTCPServerProtocol {
         self.init(
             port: port,
             interface: interface,
+            isIPv6Enabled: isIPv6Enabled,
             framingMode: framingMode,
             queue: queue,
             receiveHandler: handler
@@ -116,6 +120,7 @@ extension OSCUDPServerProtocol {
         port: UInt16? = 8000,
         interface: String? = nil,
         isPortReuseEnabled: Bool = false,
+        isIPv6Enabled: Bool = false,
         timeTagMode: OSCTimeTagMode = .ignore,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCMessageHandlerBlock? = nil
@@ -130,6 +135,7 @@ extension OSCUDPServerProtocol {
             port: port,
             interface: interface,
             isPortReuseEnabled: isPortReuseEnabled,
+            isIPv6Enabled: isIPv6Enabled,
             queue: queue,
             receiveHandler: handler
         )
@@ -167,6 +173,7 @@ extension OSCUDPSocketProtocol {
         interface: String? = nil,
         timeTagMode: OSCTimeTagMode = .ignore,
         isIPv4BroadcastEnabled: Bool = false,
+        isIPv6Enabled: Bool = false,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCMessageHandlerBlock? = nil
     ) {
@@ -182,6 +189,7 @@ extension OSCUDPSocketProtocol {
             remotePort: remotePort,
             interface: interface,
             isIPv4BroadcastEnabled: isIPv4BroadcastEnabled,
+            isIPv6Enabled: isIPv6Enabled,
             queue: queue,
             receiveHandler: handler
         )
