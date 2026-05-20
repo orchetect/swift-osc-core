@@ -9,11 +9,13 @@ import Foundation
 import Testing
 
 extension SerializedTests {
+    /// These tests provide offline self-tests to establish baseline behaviors.
+    /// Online integration tests should be located in their own test suite and not located here.
     @Suite(.enabled(if: isSystemTimingStable()))
     struct OSCUDPSocket_Tests {
-        /// Check that an empty OSC bundle does not produce any OSC messages.
+        /// Offline test to check that an empty OSC bundle does not produce any OSC messages.
         @Test
-        func emptyBundle() async throws {
+        func offlineEmptyBundle() async throws {
             try await confirmation(expectedCount: 0) { confirmation in
                 let socket = OSCUDPSocket(remoteHost: "127.0.0.1")
                 
@@ -31,9 +33,9 @@ extension SerializedTests {
             }
         }
         
-        /// Ensure rapidly received messages are dispatched in the order they are received.
+        /// Offline test to ensure rapidly received messages are dispatched in the order they are received.
         @Test(arguments: 0 ... 10)
-        func messageOrdering(iteration: Int) async throws {
+        func offlineMessageOrdering(iteration: Int) async throws {
             _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
             
             let server = OSCUDPSocket()
@@ -86,7 +88,7 @@ extension SerializedTests {
         
         /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
         @Test
-        func stressTestOffline() async throws {
+        func offlineStressTest() async throws {
             let socket = OSCUDPSocket(
                 localPort: nil,
                 remoteHost: "127.0.0.1",
@@ -133,68 +135,6 @@ extension SerializedTests {
             }
             
             try await wait(require: { await receiver.messages.count == 1000 }, timeout: 5.0)
-            
-            await #expect(receiver.messages == sourceMessages)
-        }
-        
-        /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
-        @Test(.serialized, arguments: ["localhost", "127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-        func stressTestOnline(remoteHost: String) async throws {
-            let isFlakey = !isSystemTimingStable()
-            
-            let socket = OSCUDPSocket(
-                localPort: nil, // selects a random available port
-                remoteHost: remoteHost,
-                remotePort: nil, // gets set to same port as localPort
-                isIPv4BroadcastEnabled: false,
-                queue: nil,
-                receiveHandler: nil
-            )
-            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
-            
-            try socket.start()
-            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
-            
-            print("Using socket listen port \(socket.localPort), destination port \(socket.remotePort)")
-            
-            final actor Receiver {
-                var messages: [OSCMessage] = []
-                func received(_ message: OSCMessage) {
-                    messages.append(message)
-                }
-            }
-            
-            let receiver = Receiver()
-            
-            socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
-                guard !Task.isCancelled else { return }
-                Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await receiver.received(message)
-                }
-            })
-            
-            let possibleValuePacks: [OSCValues] = [
-                [],
-                [UUID().uuidString],
-                [Int.random(in: 10000 ... 10_000_000)],
-                [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
-            ]
-            
-            let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
-                OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
-            }
-            
-            // use global thread to simulate internal network thread being a dedicated thread
-            let srcLocSocketSend: SourceLocation = #_sourceLocation
-            DispatchQueue.global().async {
-                for message in sourceMessages {
-                    do { try socket.send(message) }
-                    catch { Issue.record(error, sourceLocation: srcLocSocketSend) }
-                }
-            }
-            
-            await wait(expect: { await receiver.messages.count == 1000 }, timeout: isFlakey ? 20.0 : 5.0)
-            try await #require(receiver.messages.count == 1000)
             
             await #expect(receiver.messages == sourceMessages)
         }

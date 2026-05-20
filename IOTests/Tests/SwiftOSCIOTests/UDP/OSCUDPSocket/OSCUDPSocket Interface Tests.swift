@@ -10,6 +10,7 @@ import NIOCore
 import Testing
 
 extension SerializedTests {
+    /// These tests cover both IPv4 and IPv6.
     @Suite
     struct OSCUDPSocket_Interface_Tests {
         /// Attempt to bind to a network interface, if one is present that can be used.

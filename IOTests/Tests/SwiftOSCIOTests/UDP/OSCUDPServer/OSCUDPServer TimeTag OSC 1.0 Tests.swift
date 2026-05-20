@@ -8,6 +8,7 @@
 import Testing
 
 extension SerializedTests {
+    /// These tests provide minimum setup needed to test OSC 1.0 time-tag behavior.
     @Suite
     struct OSCUDPServer_TimeTag_OSC1_0_Tests {
         @Test

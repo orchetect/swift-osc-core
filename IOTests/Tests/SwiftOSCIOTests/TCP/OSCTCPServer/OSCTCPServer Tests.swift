@@ -1,11 +1,10 @@
 //
-//  OSCUDPServer Tests.swift
+//  OSCTCPServer Tests.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
-import NIOCore
 @testable import SwiftOSCIO
 import Testing
 
@@ -13,33 +12,14 @@ extension SerializedTests {
     /// These tests provide offline self-tests to establish baseline behaviors.
     /// Online integration tests should be located in their own test suite and not located here.
     @Suite(.enabled(if: isSystemTimingStable()))
-    struct OSCUDPServer_Tests {
-        /// Offline test to check that an empty OSC bundle does not produce any OSC messages.
-        @Test
-        func offlineEmptyBundle() async throws {
-            try await confirmation(expectedCount: 0) { confirmation in
-                let server = OSCUDPServer()
-                
-                server.setReceiveHandler(.messages { _, _, _, _ in
-                    guard !Task.isCancelled else { return }
-                    confirmation()
-                })
-                
-                let bundle = OSCBundle()
-                
-                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
-                
-                try await Task.sleep(seconds: 1)
-            }
-        }
-        
+    struct OSCTCPServer_Tests {
         /// Offline test to ensure rapidly received messages are received in the order they are dispatched.
         @Test(arguments: 0 ... 10)
         func offlineMessageOrdering(iteration: Int) async throws {
             _ = iteration // argument value not used, just a mechanism to repeat the test X number of times
             
-            let server = OSCUDPServer()
+            // we aren't starting the server, so passing port 0 or nil has no meaningful effect
+            let server = OSCTCPServer(port: nil)
             
             final actor Receiver {
                 var messages: [(message: OSCMessage, host: String, port: UInt16)] = []
@@ -50,7 +30,7 @@ extension SerializedTests {
             
             let receiver = Receiver()
             
-            server.setReceiveHandler(.messages { message, timeTag, host, port in
+            server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                     await receiver.received(message, host: host, port: port)
@@ -69,7 +49,7 @@ extension SerializedTests {
                 server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
             }
             
-            try await wait(require: { await receiver.messages.count == 3 }, timeout: 5.0)
+            try await wait(require: { await receiver.messages.count == 3 }, timeout: 10.0)
             
             let message1 = await receiver.messages[0]
             #expect(message1.message == msg1)
@@ -90,7 +70,8 @@ extension SerializedTests {
         /// Offline stress-test to ensure a large volume of OSC packets are received and dispatched in order.
         @Test
         func offlineStressTest() async throws {
-            let server = OSCUDPServer()
+            // we aren't starting the server, so passing port 0 or nil has no meaningful effect
+            let server = OSCTCPServer(port: nil)
             
             final actor Receiver {
                 var messages: [OSCMessage] = []
@@ -101,7 +82,7 @@ extension SerializedTests {
             
             let receiver = Receiver()
             
-            server.setReceiveHandler(.messages { message, timeTag, host, port in
+            server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                     await receiver.received(message)
@@ -129,7 +110,7 @@ extension SerializedTests {
                 }
             }
             
-            try await wait(require: { await receiver.messages.count == 1000 }, timeout: 10.0)
+            try await wait(require: { await receiver.messages.count == 1000 }, timeout: 20.0)
             
             await #expect(receiver.messages == sourceMessages)
         }

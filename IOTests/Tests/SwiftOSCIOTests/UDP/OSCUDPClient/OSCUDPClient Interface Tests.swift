@@ -9,11 +9,12 @@ import Foundation
 import Testing
 
 extension SerializedTests {
+    /// These tests cover both IPv4 and IPv6.
     @Suite
     struct OSCUDPClient_Interface_Tests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-        func interfaceBinding_interfaceAddress(localIP: String) throws {
+        func interfaceBinding_interfaceAddress(toLocalIP localIP: String) throws {
             guard let (_, interfaceAddress) = try networkDevice(
                 protocols: [.inet, .inet6],
                 includeLoopback: true,
@@ -42,7 +43,7 @@ extension SerializedTests {
         
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-        func interfaceBinding_interfaceName(localIP: String) throws {
+        func interfaceBinding_interfaceName(toInterfaceNameOfLocalIP localIP: String) throws {
             guard let (interfaceName, _) = try networkDevice(
                 protocols: [.inet, .inet6],
                 includeLoopback: true,
