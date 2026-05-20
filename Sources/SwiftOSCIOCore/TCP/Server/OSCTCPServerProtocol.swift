@@ -37,6 +37,7 @@ public protocol OSCTCPServerProtocol: Sendable {
     ///   - port: Local network port to listen for inbound connections.
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
@@ -44,6 +45,7 @@ public protocol OSCTCPServerProtocol: Sendable {
     init(
         port: UInt16?,
         interface: String?,
+        isIPv6Enabled: Bool,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
@@ -153,6 +155,7 @@ extension OSCTCPServerProtocol {
     ///   - port: Local network port to listen for inbound connections.
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
@@ -161,6 +164,7 @@ extension OSCTCPServerProtocol {
     public init(
         port: UInt16?,
         interface: String? = nil,
+        isIPv6Enabled: Bool = false,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCPacketHandler? = nil
@@ -168,6 +172,7 @@ extension OSCTCPServerProtocol {
         self.init(
             port: port,
             interface: interface,
+            isIPv6Enabled: isIPv6Enabled,
             framingMode: framingMode,
             queue: queue,
             receiveHandler: receiveHandler

@@ -35,6 +35,7 @@ public protocol OSCUDPSocketProtocol: Sendable {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -44,6 +45,7 @@ public protocol OSCUDPSocketProtocol: Sendable {
         remotePort: UInt16?,
         interface: String?,
         isIPv4BroadcastEnabled: Bool,
+        isIPv6Enabled: Bool,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
     )
@@ -164,6 +166,7 @@ extension OSCUDPSocketProtocol {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -174,6 +177,7 @@ extension OSCUDPSocketProtocol {
         remotePort: UInt16? = nil,
         interface: String? = nil,
         isIPv4BroadcastEnabled: Bool = false,
+        isIPv6Enabled: Bool = false,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCPacketHandler? = nil
     ) {
@@ -183,6 +187,7 @@ extension OSCUDPSocketProtocol {
             remotePort: remotePort,
             interface: interface,
             isIPv4BroadcastEnabled: isIPv4BroadcastEnabled,
+            isIPv6Enabled: isIPv6Enabled,
             queue: queue,
             receiveHandler: receiveHandler
         )
