@@ -10,28 +10,42 @@ import CoreFoundation
 import CFNetwork
 
 extension IPUtils {
+    public enum ResolveError: Error {
+        case emptyHostname
+        case noFamiliesSpecified
+        case error(code: Int? = nil, reason: String)
+    }
+    
     /// Performs a lookup of the specified host or IP address and returns all known hostnames associated with it.
-    public static func hostnames(forHostnameOrIPAddress host: String) -> [String] {
-        guard let addresses = CFNetworkUtils.sockaddrDataArray(forHostnameOrIPAddress: host, info: [.addresses])
-        else { return [] }
+    public static func hostnames(forHostnameOrIPAddress host: String) throws -> [String] {
+        guard !host.isEmpty else { throw ResolveError.emptyHostname }
         
         var ipStrings: [String] = []
-        for case let addressData as Data in addresses {
-            guard let ipString = string(for: addressData, property: .hostname) else { continue }
-            if !ipStrings.contains(ipString) { ipStrings.append(ipString) }
+        
+        try CIPUtils.sockaddrIterator(forHostnameOrIPAddress: host, port: 1) { addr, length in
+            if let ipString = CIPUtils.string(for: addr, length: length, property: .hostname),
+               !ipStrings.contains(ipString)
+            {
+                ipStrings.append(ipString)
+            }
+            return true
         }
+        
         return ipStrings
     }
     
     /// Performs a lookup of the specified host or IP address and returns all known IP addresses associated with it.
-    public static func ipAddresses(forHostnameOrIPAddress host: String, families: Set<AddressFamily> = .all) -> [IPAddress] {
+    public static func ipAddresses(forHostnameOrIPAddress host: String, families: Set<AddressFamily> = .all) throws -> [IPAddress] {
+        guard !host.isEmpty else { throw ResolveError.emptyHostname }
+        guard !families.isEmpty else { throw ResolveError.noFamiliesSpecified }
+        
         var ipAddresses: [IPAddress] = []
         
-        sockaddrIterator(forHostnameOrIPAddress: host, info: [.addresses]) { pointer, length in
-            guard let family = AddressFamily(from: pointer.pointee.sa_family) else { return }
-            guard families.contains(family) else { return }
+        try CIPUtils.sockaddrIterator(forHostnameOrIPAddress: host, port: 1) { addr, length in
+            guard let family = AddressFamily(from: addr.pointee.sa_family) else { return true } // continue iterator
+            guard families.contains(family) else { return true } // continue iterator
             
-            guard let string = string(for: pointer, length: length, property: .ipAddress) else { return }
+            guard let string = CIPUtils.string(for: addr, length: length, property: .ipAddress) else { return true } // continue iterator
             
             let ipAddress: IPAddress? = switch family {
             case .ipv4: .v4(string)
@@ -39,9 +53,11 @@ extension IPUtils {
             case .unix: nil
             }
             
-            guard let ipAddress else { return }
+            guard let ipAddress else { return true } // continue iterator
             
             if !ipAddresses.contains(ipAddress) { ipAddresses.append(ipAddress) }
+            
+            return true // continue iterator
         }
         
         return ipAddresses
@@ -49,12 +65,16 @@ extension IPUtils {
     
     /// Performs a lookup of the specified host or IP address and returns the first known IP address associated with it
     /// matching the specified family.
-    public static func ipAddress(forHostnameOrIPAddress host: String, family: AddressFamily) -> String? {
-        let ipAddress: String? = sockaddrIterator(returning: String.self, forHostnameOrIPAddress: host, info: [.addresses]) { pointer, length in
-            guard let addrFamily = AddressFamily(from: pointer.pointee.sa_family) else { return nil }
-            guard addrFamily == family else { return nil }
-            guard let string = string(for: pointer, length: length, property: .ipAddress) else { return nil }
-            return string
+    public static func ipAddress(forHostnameOrIPAddress host: String, family: AddressFamily) throws -> String? {
+        guard !host.isEmpty else { throw ResolveError.emptyHostname }
+        
+        var ipAddress: String? = nil
+        try CIPUtils.sockaddrIterator(forHostnameOrIPAddress: host, port: 1) { addr, length in
+            guard let addrFamily = AddressFamily(from: addr.pointee.sa_family) else { return true } // continue iterator
+            guard addrFamily == family else { return true } // continue iterator
+            guard let string = CIPUtils.string(for: addr, length: length, property: .ipAddress) else { return true } // continue iterator
+            ipAddress = string
+            return false // exit iterator
         }
         
         guard let ipAddress else { return nil }
@@ -68,17 +88,28 @@ extension IPUtils {
     ///
     /// For example, if `::1` is passed as the `host` and the desired family is IPv4, this method will reverse-lookup hostnames
     /// which in most cases will include `localhost`, which in turn provides the IPv4 family address `127.0.0.1` which is then returned.
-    public static func ipAddressUsingReverseLookup(forHostnameOrIPAddress host: String, family: AddressFamily) -> String? {
-        // first try resolving host or IP to an IP address of specified family
-        if let ipAddress = ipAddress(forHostnameOrIPAddress: host, family: family) {
-            ipAddress
-        } else {
-            // otherwise, resolve host or IP to a hostname and see if it has any alternative IP addresses of specified family
-            hostnames(forHostnameOrIPAddress: host)
+    public static func ipAddressUsingReverseLookup(
+        forHostnameOrIPAddress host: String,
+        forceHostnameLookup: Bool = false,
+        family: AddressFamily
+    ) throws -> String? {
+        guard !host.isEmpty else { throw ResolveError.emptyHostname }
+        
+        func basicResolve() throws -> String? {
+            try ipAddress(forHostnameOrIPAddress: host, family: family)
+        }
+        
+        func firstResultFromHostnames() throws -> String? {
+            try hostnames(forHostnameOrIPAddress: host)
                 .lazy
-                .compactMap { IPUtils.ipAddress(forHostnameOrIPAddress: $0, family: family) }
+                .compactMap { try IPUtils.ipAddress(forHostnameOrIPAddress: $0, family: family) }
                 .first
         }
+        
+        return if forceHostnameLookup {
+            try firstResultFromHostnames() ?? basicResolve()
+        } else {
+            try basicResolve() ?? firstResultFromHostnames()
+        }
     }
-
 }

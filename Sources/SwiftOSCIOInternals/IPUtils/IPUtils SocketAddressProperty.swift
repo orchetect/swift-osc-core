@@ -7,7 +7,7 @@
 import CoreFoundation
 
 extension IPUtils {
-    enum SocketAddressProperty: Int32, Equatable, Hashable, CaseIterable, Sendable {
+    public enum SocketAddressProperty: Int32, Equatable, Hashable, CaseIterable, Sendable {
         case hostname
         case ipAddress
         
@@ -21,7 +21,7 @@ extension IPUtils {
 }
 
 extension Set<IPUtils.SocketAddressProperty> {
-    static var all: Self {
+    public static var all: Self {
         Set(IPUtils.SocketAddressProperty.allCases)
     }
 }
