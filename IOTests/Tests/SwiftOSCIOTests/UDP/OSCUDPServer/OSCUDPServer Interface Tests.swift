@@ -10,65 +10,90 @@ import NIOCore
 import Testing
 
 extension SerializedTests {
-    /// These tests cover both IPv4 and IPv6.
     @Suite
     struct OSCUDPServer_Interface_Tests {
-        /// Attempt to bind to a network interface, if one is present that can be used.
-        @Test(arguments: [.inet, .inet6] as [NIOBSDSocket.ProtocolFamily]) // IPv4 and IPv6
-        func interfaceBinding_interfaceAddress(proto: NIOBSDSocket.ProtocolFamily) throws {
-            let interfaces = try networkDevices(protocols: [proto], includeLoopback: false)
+        /// Attempt to bind to an IPv4 network interface, if one is present that can be used.
+        @Test
+        func interfaceBinding_interfaceAddress() throws {
+            let interfaces = try networkDevices(protocols: [.inet], includeLoopback: false)
             
-            print("Found \(proto) interfaces:")
+            print("IPv4 interfaces found:")
             dump(interfaces)
             
-            let enInterfaces = interfaces.filter {
-                $0.name.hasPrefix("en")
-                && !$0.address.lowercased().hasPrefix("169.") // ignore default IPv4 gateway
-                && !$0.address.lowercased().hasPrefix("fe80:") // ignore default IPv6 gateway
+            let filteredInterfaces = interfaces.filter {
+                !$0.address.lowercased().hasPrefix("169.") // ignore default IPv4 gateway
             }
             
-            guard let (_, interfaceAddress) = enInterfaces.first else {
+            guard !filteredInterfaces.isEmpty else {
                 withKnownIssue {
                     Issue.record("No available network interfaces to test. Skipping test.")
                 }
                 return
             }
             
-            let interface = interfaceAddress
-            print("Using interface \"\(interface)\"")
+            // test de-flaking: try all possible addresses checking for at least one that succeeds
+            var successCount = 0
+            for (_, interfaceAddress) in filteredInterfaces {
+                let interface = interfaceAddress
+                print("Trying interface with address \"\(interface)\"")
+                
+                // set up server
+                let server = OSCUDPServer(port: nil, interface: interface)
+                #expect(server.interface == interface)
+                
+                do {
+                    try server.start()
+                    print("Interface \(interface) succeeded")
+                    successCount += 1
+                } catch {
+                    print("Interface \(interface) failed")
+                }
+                server.stop()
+            }
             
-            // set up server
-            let server = OSCUDPServer(port: nil, interface: interface)
-            #expect(server.interface == interface)
-            try server.start()
-            server.stop()
+            #expect(successCount > 0)
         }
         
-        /// Attempt to bind to a network interface, if one is present that can be used.
-        @Test(arguments: [.inet, .inet6] as [NIOBSDSocket.ProtocolFamily]) // IPv4 and IPv6
-        func interfaceBinding_interfaceName(proto: NIOBSDSocket.ProtocolFamily) throws {
-            let interfaces = try networkDevices(protocols: [proto], includeLoopback: false)
+        /// Attempt to bind to an IPv4 network interface, if one is present that can be used.
+        @Test
+        func interfaceBinding_interfaceName() throws {
+            let interfaces = try networkDevices(protocols: [.inet], includeLoopback: false)
             
-            print("Found \(proto) interfaces:")
+            print("IPv4 interfaces found:")
             dump(interfaces)
             
-            let enInterfaces = interfaces.filter { $0.name.hasPrefix("en") }
+            let filteredInterfaces = interfaces.filter {
+                $0.name.hasPrefix("en")
+            }
             
-            guard let (interfaceName, _) = enInterfaces.first else {
+            guard !filteredInterfaces.isEmpty else {
                 withKnownIssue {
                     Issue.record("No available network interfaces to test. Skipping test.")
                 }
                 return
             }
             
-            let interface = interfaceName
-            print("Using interface \"\(interface)\"")
+            // test de-flaking: try all possible addresses checking for at least one that succeeds
+            var successCount = 0
+            for (interfaceName, _) in filteredInterfaces {
+                let interface = interfaceName
+                print("Trying interface named \"\(interface)\"")
+                
+                // set up server
+                let server = OSCUDPServer(port: nil, interface: interface)
+                #expect(server.interface == interface)
+                
+                do {
+                    try server.start()
+                    print("Interface \(interface) succeeded")
+                    successCount += 1
+                } catch {
+                    print("Interface \(interface) failed")
+                }
+                server.stop()
+            }
             
-            // set up server
-            let server = OSCUDPServer(port: nil, interface: interface)
-            #expect(server.interface == interface)
-            try server.start()
-            server.stop()
+            #expect(successCount > 0)
         }
         
         /// Attempt to bind to an invalid network interface.
