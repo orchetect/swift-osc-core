@@ -21,6 +21,25 @@ import Testing
 struct IPUtilsTests {
     @Suite
     struct ResolveTests {
+        // MARK: - hostnames(forHostnameOrIPAddress:)
+        
+        @Test
+        func hostnames() {
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "localhost")) == ["localhost"])
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "127.0.0.1")) == ["localhost"])
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "::1")) == ["localhost"])
+        }
+
+        @Test
+        func hostnames_edgeCases() {
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "")) == [])
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: " ")) == [])
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: ".")) == [])
+            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: UUID().uuidString)) == [])
+        }
+
+        // MARK: - ipAddresses(forHostnameOrIPAddress:families:)
+        
         @Test
         func ipAddresses_localhost() async {
             #expect(Set(IPUtils.ipAddresses(forHostnameOrIPAddress: "localhost", families: .all)) == [.v4("127.0.0.1"), .v6("::1")])
@@ -50,6 +69,8 @@ struct IPUtilsTests {
             #expect(Set(IPUtils.ipAddresses(forHostnameOrIPAddress: UUID().uuidString, families: .all)) == [])
         }
         
+        // MARK: - ipAddress(forHostnameOrIPAddress:family:)
+        
         @Test
         func ipAddress_localhost() {
             #expect(IPUtils.ipAddress(forHostnameOrIPAddress: "localhost", family: .ipv4) == "127.0.0.1")
@@ -71,19 +92,27 @@ struct IPUtilsTests {
             #expect(IPUtils.ipAddress(forHostnameOrIPAddress: "::1", family: .unix) == nil)
         }
         
+        // MARK: - ipAddressUsingReverseLookup(forHostnameOrIPAddress:family:)
+        
         @Test
-        func hostnames() {
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "localhost")) == ["localhost"])
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "127.0.0.1")) == ["localhost"])
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "::1")) == ["localhost"])
+        func ipAddress_forHostnameOrIPAddress_localhost() {
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "localhost", family: .ipv4) == "127.0.0.1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "localhost", family: .ipv6) == "::1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "localhost", family: .unix) == nil)
         }
         
         @Test
-        func hostnames_edgeCases() {
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: "")) == [])
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: " ")) == [])
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: ".")) == [])
-            #expect(Set(IPUtils.hostnames(forHostnameOrIPAddress: UUID().uuidString)) == [])
+        func ipAddress_forHostnameOrIPAddress_127_0_0_1() {
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "127.0.0.1", family: .ipv4) == "127.0.0.1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "127.0.0.1", family: .ipv6) == "::1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "127.0.0.1", family: .unix) == nil)
+        }
+        
+        @Test
+        func ipAddress_forHostnameOrIPAddress_colon_colon_1() {
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "::1", family: .ipv4) == "127.0.0.1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "::1", family: .ipv6) == "::1")
+            #expect(IPUtils.ipAddressUsingReverseLookup(forHostnameOrIPAddress: "::1", family: .unix) == nil)
         }
     }
     
