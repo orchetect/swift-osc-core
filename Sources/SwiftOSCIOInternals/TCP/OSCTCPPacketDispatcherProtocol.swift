@@ -29,19 +29,15 @@ extension OSCTCPPacketDispatcherProtocol {
                 let packets = try TCPPacketLengthHeaderCoding.decode(data, byteOrder: .bigEndian)
 
                 guard !packets.isEmpty else {
-                    #if DEBUG
-                    print("Failed to parse OSC packets from incoming TCP data.")
-                    #endif
-
+                    let errorMessage = "No OSC packets were parsed from incoming TCP data. This is likely the result of malformed data."
+                    report(error: .malformed(errorMessage), forMalformedData: Data(data), remoteHost: remoteHost, remotePort: remotePort)
                     return
                 }
 
                 dispatch(receivedPackets: packets, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
-                #if DEBUG
-                print("OSC 1.0 packet-length header decoding error:", error.localizedDescription)
-                #endif
-
+                let errorMessage = "OSC 1.0 packet-length header decoding error: \(error)"
+                report(error: .malformed(errorMessage), forMalformedData: Data(data), remoteHost: remoteHost, remotePort: remotePort)
                 return
             }
 
@@ -50,19 +46,15 @@ extension OSCTCPPacketDispatcherProtocol {
                 let packets = try TCPSLIPCoding.decode(data)
 
                 guard !packets.isEmpty else {
-                    #if DEBUG
-                    print("Failed to parse OSC packets from incoming TCP data.")
-                    #endif
-
+                    let errorMessage = "No OSC packets were parsed from incoming TCP data. This is likely the result of malformed data."
+                    report(error: .malformed(errorMessage), forMalformedData: Data(data), remoteHost: remoteHost, remotePort: remotePort)
                     return
                 }
 
                 dispatch(receivedPackets: packets, remoteHost: remoteHost, remotePort: remotePort)
             } catch {
-                #if DEBUG
-                print("OSC 1.1 SLIP decoding error:", error.localizedDescription)
-                #endif
-
+                let errorMessage = "OSC 1.1 SLIP decoding error: \(error)"
+                report(error: .malformed(errorMessage), forMalformedData: Data(data), remoteHost: remoteHost, remotePort: remotePort)
                 return
             }
 
