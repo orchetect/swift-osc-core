@@ -31,7 +31,7 @@ extension SerializedTests {
             let server = OSCUDPServer()
             
             try await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
-                try await confirmation("Error Handler", expectedCount: 0) { errorHandlerConfirmation in
+                try await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
                     server.setReceiveHandler(.packets { packet, host, port in
                         guard !Task.isCancelled else { return }
                         receiveHandlerConfirmation()
@@ -51,7 +51,10 @@ extension SerializedTests {
                 }
             }
             
-            #expect(await receiver.errors.isEmpty)
+            let payload = try await #require(receiver.errors.first)
+            #expect(payload.data == Data(nonOSCData))
+            #expect(payload.host == "dummy")
+            #expect(payload.port == 8008)
         }
         
         /// Test receiving OSC data with correct header bytes but malformed data within the packet.
