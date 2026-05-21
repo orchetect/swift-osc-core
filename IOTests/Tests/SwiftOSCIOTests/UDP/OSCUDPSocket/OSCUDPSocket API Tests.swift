@@ -55,29 +55,29 @@ extension SerializedTests {
             _ = OSCUDPSocket()
             
             _ = OSCUDPSocket(
-                localPort: 8000
+                localPort: 8008
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere"
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000,
                 interface: "en1"
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000,
                 interface: "en1",
@@ -85,7 +85,7 @@ extension SerializedTests {
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000,
                 interface: "en1",
@@ -94,7 +94,7 @@ extension SerializedTests {
             )
             
             _ = OSCUDPSocket(
-                localPort: 8000,
+                localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000,
                 interface: "en1",
@@ -136,24 +136,24 @@ extension SerializedTests {
             // send(OSCPacket)
             try? socket.send(OSCPacket.bundle(Self.bundle))
             try? socket.send(OSCPacket.bundle(Self.bundle), to: "nowhere")
-            try? socket.send(OSCPacket.bundle(Self.bundle), to: "nowhere", port: 8000)
-            try? socket.send(OSCPacket.bundle(Self.bundle), port: 8000)
+            try? socket.send(OSCPacket.bundle(Self.bundle), to: "nowhere", port: 8008)
+            try? socket.send(OSCPacket.bundle(Self.bundle), port: 8008)
             try? socket.send(OSCPacket.message(Self.message))
             try? socket.send(OSCPacket.message(Self.message), to: "nowhere")
-            try? socket.send(OSCPacket.message(Self.message), to: "nowhere", port: 8000)
-            try? socket.send(OSCPacket.message(Self.message), port: 8000)
+            try? socket.send(OSCPacket.message(Self.message), to: "nowhere", port: 8008)
+            try? socket.send(OSCPacket.message(Self.message), port: 8008)
             
             // send(OSCBundle)
             try? socket.send(Self.bundle)
             try? socket.send(Self.bundle, to: "nowhere")
-            try? socket.send(Self.bundle, to: "nowhere", port: 8000)
-            try? socket.send(Self.bundle, port: 8000)
+            try? socket.send(Self.bundle, to: "nowhere", port: 8008)
+            try? socket.send(Self.bundle, port: 8008)
             
             // send(OSCMessage)
             try? socket.send(Self.message)
             try? socket.send(Self.message, to: "nowhere")
-            try? socket.send(Self.message, to: "nowhere", port: 8000)
-            try? socket.send(Self.message, port: 8000)
+            try? socket.send(Self.message, to: "nowhere", port: 8008)
+            try? socket.send(Self.message, port: 8008)
             
             // setReceiveHandler { }
             socket.setReceiveHandler(.messages { _, _, _, _ in })

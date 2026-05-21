@@ -44,7 +44,7 @@ extension SerializedTests {
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                    server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8000)
+                    server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8008)
                     
                     // allow a little time to wait for any asynchronous callbacks
                     try await Task.sleep(seconds: 0.5)
@@ -84,7 +84,7 @@ extension SerializedTests {
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                    server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8000)
+                    server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8008)
                     
                     await wait(expect: { await !receiver.errors.isEmpty }, timeout: 2.0)
                 }
@@ -93,7 +93,7 @@ extension SerializedTests {
             let payload = try await #require(receiver.errors.first)
             #expect(payload.data == Data(malformedOSCData))
             #expect(payload.host == "dummy")
-            #expect(payload.port == 8000)
+            #expect(payload.port == 8008)
         }
     }
 }

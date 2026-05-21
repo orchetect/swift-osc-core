@@ -18,7 +18,7 @@ extension SerializedTests {
         func init_ProtocolDefined() {
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: "en1",
                 isIPv6Enabled: true,
                 framingMode: .osc1_1,
@@ -28,7 +28,7 @@ extension SerializedTests {
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: "en1",
                 isIPv6Enabled: true,
                 framingMode: .osc1_1,
@@ -38,7 +38,7 @@ extension SerializedTests {
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: "en1",
                 isIPv6Enabled: true,
                 framingMode: .osc1_1,
@@ -51,25 +51,25 @@ extension SerializedTests {
         func init_DefaultedOverloads() {
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000
+                remotePort: 8008
             )
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: nil
             )
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: nil,
                 isIPv6Enabled: true
             )
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: nil,
                 isIPv6Enabled: true,
                 framingMode: .osc1_1
@@ -77,7 +77,7 @@ extension SerializedTests {
             
             _ = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000,
+                remotePort: 8008,
                 interface: nil,
                 isIPv6Enabled: true,
                 framingMode: .osc1_1,
@@ -89,7 +89,7 @@ extension SerializedTests {
         func propertyAccess() {
             let client = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000
+                remotePort: 8008
             )
             
             // read
@@ -110,7 +110,7 @@ extension SerializedTests {
         func methods() {
             let client = OSCTCPClient(
                 remoteHost: "",
-                remotePort: 8000
+                remotePort: 8008
             )
             
             // connect()

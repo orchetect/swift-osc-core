@@ -92,14 +92,14 @@ extension SerializedTests {
             client.stop()
             
             // send(OSCPacket)
-            try? client.send(OSCPacket.bundle(Self.bundle), to: "nowhere", port: 8000)
-            try? client.send(OSCPacket.message(Self.message), to: "nowhere", port: 8000)
+            try? client.send(OSCPacket.bundle(Self.bundle), to: "nowhere", port: 8008)
+            try? client.send(OSCPacket.message(Self.message), to: "nowhere", port: 8008)
             
             // send(OSCBundle)
-            try? client.send(Self.bundle, to: "nowhere", port: 8000)
+            try? client.send(Self.bundle, to: "nowhere", port: 8008)
             
             // send(OSCMessage)
-            try? client.send(Self.message, to: "nowhere", port: 8000)
+            try? client.send(Self.message, to: "nowhere", port: 8008)
         }
     }
 }

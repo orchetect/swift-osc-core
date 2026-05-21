@@ -26,7 +26,7 @@ extension SerializedTests {
                 ])
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 0.5)
             }
@@ -48,7 +48,7 @@ extension SerializedTests {
                 )
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 0.5)
             }
@@ -70,7 +70,7 @@ extension SerializedTests {
                 )
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 0.5)
             }
@@ -92,7 +92,7 @@ extension SerializedTests {
                 )
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 0.5)
             }
@@ -114,7 +114,7 @@ extension SerializedTests {
                 )
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 0.5)
             }

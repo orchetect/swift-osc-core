@@ -17,7 +17,7 @@ extension SerializedTests {
         @Test
         func init_ProtocolDefined() {
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true,
                 isIPv6Enabled: true,
@@ -26,7 +26,7 @@ extension SerializedTests {
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true,
                 isIPv6Enabled: true,
@@ -35,7 +35,7 @@ extension SerializedTests {
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true,
                 isIPv6Enabled: true,
@@ -49,29 +49,29 @@ extension SerializedTests {
             _ = OSCUDPServer()
             
             _ = OSCUDPServer(
-                port: 8000
+                port: 8008
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1"
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true,
                 isIPv6Enabled: true
             )
             
             _ = OSCUDPServer(
-                port: 8000,
+                port: 8008,
                 interface: "en1",
                 isPortReuseEnabled: true,
                 isIPv6Enabled: true,

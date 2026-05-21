@@ -28,7 +28,7 @@ extension SerializedTests {
             // address
             nonOSCData += "ABCDEFGH".data(using: .ascii)!
             
-            let server = OSCTCPClient(remoteHost: "dummy", remotePort: 8000)
+            let server = OSCTCPClient(remoteHost: "dummy", remotePort: 8008)
             
             try await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
                 try await confirmation("Error Handler", expectedCount: 0) { errorHandlerConfirmation in
@@ -44,7 +44,7 @@ extension SerializedTests {
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                    server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8000)
+                    server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8008)
                     
                     // allow a little time to wait for any asynchronous callbacks
                     try await Task.sleep(seconds: 0.5)
@@ -68,7 +68,7 @@ extension SerializedTests {
                                  0x00, 0x00, 0x00, 0x00] // null null null null
                                                          // purposely omit value type tags, which results in a malformed packet
             
-            let server = OSCTCPClient(remoteHost: "dummy", remotePort: 8000)
+            let server = OSCTCPClient(remoteHost: "dummy", remotePort: 8008)
             
             await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
                 await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
@@ -84,7 +84,7 @@ extension SerializedTests {
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                    server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8000)
+                    server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8008)
                     
                     await wait(expect: { await !receiver.errors.isEmpty }, timeout: 2.0)
                 }
@@ -93,7 +93,7 @@ extension SerializedTests {
             let payload = try await #require(receiver.errors.first)
             #expect(payload.data == Data(malformedOSCData))
             #expect(payload.host == "dummy")
-            #expect(payload.port == 8000)
+            #expect(payload.port == 8008)
         }
     }
 }

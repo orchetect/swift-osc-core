@@ -27,7 +27,7 @@ extension SerializedTests {
                 let bundle = OSCBundle()
                 
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                socket.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8000)
+                socket.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
                 
                 try await Task.sleep(seconds: 1)
             }
@@ -63,7 +63,7 @@ extension SerializedTests {
             // use global thread to simulate internal network thread being a dedicated thread
             DispatchQueue.global().async {
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8000)
+                server.core.dispatch(packet: .message(msg1), remoteHost: "127.0.0.1", remotePort: 8008)
                 server.core.dispatch(packet: .message(msg2), remoteHost: "192.168.0.25", remotePort: 8001)
                 server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
             }
@@ -73,7 +73,7 @@ extension SerializedTests {
             let message1 = await receiver.messages[0]
             #expect(message1.message == msg1)
             #expect(message1.host == "127.0.0.1")
-            #expect(message1.port == 8000)
+            #expect(message1.port == 8008)
             
             let message2 = await receiver.messages[1]
             #expect(message2.message == msg2)
@@ -130,7 +130,7 @@ extension SerializedTests {
             DispatchQueue.global().async {
                 for message in sourceMessages {
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
-                    socket.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8000)
+                    socket.core.dispatch(packet: .message(message), remoteHost: "127.0.0.1", remotePort: 8008)
                 }
             }
             
