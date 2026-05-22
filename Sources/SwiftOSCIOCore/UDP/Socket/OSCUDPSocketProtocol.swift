@@ -35,6 +35,7 @@ public protocol OSCUDPSocketProtocol: Sendable {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -44,6 +45,7 @@ public protocol OSCUDPSocketProtocol: Sendable {
         remotePort: UInt16?,
         interface: String?,
         isIPv4BroadcastEnabled: Bool,
+        isIPv6Enabled: Bool,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
     )
@@ -129,6 +131,11 @@ public protocol OSCUDPSocketProtocol: Sendable {
     /// therefore does not define broadcast addresses. Instead, IPv6 uses multicast addressing.
     var isIPv4BroadcastEnabled: Bool { get }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC socket has been started.
     var isStarted: Bool { get }
 
@@ -159,6 +166,7 @@ extension OSCUDPSocketProtocol {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
     ///     See ``isIPv4BroadcastEnabled`` for more details.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -169,6 +177,7 @@ extension OSCUDPSocketProtocol {
         remotePort: UInt16? = nil,
         interface: String? = nil,
         isIPv4BroadcastEnabled: Bool = false,
+        isIPv6Enabled: Bool = false,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCPacketHandler? = nil
     ) {
@@ -178,6 +187,7 @@ extension OSCUDPSocketProtocol {
             remotePort: remotePort,
             interface: interface,
             isIPv4BroadcastEnabled: isIPv4BroadcastEnabled,
+            isIPv6Enabled: isIPv6Enabled,
             queue: queue,
             receiveHandler: receiveHandler
         )

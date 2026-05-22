@@ -35,11 +35,8 @@ extension OSCPacketDispatcherProtocol {
     public func dispatch(receivedPacket data: some DataProtocol, remoteHost: String, remotePort: UInt16) {
         do throws(OSCDecodeError) {
             guard let oscPacket = try OSCPacket(from: data) else {
-                #if DEBUG
-                print("Error parsing OSC packet from incoming TCP data; it may not be OSC data or may be malformed.")
-                #endif
-                
-                return
+                let errorMessage = "Error parsing OSC packet from incoming TCP data. It may not be OSC data or may be malformed."
+                throw .malformed(errorMessage)
             }
             dispatch(packet: oscPacket, remoteHost: remoteHost, remotePort: remotePort)
         } catch {
@@ -145,6 +142,10 @@ extension OSCPacketDispatcherProtocol {
         remotePort: UInt16
     ) {
         queue.async {
+            #if DEBUG
+            print("\(error)")
+            #endif
+            
             self.receiveErrorHandler?(data, error, remoteHost, remotePort)
         }
     }

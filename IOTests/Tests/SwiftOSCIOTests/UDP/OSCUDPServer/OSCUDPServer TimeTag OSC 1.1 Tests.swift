@@ -1,0 +1,123 @@
+//
+//  OSCUDPServer TimeTag OSC 1.1 Tests.swift
+//  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
+//  © 2026 Steffan Andrews • Licensed under MIT License
+//
+
+@testable import SwiftOSCIO
+import Testing
+
+extension SerializedTests {
+    /// These tests provide minimum setup needed to test OSC 1.0 time-tag behavior.
+    @Suite
+    struct OSCUDPServer_TimeTag_OSC1_1_Tests {
+        @Test
+        func defaultTimeTag() async throws {
+            try await confirmation(expectedCount: 1) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages(timeTagMode: .ignore) { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle([
+                    .message("/test", values: [Int32(123)])
+                ])
+                
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
+                
+                try await Task.sleep(seconds: 0.5)
+            }
+        }
+        
+        @Test
+        func immediate() async throws {
+            try await confirmation(expectedCount: 1) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages(timeTagMode: .ignore) { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle(
+                    timeTag: .immediate(),
+                    [.message("/test", values: [Int32(123)])]
+                )
+                
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
+                
+                try await Task.sleep(seconds: 0.5)
+            }
+        }
+        
+        @Test
+        func now() async throws {
+            try await confirmation(expectedCount: 1) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages(timeTagMode: .ignore) { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle(
+                    timeTag: .now(),
+                    [.message("/test", values: [Int32(123)])]
+                )
+                
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
+                
+                try await Task.sleep(seconds: 0.5)
+            }
+        }
+        
+        @Test
+        func oneSecondInFuture() async throws {
+            try await confirmation(expectedCount: 1) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages(timeTagMode: .ignore) { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle(
+                    timeTag: .timeIntervalSinceNow(1.0),
+                    [.message("/test", values: [Int32(123)])]
+                )
+                
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
+                
+                try await Task.sleep(seconds: 0.5)
+            }
+        }
+        
+        @Test
+        func past() async throws {
+            try await confirmation(expectedCount: 1) { confirmation in
+                let server = OSCUDPServer()
+                
+                server.setReceiveHandler(.messages(timeTagMode: .ignore) { _, _, _, _ in
+                    guard !Task.isCancelled else { return }
+                    confirmation()
+                })
+                
+                let bundle = OSCBundle(
+                    timeTag: .timeIntervalSinceNow(-1.0),
+                    [.message("/test", values: [Int32(123)])]
+                )
+                
+                // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
+                server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
+                
+                try await Task.sleep(seconds: 0.5)
+            }
+        }
+    }
+}

@@ -27,6 +27,7 @@ public protocol OSCUDPServerProtocol: Sendable {
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes to receive broadcast packets.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -34,6 +35,7 @@ public protocol OSCUDPServerProtocol: Sendable {
         port: UInt16?,
         interface: String?,
         isPortReuseEnabled: Bool,
+        isIPv6Enabled: Bool,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
     )
@@ -68,6 +70,11 @@ public protocol OSCUDPServerProtocol: Sendable {
     /// messages are only received by the first socket to bind.
     var isPortReuseEnabled: Bool { get set }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC server has been started.
     var isStarted: Bool { get }
 
@@ -97,6 +104,7 @@ extension OSCUDPServerProtocol {
     ///     If `nil` or `0`, a random available port in the system will be chosen.
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes to receive broadcast packets.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
     ///   - receiveHandler: Handler to call when OSC packets are received.
@@ -105,6 +113,7 @@ extension OSCUDPServerProtocol {
         port: UInt16? = 8000,
         interface: String? = nil,
         isPortReuseEnabled: Bool = false,
+        isIPv6Enabled: Bool = false,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCPacketHandler? = nil
     ) {
@@ -112,6 +121,7 @@ extension OSCUDPServerProtocol {
             port: port,
             interface: interface,
             isPortReuseEnabled: isPortReuseEnabled,
+            isIPv6Enabled: isIPv6Enabled,
             queue: queue,
             receiveHandler: receiveHandler
         )

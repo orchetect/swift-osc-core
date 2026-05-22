@@ -9,9 +9,11 @@ import typealias Foundation.TimeInterval
 
 /// A no-op OSC TCP client implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCTCPClient: OSCTCPClientProtocol {
+    open private(set) var localPort: UInt16?
     open private(set) var remoteHost: String
     open private(set) var remotePort: UInt16
     open private(set) var interface: String?
+    open var isIPv6Enabled: Bool
     open private(set) var isConnected: Bool = false
     open private(set) var framingMode: OSCTCPFramingMode
     var queue: DispatchQueue
@@ -23,6 +25,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
         remoteHost: String,
         remotePort: UInt16,
         interface: String?,
+        isIPv6Enabled: Bool,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
@@ -30,6 +33,7 @@ open class NoOpOSCTCPClient: OSCTCPClientProtocol {
         self.remoteHost = remoteHost
         self.remotePort = remotePort
         self.interface = interface
+        self.isIPv6Enabled = isIPv6Enabled
         self.framingMode = framingMode
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler

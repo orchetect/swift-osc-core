@@ -37,6 +37,7 @@ public protocol OSCTCPClientProtocol: Sendable {
     ///   - remoteHost: Remote hostname or IP address.
     ///   - remotePort: Remote port number.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
@@ -45,6 +46,7 @@ public protocol OSCTCPClientProtocol: Sendable {
         remoteHost: String,
         remotePort: UInt16,
         interface: String?,
+        isIPv6Enabled: Bool,
         framingMode: OSCTCPFramingMode,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
@@ -74,6 +76,11 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     // MARK: - Properties
 
+    /// Local network port.
+    /// This port is automatically assigned by the system each time the client connects to a remote server.
+    /// Returns `nil` when not connected.
+    var localPort: UInt16? { get }
+
     /// Remote network hostname.
     var remoteHost: String { get }
 
@@ -82,6 +89,11 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     /// Network interface to restrict connections to.
     var interface: String? { get }
+
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``connect(timeout:)``.
+    var isIPv6Enabled: Bool { get set }
 
     /// Returns a boolean indicating whether the OSC socket is connected to the remote host.
     var isConnected: Bool { get }
@@ -116,6 +128,7 @@ extension OSCTCPClientProtocol {
     ///   - remoteHost: Remote hostname or IP address.
     ///   - remotePort: Remote port number.
     ///   - interface: Optionally specify a network interface for which to constrain connections.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     ///   - framingMode: TCP framing mode. Both server and client must use the same framing mode. (Default is recommended.)
     ///   - queue: Optionally supply a custom dispatch queue for receiving OSC packets and dispatching the
     ///     handler callback closure. If `nil`, a dedicated internal background queue will be used.
@@ -125,6 +138,7 @@ extension OSCTCPClientProtocol {
         remoteHost: String,
         remotePort: UInt16,
         interface: String? = nil,
+        isIPv6Enabled: Bool = false,
         framingMode: OSCTCPFramingMode = .osc1_1,
         queue: DispatchQueue? = nil,
         receiveHandler: OSCPacketHandler? = nil
@@ -133,6 +147,7 @@ extension OSCTCPClientProtocol {
             remoteHost: remoteHost,
             remotePort: remotePort,
             interface: interface,
+            isIPv6Enabled: isIPv6Enabled,
             framingMode: framingMode,
             queue: queue,
             receiveHandler: receiveHandler

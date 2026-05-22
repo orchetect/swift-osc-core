@@ -12,6 +12,7 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
     open private(set) var interface: String?
     open var isPortReuseEnabled: Bool
     open var isIPv4BroadcastEnabled: Bool
+    open var isIPv6Enabled: Bool
     open private(set) var isStarted: Bool = false
     private var _isStartNeededToOperate: Bool
 
@@ -30,13 +31,15 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
         localPort: UInt16?,
         interface: String?,
         isPortReuseEnabled: Bool,
-        isIPv4BroadcastEnabled: Bool
+        isIPv4BroadcastEnabled: Bool,
+        isIPv6Enabled: Bool
     ) {
         self.localPort = localPort ?? 0
         self.interface = interface
         self.isPortReuseEnabled = isPortReuseEnabled
         self.isIPv4BroadcastEnabled = isIPv4BroadcastEnabled
-
+        self.isIPv6Enabled = isIPv6Enabled
+        
         _isStartNeededToOperate = true
     }
 

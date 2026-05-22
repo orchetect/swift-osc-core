@@ -18,6 +18,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
 
     open private(set) var interface: String?
     open private(set) var isIPv4BroadcastEnabled: Bool
+    open var isIPv6Enabled: Bool
     open private(set) var isStarted: Bool = false
     var queue: DispatchQueue
     var receiveHandler: OSCPacketHandler?
@@ -29,6 +30,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
         remotePort: UInt16?,
         interface: String?,
         isIPv4BroadcastEnabled: Bool,
+        isIPv6Enabled: Bool,
         queue: DispatchQueue?,
         receiveHandler: OSCPacketHandler?
     ) {
@@ -37,6 +39,7 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
         self.remotePort = remotePort ?? self.localPort
         self.interface = interface
         self.isIPv4BroadcastEnabled = isIPv4BroadcastEnabled
+        self.isIPv6Enabled = isIPv6Enabled
         self.queue = queue ?? .global()
         self.receiveHandler = receiveHandler
     }
@@ -49,6 +52,12 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
 
     open func stop() {
         isStarted = false
+    }
+    
+    // MARK: - Communication
+    
+    open func send(_ packet: OSCPacket, to host: String?, port: UInt16?) throws {
+        print("No-op send to \(host ?? "<unknown>"):\(port?.description ?? "<unknown>"): \(packet))")
     }
 
     // MARK: - Properties

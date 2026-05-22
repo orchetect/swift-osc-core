@@ -42,11 +42,13 @@ public protocol OSCUDPClientProtocol: Sendable {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     init(
         localPort: UInt16?,
         interface: String?,
         isPortReuseEnabled: Bool,
-        isIPv4BroadcastEnabled: Bool
+        isIPv4BroadcastEnabled: Bool,
+        isIPv6Enabled: Bool
     )
 
     // MARK: - Lifecycle
@@ -127,6 +129,11 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// therefore does not define broadcast addresses. Instead, IPv6 uses multicast addressing.
     var isIPv4BroadcastEnabled: Bool { get set }
 
+    /// Determines if IPv6 connectivity is enabled in addition to IPv4.
+    /// If `false`, only IPv4 connectivity is enabled. (Default: disabled)
+    /// This property must be set prior to calling ``start()``.
+    var isIPv6Enabled: Bool { get set }
+
     /// Returns a boolean indicating whether the OSC client has been started.
     var isStarted: Bool { get }
 }
@@ -160,18 +167,21 @@ extension OSCUDPClientProtocol {
     ///   - interface: Optionally specify a network interface for which to constrain communication.
     ///   - isPortReuseEnabled: Enable local UDP port reuse by other processes.
     ///   - isIPv4BroadcastEnabled: Enable sending IPv4 broadcast messages from the socket.
+    ///   - isIPv6Enabled: Enables IPv6 support. IPv4 support is always active.
     @_disfavoredOverload
     public init(
         localPort: UInt16?,
         interface: String? = nil,
         isPortReuseEnabled: Bool = false, // same as default implementation of init() below
-        isIPv4BroadcastEnabled: Bool = false // same as default implementation of init() below
+        isIPv4BroadcastEnabled: Bool = false, // same as default implementation of init() below
+        isIPv6Enabled: Bool = false // same as default implementation of init() below
     ) {
         self.init(
             localPort: localPort,
             interface: interface,
             isPortReuseEnabled: isPortReuseEnabled,
-            isIPv4BroadcastEnabled: isIPv4BroadcastEnabled
+            isIPv4BroadcastEnabled: isIPv4BroadcastEnabled,
+            isIPv6Enabled: isIPv6Enabled
         )
     }
 }
@@ -184,7 +194,8 @@ extension OSCUDPClientProtocol {
             localPort: nil,
             interface: nil,
             isPortReuseEnabled: false, // same as defaulted init above
-            isIPv4BroadcastEnabled: false // same as defaulted init above
+            isIPv4BroadcastEnabled: false, // same as defaulted init above
+            isIPv6Enabled: false // same as defaulted init above
         )
     }
 
