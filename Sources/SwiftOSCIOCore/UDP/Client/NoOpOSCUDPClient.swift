@@ -39,7 +39,7 @@ open class NoOpOSCUDPClient: OSCUDPClientProtocol {
         self.isPortReuseEnabled = isPortReuseEnabled
         self.isIPv4BroadcastEnabled = isIPv4BroadcastEnabled
         self.isIPv6Enabled = isIPv6Enabled
-        
+
         _isStartNeededToOperate = true
     }
 

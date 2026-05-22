@@ -121,7 +121,7 @@ extension OSCValueDecoder {
             }
             value = decoded
         }
-        
+
         return value
     }
 

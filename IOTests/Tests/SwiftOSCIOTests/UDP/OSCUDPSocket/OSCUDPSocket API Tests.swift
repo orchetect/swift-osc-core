@@ -13,7 +13,7 @@ extension SerializedTests {
     struct OSCUDPSocket_API_Tests {
         private static let message = OSCMessage("/test", values: [123, true])
         private static let bundle = OSCBundle(timeTag: .immediate(), [.message(message)])
-        
+
         @Test
         func init_ProtocolDefined() {
             _ = OSCUDPSocket(
@@ -26,7 +26,7 @@ extension SerializedTests {
                 queue: nil,
                 receiveHandler: .messages { _, _, _, _ in }
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: nil,
                 remoteHost: nil,
@@ -37,7 +37,7 @@ extension SerializedTests {
                 queue: nil,
                 receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: nil,
                 remoteHost: nil,
@@ -49,33 +49,33 @@ extension SerializedTests {
                 receiveHandler: .packets { _, _, _ in }
             )
         }
-        
+
         @Test
         func init_DefaultedOverloads() {
             _ = OSCUDPSocket()
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere"
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere",
                 remotePort: 9000,
                 interface: "en1"
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere",
@@ -83,7 +83,7 @@ extension SerializedTests {
                 interface: "en1",
                 isIPv4BroadcastEnabled: false
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere",
@@ -92,7 +92,7 @@ extension SerializedTests {
                 isIPv4BroadcastEnabled: false,
                 isIPv6Enabled: true
             )
-            
+
             _ = OSCUDPSocket(
                 localPort: 8008,
                 remoteHost: "nowhere",
@@ -103,11 +103,11 @@ extension SerializedTests {
                 queue: nil
             )
         }
-        
+
         @Test
         func propertyAccess() {
             let socket = OSCUDPSocket()
-            
+
             // read
             _ = socket.remoteHost
             _ = socket.remotePort
@@ -116,23 +116,23 @@ extension SerializedTests {
             _ = socket.isIPv4BroadcastEnabled
             _ = socket.isIPv6Enabled
             _ = socket.isStarted
-            
+
             // set mutable properties
             socket.remoteHost = "someplace"
             socket.remotePort = 8080
             socket.isIPv6Enabled = true
         }
-        
+
         @Test
         func methods() {
             let socket = OSCUDPSocket()
-            
+
             // start()
             try? socket.start()
-            
+
             // stop()
             socket.stop()
-            
+
             // send(OSCPacket)
             try? socket.send(OSCPacket.bundle(Self.bundle))
             try? socket.send(OSCPacket.bundle(Self.bundle), to: "nowhere")
@@ -142,24 +142,24 @@ extension SerializedTests {
             try? socket.send(OSCPacket.message(Self.message), to: "nowhere")
             try? socket.send(OSCPacket.message(Self.message), to: "nowhere", port: 8008)
             try? socket.send(OSCPacket.message(Self.message), port: 8008)
-            
+
             // send(OSCBundle)
             try? socket.send(Self.bundle)
             try? socket.send(Self.bundle, to: "nowhere")
             try? socket.send(Self.bundle, to: "nowhere", port: 8008)
             try? socket.send(Self.bundle, port: 8008)
-            
+
             // send(OSCMessage)
             try? socket.send(Self.message)
             try? socket.send(Self.message, to: "nowhere")
             try? socket.send(Self.message, to: "nowhere", port: 8008)
             try? socket.send(Self.message, port: 8008)
-            
+
             // setReceiveHandler { }
             socket.setReceiveHandler(.messages { _, _, _, _ in })
-            
+
             // setReceiveErrorHandler { }
-            socket.setReceiveErrorHandler { _, _, _ , _ in }
+            socket.setReceiveErrorHandler { _, _, _, _ in }
         }
     }
 }

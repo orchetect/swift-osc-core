@@ -11,10 +11,10 @@ import Testing
 @Suite
 struct OSCTCPClient_API_Tests {
     private typealias OSCTCPClient = NoOpOSCTCPClient
-    
+
     private static let message = OSCMessage("/test", values: [123, true])
     private static let bundle = OSCBundle(timeTag: .immediate(), [.message(message)])
-    
+
     @Test
     func init_ProtocolDefined() {
         _ = OSCTCPClient(
@@ -26,7 +26,7 @@ struct OSCTCPClient_API_Tests {
             queue: nil,
             receiveHandler: .messages { _, _, _, _ in }
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
@@ -36,7 +36,7 @@ struct OSCTCPClient_API_Tests {
             queue: nil,
             receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
@@ -47,27 +47,27 @@ struct OSCTCPClient_API_Tests {
             receiveHandler: .packets { _, _, _ in }
         )
     }
-    
+
     @Test
     func init_DefaultedOverloads() {
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
             interface: nil
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
             interface: nil,
             isIPv6Enabled: true
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
@@ -75,7 +75,7 @@ struct OSCTCPClient_API_Tests {
             isIPv6Enabled: true,
             framingMode: .osc1_1
         )
-        
+
         _ = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000,
@@ -85,14 +85,14 @@ struct OSCTCPClient_API_Tests {
             queue: nil
         )
     }
-    
+
     @Test
     func propertyAccess() {
         let client = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000
         )
-        
+
         // read
         _ = client.remoteHost
         _ = client.remotePort
@@ -101,42 +101,42 @@ struct OSCTCPClient_API_Tests {
         _ = client.framingMode
         _ = client.isIPv6Enabled
         // _ = client.isIPv6AddressTranslationToIPv4Enabled // TODO: not protocolized yet
-        
+
         // set mutable properties
         client.isIPv6Enabled = true
         // client.isIPv6AddressTranslationToIPv4Enabled // TODO: not protocolized yet
     }
-    
+
     @Test
     func methods() {
         let client = OSCTCPClient(
             remoteHost: "",
             remotePort: 8000
         )
-        
+
         // connect()
         try? client.connect() // defaulted timeout
         try? client.connect(timeout: 0.001)
-        
+
         // close()
         client.close()
-        
+
         // send(OSCPacket)
         try? client.send(OSCPacket.bundle(Self.bundle))
         try? client.send(OSCPacket.message(Self.message))
-        
+
         // send(OSCBundle)
         try? client.send(Self.bundle)
-        
+
         // send(OSCMessage)
         try? client.send(Self.message)
-        
+
         // setReceiveHandler { }
         client.setReceiveHandler(.messages { _, _, _, _ in })
-        
+
         // setReceiveErrorHandler { }
-        client.setReceiveErrorHandler { _, _, _ , _ in }
-        
+        client.setReceiveErrorHandler { _, _, _, _ in }
+
         // setNotificationHandler { }
         client.setNotificationHandler { _ in }
     }

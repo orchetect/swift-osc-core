@@ -45,12 +45,12 @@ extension IPUtils.AddressFamily {
     #elseif canImport(WASILibc)
     // TODO: find out what sa_family_t aliases to for WASI
     #endif
-    
+
     public init?(from rawFamily: PlatformInteger) {
         guard let match = Self.allCases
             .first(where: { $0.rawValue == RawValue(rawFamily) })
         else { return nil }
-        
+
         self = match
     }
 }

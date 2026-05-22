@@ -15,90 +15,90 @@ extension SerializedTests {
         func defaultTimeTag() async throws {
             try await confirmation(expectedCount: 1) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 let bundle = OSCBundle(
                     [.message("/test", values: [Int32(123)])]
                 )
-                
+
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 0.5)
             }
         }
-        
+
         @Test
         func immediate() async throws {
             try await confirmation(expectedCount: 1) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 let bundle = OSCBundle(
                     timeTag: .immediate(),
                     [.message("/test", values: [Int32(123)])]
                 )
-                
+
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 0.5)
             }
         }
-        
+
         @Test
         func now() async throws {
             try await confirmation(expectedCount: 1) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 let bundle = OSCBundle(
                     timeTag: .now(),
                     [.message("/test", values: [Int32(123)])]
                 )
-                
+
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 0.5)
             }
         }
-        
+
         /// Tests that a message with a time-tag of 1 second in the future does not arrive early.
         @Test(.enabled(if: isSystemTimingStable()))
         func oneSecondInFuture_Early() async throws {
             try await confirmation(expectedCount: 0) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 let bundle = OSCBundle(
                     timeTag: .timeIntervalSinceNow(1.0), // 1 second in future
                     [.message("/test", values: [Int32(123)])]
                 )
-                
+
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 0.9) // just under 1 second
             }
         }
-        
+
         // This test is especially flakey on GitHub Actions runners, so we'll only run it in a local context.
         #if !GITHUB_ACTIONS
         /// Tests that a message with a time-tag of 1 second in the future arrives after its intended scheduled time.
@@ -106,12 +106,12 @@ extension SerializedTests {
         func oneSecondInFuture_OnTimeOrThereafter() async throws {
             try await confirmation(expectedCount: 1) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 // this message should arrive 1 second in the future
                 let bundle1 = OSCBundle(
                     timeTag: .timeIntervalSinceNow(1.0),
@@ -119,7 +119,7 @@ extension SerializedTests {
                 )
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle1), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 // this message should NOT arrive, as it is scheduled in the future after the test has ended
                 let bundle2 = OSCBundle(
                     timeTag: .timeIntervalSinceNow(1.5),
@@ -127,30 +127,30 @@ extension SerializedTests {
                 )
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle2), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 1.1) // allow for just over 1 second to accommodate testing overhead
             }
         }
         #endif
-        
+
         @Test
         func past() async throws {
             try await confirmation(expectedCount: 1) { confirmation in
                 let server = OSCUDPServer()
-                
+
                 server.setReceiveHandler(.messages(timeTagMode: .osc1_0) { _, _, _, _ in
                     guard !Task.isCancelled else { return }
                     confirmation()
                 })
-                
+
                 let bundle = OSCBundle(
                     timeTag: .timeIntervalSinceNow(-1.0),
                     [.message("/test", values: [Int32(123)])]
                 )
-                
+
                 // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                 server.core.dispatch(packet: .bundle(bundle), remoteHost: "127.0.0.1", remotePort: 8008)
-                
+
                 try await Task.sleep(seconds: 0.5)
             }
         }

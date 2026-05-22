@@ -53,9 +53,9 @@ open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
     open func stop() {
         isStarted = false
     }
-    
+
     // MARK: - Communication
-    
+
     open func send(_ packet: OSCPacket, to host: String?, port: UInt16?) throws {
         print("No-op send to \(host ?? "<unknown>"):\(port?.description ?? "<unknown>"): \(packet))")
     }

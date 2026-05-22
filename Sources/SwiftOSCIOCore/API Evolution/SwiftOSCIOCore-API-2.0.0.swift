@@ -29,7 +29,7 @@ extension OSCTCPClientProtocol {
         } else {
             nil
         }
-        
+
         self.init(
             remoteHost: remoteHost,
             remotePort: remotePort,
@@ -40,7 +40,7 @@ extension OSCTCPClientProtocol {
             receiveHandler: handler
         )
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     @_disfavoredOverload
@@ -50,10 +50,10 @@ extension OSCTCPClientProtocol {
         } else {
             nil
         }
-        
+
         setReceiveHandler(handler)
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
@@ -80,7 +80,7 @@ extension OSCTCPServerProtocol {
         } else {
             nil
         }
-        
+
         self.init(
             port: port,
             interface: interface,
@@ -90,7 +90,7 @@ extension OSCTCPServerProtocol {
             receiveHandler: handler
         )
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     @_disfavoredOverload
@@ -100,10 +100,10 @@ extension OSCTCPServerProtocol {
         } else {
             nil
         }
-        
+
         setReceiveHandler(handler)
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
@@ -130,7 +130,7 @@ extension OSCUDPServerProtocol {
         } else {
             nil
         }
-        
+
         self.init(
             port: port,
             interface: interface,
@@ -140,7 +140,7 @@ extension OSCUDPServerProtocol {
             receiveHandler: handler
         )
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     @_disfavoredOverload
@@ -150,10 +150,10 @@ extension OSCUDPServerProtocol {
         } else {
             nil
         }
-        
+
         setReceiveHandler(handler)
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {
@@ -182,7 +182,7 @@ extension OSCUDPSocketProtocol {
         } else {
             nil
         }
-        
+
         self.init(
             localPort: localPort,
             remoteHost: remoteHost,
@@ -194,7 +194,7 @@ extension OSCUDPSocketProtocol {
             receiveHandler: handler
         )
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     @_disfavoredOverload
@@ -204,10 +204,10 @@ extension OSCUDPSocketProtocol {
         } else {
             nil
         }
-        
+
         setReceiveHandler(handler)
     }
-    
+
     @_documentation(visibility: internal)
     @available(*, deprecated, message: "Receive handler block has been replaced by OSCPacketHandler.")
     public var timeTagMode: OSCTimeTagMode {

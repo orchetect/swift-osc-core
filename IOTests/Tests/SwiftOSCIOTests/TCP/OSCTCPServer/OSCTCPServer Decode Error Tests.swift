@@ -9,57 +9,60 @@ import Foundation
 import Testing
 
 extension SerializedTests {
+    // swiftformat:options --wrap-collections preserve
+    // swiftformat:options --allow-partial-wrapping true
+    
     @Suite
     struct OSCTCPServer_Decode_Error_Tests {
         private typealias ErrorPayload = (data: Data, error: OSCDecodeError, host: String, port: UInt16)
-        
+
         /// Test receiving non-OSC data (potentially totally unrelated packet types)
         @Test
         func receiveNonOSCData() async throws {
             let isStable = isSystemTimingStable()
-            
+
             let receiver = ItemReceiver<ErrorPayload>()
-            
+
             // manually build a raw OSC message
             var nonOSCData: [UInt8] = []
             // address
             nonOSCData += "ABCDEFGH".data(using: .ascii)!
-            
+
             let server = OSCTCPServer(port: nil)
-            
+
             try await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
                 try await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
                     server.setReceiveHandler(.packets { packet, host, port in
                         guard !Task.isCancelled else { return }
                         receiveHandlerConfirmation()
                     })
-                    
+
                     server.setReceiveErrorHandler { data, error, host, port in
                         guard !Task.isCancelled else { return }
                         errorHandlerConfirmation()
                         Task { await receiver.add((data, error, host, port)) }
                     }
-                    
+
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8008)
-                    
+
                     await wait(expect: { await !receiver.items.isEmpty }, timeout: isStable ? 5.0 : 15.0)
                 }
             }
-            
+
             let payload = try await #require(receiver.items.first)
             #expect(payload.data == Data(nonOSCData))
             #expect(payload.host == "dummy")
             #expect(payload.port == 8008)
         }
-        
+
         /// Test receiving OSC data with correct header bytes but malformed data within the packet.
         @Test
         func receiveMalformedData() async throws {
             let isStable = isSystemTimingStable()
-            
+
             let receiver = ItemReceiver<ErrorPayload>()
-            
+
             // manually build a raw OSC message
             var malformedOSCData: [UInt8] = []
             // address
@@ -70,27 +73,27 @@ extension SerializedTests {
                                                          // purposely omit value type tags, which results in a malformed packet
             
             let server = OSCTCPServer(port: nil)
-            
+
             await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
                 await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
                     server.setReceiveHandler(.packets { packet, host, port in
                         guard !Task.isCancelled else { return }
                         receiveHandlerConfirmation()
                     })
-                    
+
                     server.setReceiveErrorHandler { data, error, host, port in
                         guard !Task.isCancelled else { return }
                         errorHandlerConfirmation()
                         Task { await receiver.add((data, error, host, port)) }
                     }
-                    
+
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8008)
-                    
+
                     await wait(expect: { await !receiver.items.isEmpty }, timeout: isStable ? 5.0 : 15.0)
                 }
             }
-            
+
             let payload = try await #require(receiver.items.first)
             #expect(payload.data == Data(malformedOSCData))
             #expect(payload.host == "dummy")

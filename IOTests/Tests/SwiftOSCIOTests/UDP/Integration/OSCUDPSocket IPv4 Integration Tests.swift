@@ -23,7 +23,7 @@ extension SerializedTests {
         @Test
         func onlineStressTest() async throws {
             let isFlakey = !isSystemTimingStable()
-            
+
             let socket = OSCUDPSocket(
                 localPort: nil, // selects a random available port
                 remoteHost: "127.0.0.1",
@@ -33,35 +33,35 @@ extension SerializedTests {
                 receiveHandler: nil
             )
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
-            
+
             // sanity check - IPv6 should be disabled by default, as per the OSCUDPSocketProtocol spec.
             #expect(!socket.isIPv6Enabled)
-            
+
             try socket.start()
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
-            
+
             print("Using socket listen port \(socket.localPort), destination port \(socket.remotePort)")
-            
+
             let receiver = ItemReceiver<OSCMessage>()
-            
+
             socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
                     await receiver.add(message)
                 }
             })
-            
+
             let possibleValuePacks: [OSCValues] = [
                 [],
                 [UUID().uuidString],
                 [Int.random(in: 10000 ... 10_000_000)],
                 [Int.random(in: 10000 ... 10_000_000), UUID().uuidString, 456.78, true]
             ]
-            
+
             let sourceMessages: [OSCMessage] = Array(1 ... 1000).map { value in
                 OSCMessage("/some/address/\(UUID().uuidString)", values: possibleValuePacks.randomElement()!)
             }
-            
+
             // use global thread to simulate internal network thread being a dedicated thread
             let srcLocSocketSend: SourceLocation = #_sourceLocation
             DispatchQueue.global().async {
@@ -70,10 +70,10 @@ extension SerializedTests {
                     catch { Issue.record(error, sourceLocation: srcLocSocketSend) }
                 }
             }
-            
+
             await wait(expect: { await receiver.items.count == 1000 }, timeout: isFlakey ? 30.0 : 20.0)
             try await #require(receiver.items.count == 1000)
-            
+
             await #expect(receiver.items == sourceMessages)
         }
     }

@@ -9,6 +9,6 @@ extension BinaryInteger {
     /// Prefix optional.
     func hexString(prefix: Bool = true) -> String {
         (prefix ? "0x" : "")
-        + String(self, radix: 16, uppercase: true)
+            + String(self, radix: 16, uppercase: true)
     }
 }

@@ -26,7 +26,7 @@ extension OSCPacketDispatcherProtocol {
             dispatch(receivedPacket: packetData, remoteHost: remoteHost, remotePort: remotePort)
         }
     }
-    
+
     /// Handle incoming OSC data.
     ///
     /// > Note:
@@ -59,12 +59,12 @@ extension OSCPacketDispatcherProtocol {
         remotePort: UInt16
     ) {
         guard let receiveHandler else { return }
-        
+
         switch receiveHandler {
         case let .packets(handler):
             // dispatch immediately without unpacking bundles or scheduling - let consumer handle those tasks
             _dispatch(packet: packet, remoteHost: remoteHost, remotePort: remotePort, handler: handler)
-            
+
         case let .messages(timeTagMode: timeTagMode, handler):
             // unpack into individual messages and schedule dispatch based on time-tag mode
             _dispatch(
@@ -77,7 +77,7 @@ extension OSCPacketDispatcherProtocol {
             )
         }
     }
-    
+
     /// Internal: Dispatch an OSC packet immediately without unpacking bundles or scheduling.
     func _dispatch(
         packet: OSCPacket,
@@ -89,7 +89,7 @@ extension OSCPacketDispatcherProtocol {
             handler(packet, remoteHost, remotePort)
         }
     }
-    
+
     /// Internal: Unpack incoming OSC packets recursively and dispatch them to the scheduler.
     func _dispatch(
         packet: OSCPacket,
@@ -145,7 +145,7 @@ extension OSCPacketDispatcherProtocol {
             #if DEBUG
             print("\(error)")
             #endif
-            
+
             self.receiveErrorHandler?(data, error, remoteHost, remotePort)
         }
     }

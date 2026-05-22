@@ -6,12 +6,12 @@
 
 #if canImport(Foundation)
 import struct Foundation.Date
-import typealias Foundation.TimeInterval
 import class Foundation.Thread
+import typealias Foundation.TimeInterval
 #else
 import struct FoundationEssentials.Date
-import typealias FoundationEssentials.TimeInterval
 import class FoundationEssentials.Thread
+import typealias FoundationEssentials.TimeInterval
 #endif
 
 /// Use as a condition for individual tests that rely on stable/precise system timing.
@@ -23,7 +23,7 @@ func isSystemTimingStable(
     Thread.sleep(forTimeInterval: duration)
     let end = Date()
     let diff = end.timeIntervalSince(start)
-    
+
     let range = (duration - tolerance) ... (duration + tolerance)
     return range.contains(diff)
 }

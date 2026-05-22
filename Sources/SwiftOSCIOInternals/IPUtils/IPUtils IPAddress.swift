@@ -9,7 +9,7 @@ extension IPUtils {
     public enum IPAddress: Equatable, Hashable, Sendable {
         /// IPv4 IP address.
         case v4(String)
-        
+
         /// IPv6 IP address.
         case v6(String)
     }
@@ -23,7 +23,7 @@ extension IPUtils.IPAddress {
         case .v6(_): .ipv6
         }
     }
-    
+
     /// Returns the string representation of the IP address.
     public var string: String {
         switch self {

@@ -35,7 +35,7 @@ func networkDevices(
 func networkDevice(
     protocols: [NIOBSDSocket.ProtocolFamily],
     includeLoopback: Bool,
-    forAddress: String,
+    forAddress: String
 ) throws -> (name: String, address: String)? {
     try networkDevices(protocols: protocols, includeLoopback: includeLoopback)
         .filter { $0.address == forAddress }

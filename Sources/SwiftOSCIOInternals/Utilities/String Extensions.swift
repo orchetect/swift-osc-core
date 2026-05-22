@@ -9,7 +9,8 @@ import Foundation
 extension String {
     /// Internal:
     /// Converts a null-terminated C string to a `String`.
-    @inlinable nonisolated
+    @inlinable
+    nonisolated
     init?(nullTerminatedCString cString: [Int8]) {
         guard let firstNullIndex = cString.firstIndex(of: 0x00) else { return nil }
         let charRange = Array(cString[cString.startIndex ... firstNullIndex])

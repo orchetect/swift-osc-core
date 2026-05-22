@@ -45,7 +45,7 @@ enum CIPUtils {
         }
         return array
     }
-    
+
     /// Internal:
     /// Queries the system and returns an array containing all the socket addresses (`sockaddr` as `Data`)
     /// for the given hostname or IP address.
@@ -59,7 +59,7 @@ enum CIPUtils {
         }
         return array
     }
-    
+
     /// Internal:
     /// Queries the system and returns an array containing all the socket addresses (`sockaddr`) for the given hostname or IP address.
     nonisolated
@@ -76,7 +76,11 @@ enum CIPUtils {
         //     struct addrinfo *res;
         //     int gai_error = getaddrinfo(host.UTF8String, port.stringValue.UTF8String, &hints, &res);
         //     if (gai_error) {
-        //         if (outError) *outError = [NSError errorWithDomain:@"MyDomain" code:gai_error userInfo:@{NSLocalizedDescriptionKey:@(gai_strerror(gai_error))}];
+        //         if (outError) *outError = [
+        //             NSError errorWithDomain:@"MyDomain"
+        //             code:gai_error
+        //             userInfo:@{NSLocalizedDescriptionKey:@(gai_strerror(gai_error))}
+        //         ];
         //         return nil;
         //     }
         //     NSMutableArray *addresses = [NSMutableArray array];
@@ -88,17 +92,17 @@ enum CIPUtils {
         //     freeaddrinfo(res);
         //     return [addresses copy];
         // }
-        
+
         let hintFamily = PF_UNSPEC
-        
+
         #if os(Linux)
         let hintSockType = Int32(SOCK_STREAM.rawValue) // on Linux SOCK_STREAM is an enum, so we need to access its value
         #else
         let hintSockType = Int32(SOCK_STREAM) // re-casting to Int32 is needed for Android
         #endif
-        
+
         let hintProtocol = Int32(IPPROTO_TCP) // re-casting to Int32 is needed for Linux/Android
-        
+
         #if canImport(Darwin) || canImport(Android)
         // addrinfo on Darwin:
         // -------------------
@@ -136,7 +140,7 @@ enum CIPUtils {
         //         char *ai_canonname;        /* Canonical name for service location. */
         //         struct addrinfo *ai_next;  /* Pointer to next in list. */
         //     };
-        
+
         // addrinfo in Musl:
         // -----------------
         //     struct addrinfo {
@@ -162,11 +166,11 @@ enum CIPUtils {
         #elseif canImport(WASILibc)
         // TODO: add WASI support
         #endif
-        
+
         let host = host.cString(using: .utf8)
         let port = String(port).cString(using: .utf8)
         var addr: UnsafeMutablePointer<addrinfo>?
-        
+
         // func getaddrinfo(
         //     _: UnsafePointer<CChar>!, // host
         //     _: UnsafePointer<CChar>!, // port
@@ -174,17 +178,17 @@ enum CIPUtils {
         //     _: UnsafeMutablePointer<UnsafeMutablePointer<addrinfo>?>! // inout addrinfo
         // ) -> Int32
         let result = getaddrinfo(host, port, &hints, &addr)
-        
+
         if result != 0 {
             let errorDescription = String(cString: gai_strerror(result))
             throw IPUtils.ResolveError.error(code: Int(result), reason: errorDescription)
         }
-        
+
         guard let addr else {
             throw IPUtils.ResolveError.error(reason: "Address pointer is nil.")
         }
         defer { freeaddrinfo(addr) }
-        
+
         try addr.withMemoryRebound(to: addrinfo.self, capacity: 1) { pointer in
             var currentAddr: UnsafeMutablePointer<addrinfo>? = pointer
             while let a = currentAddr {
@@ -202,13 +206,13 @@ extension CIPUtils {
     nonisolated
     static func string(for address: UnsafePointer<sockaddr>, length: Int, property: IPUtils.SocketAddressProperty) -> String? {
         var ipCString = [Int8](repeating: 0x00, count: Int(NI_MAXHOST))
-        
+
         #if canImport(Darwin) || os(Linux)
         let ipCStringLength = socklen_t(ipCString.count) // socklen_t a.k.a UInt32
         #else
         let ipCStringLength = Int(ipCString.count)
         #endif
-        
+
         let result = getnameinfo(
             address,
             socklen_t(length),
@@ -219,12 +223,12 @@ extension CIPUtils {
             property.rawValue
         )
         guard result == 0 else { return nil }
-        
+
         // decode C string
         guard let ipString = String(nullTerminatedCString: ipCString) else { return nil }
         return ipString
     }
-    
+
     /// Internal:
     /// Returns the string value returned from the `sockaddr` data for the given property.
     nonisolated
@@ -233,7 +237,7 @@ extension CIPUtils {
             string(for: pointer, length: sockaddrData.count, property: property)
         }
     }
-    
+
     /// Internal:
     /// Assumes data has the memory layout of a `sockaddr` instance and provides a scoped closure to access a typed pointer.
     nonisolated

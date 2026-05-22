@@ -24,7 +24,7 @@ extension IPUtils {
     public enum SocketAddressProperty: Int32, Equatable, Hashable, CaseIterable, Sendable {
         case hostname
         case ipAddress
-        
+
         public var rawValue: Int32 {
             switch self {
             case .hostname: NI_NUMERICSERV

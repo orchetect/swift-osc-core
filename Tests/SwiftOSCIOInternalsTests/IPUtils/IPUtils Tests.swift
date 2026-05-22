@@ -1,5 +1,5 @@
 //
-//  SwiftOSCIOInternalsTests.swift
+//  IPUtils Tests.swift
 //  SwiftOSC Core • https://github.com/orchetect/swift-osc-core
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
@@ -16,7 +16,7 @@ import Testing
 struct IPUtilsTests {
     struct ResolveTests {
         // MARK: - hostnames(forHostnameOrIPAddress:)
-        
+
         @Test
         func hostnames() throws {
             #expect(try Set(IPUtils.hostnames(forHostnameOrIPAddress: "localhost")) == ["localhost"])
@@ -24,7 +24,7 @@ struct IPUtilsTests {
             #expect(try Set(IPUtils.hostnames(forHostnameOrIPAddress: "::1")) == ["localhost"])
             #expect(try Set(IPUtils.hostnames(forHostnameOrIPAddress: "::ffff:127.0.0.1")) == ["localhost"])
         }
-        
+
         @Test
         func hostnames_edgeCases() throws {
             #expect(throws: (any Error).self) { _ = try IPUtils.hostnames(forHostnameOrIPAddress: "") }
@@ -32,9 +32,9 @@ struct IPUtilsTests {
             #expect(throws: (any Error).self) { _ = try IPUtils.hostnames(forHostnameOrIPAddress: ".") }
             #expect(throws: (any Error).self) { _ = try IPUtils.hostnames(forHostnameOrIPAddress: "\(UUID())") }
         }
-        
+
         // MARK: - ipAddresses(forHostnameOrIPAddress:families:)
-        
+
         @Test
         func ipAddresses_localhost() throws {
             let host = "localhost"
@@ -42,7 +42,7 @@ struct IPUtilsTests {
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv4])) == [.v4("127.0.0.1")])
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv6])) == [.v6("::1")])
         }
-        
+
         @Test
         func ipAddresses_ipv4Loopback() throws {
             let host = "127.0.0.1"
@@ -50,7 +50,7 @@ struct IPUtilsTests {
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv4])) == [.v4("127.0.0.1")])
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv6])) == [])
         }
-        
+
         @Test
         func ipAddresses_ipv6Loopback() throws {
             let host = "::1"
@@ -58,7 +58,7 @@ struct IPUtilsTests {
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv4])) == [])
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv6])) == [.v6("::1")])
         }
-        
+
         @Test
         func ipAddresses_ipv4MappedToIPv6Loopback() throws {
             let host = "::ffff:127.0.0.1"
@@ -66,7 +66,7 @@ struct IPUtilsTests {
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv4])) == [])
             #expect(try Set(IPUtils.ipAddresses(forHostnameOrIPAddress: host, families: [.ipv6])) == [.v6("::ffff:127.0.0.1")])
         }
-        
+
         @Test
         func ipAddresses_edgeCases() throws {
             #expect(throws: (any Error).self) { _ = try IPUtils.ipAddresses(forHostnameOrIPAddress: "", families: .all) }
@@ -108,7 +108,7 @@ struct IPUtilsTests {
             #expect(try IPUtils.ipAddress(forHostnameOrIPAddress: host, family: .ipv6) == "::ffff:127.0.0.1")
             #expect(try IPUtils.ipAddress(forHostnameOrIPAddress: host, family: .unix) == nil)
         }
-        
+
         @Test
         func ipAddress_edgeCases() throws {
             #expect(throws: (any Error).self) { _ = try IPUtils.ipAddress(forHostnameOrIPAddress: "", family: .ipv4) }

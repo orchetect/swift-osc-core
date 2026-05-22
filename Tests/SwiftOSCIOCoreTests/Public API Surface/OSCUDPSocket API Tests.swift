@@ -11,10 +11,10 @@ import Testing
 @Suite
 struct OSCUDPSocket_API_Tests {
     private typealias OSCUDPSocket = NoOpOSCUDPSocket
-    
+
     private static let message = OSCMessage("/test", values: [123, true])
     private static let bundle = OSCBundle(timeTag: .immediate(), [.message(message)])
-    
+
     @Test
     func init_ProtocolDefined() {
         _ = OSCUDPSocket(
@@ -27,7 +27,7 @@ struct OSCUDPSocket_API_Tests {
             queue: nil,
             receiveHandler: .messages { _, _, _, _ in }
         )
-        
+
         _ = OSCUDPSocket(
             localPort: nil,
             remoteHost: nil,
@@ -38,7 +38,7 @@ struct OSCUDPSocket_API_Tests {
             queue: nil,
             receiveHandler: .messages(timeTagMode: .osc1_0) { _, _, _, _ in }
         )
-        
+
         _ = OSCUDPSocket(
             localPort: nil,
             remoteHost: nil,
@@ -50,33 +50,33 @@ struct OSCUDPSocket_API_Tests {
             receiveHandler: .packets { _, _, _ in }
         )
     }
-    
+
     @Test
     func init_DefaultedOverloads() {
         _ = OSCUDPSocket()
-        
+
         _ = OSCUDPSocket(
             localPort: 8000
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere"
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere",
             remotePort: 9000
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere",
             remotePort: 9000,
             interface: "en1"
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere",
@@ -84,7 +84,7 @@ struct OSCUDPSocket_API_Tests {
             interface: "en1",
             isIPv4BroadcastEnabled: false
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere",
@@ -93,7 +93,7 @@ struct OSCUDPSocket_API_Tests {
             isIPv4BroadcastEnabled: false,
             isIPv6Enabled: true
         )
-        
+
         _ = OSCUDPSocket(
             localPort: 8000,
             remoteHost: "nowhere",
@@ -104,11 +104,11 @@ struct OSCUDPSocket_API_Tests {
             queue: nil
         )
     }
-    
+
     @Test
     func propertyAccess() {
         let socket = OSCUDPSocket()
-        
+
         // read
         _ = socket.remoteHost
         _ = socket.remotePort
@@ -117,23 +117,23 @@ struct OSCUDPSocket_API_Tests {
         _ = socket.isIPv4BroadcastEnabled
         _ = socket.isIPv6Enabled
         _ = socket.isStarted
-        
+
         // set mutable properties
         socket.remoteHost = "someplace"
         socket.remotePort = 8080
         socket.isIPv6Enabled = true
     }
-    
+
     @Test
     func methods() {
         let socket = OSCUDPSocket()
-        
+
         // start()
         try? socket.start()
-        
+
         // stop()
         socket.stop()
-        
+
         // send(OSCPacket)
         try? socket.send(OSCPacket.bundle(Self.bundle))
         try? socket.send(OSCPacket.bundle(Self.bundle), to: "nowhere")
@@ -143,23 +143,23 @@ struct OSCUDPSocket_API_Tests {
         try? socket.send(OSCPacket.message(Self.message), to: "nowhere")
         try? socket.send(OSCPacket.message(Self.message), to: "nowhere", port: 8000)
         try? socket.send(OSCPacket.message(Self.message), port: 8000)
-        
+
         // send(OSCBundle)
         try? socket.send(Self.bundle)
         try? socket.send(Self.bundle, to: "nowhere")
         try? socket.send(Self.bundle, to: "nowhere", port: 8000)
         try? socket.send(Self.bundle, port: 8000)
-        
+
         // send(OSCMessage)
         try? socket.send(Self.message)
         try? socket.send(Self.message, to: "nowhere")
         try? socket.send(Self.message, to: "nowhere", port: 8000)
         try? socket.send(Self.message, port: 8000)
-        
+
         // setReceiveHandler { }
         socket.setReceiveHandler(.messages { _, _, _, _ in })
-        
+
         // setReceiveErrorHandler { }
-        socket.setReceiveErrorHandler { _, _, _ , _ in }
+        socket.setReceiveErrorHandler { _, _, _, _ in }
     }
 }
