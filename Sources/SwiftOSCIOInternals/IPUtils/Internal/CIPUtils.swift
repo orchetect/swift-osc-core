@@ -5,9 +5,29 @@
 //
 
 #if canImport(Foundation)
-import Foundation
+import struct Foundation.Data
+import class Foundation.NSArray
+import class Foundation.NSMutableArray
 #else
-import Glibc
+import struct FoundationEssentials.Data
+import class FoundationEssentials.NSArray
+import class FoundationEssentials.NSMutableArray
+#endif
+
+#if canImport(Darwin)
+import Darwin
+#elseif os(Linux) || os(Android)
+#if canImport(Glibc)
+@preconcurrency import Glibc
+#elseif canImport(Musl)
+@preconcurrency import Musl
+#elseif canImport(Android)
+@preconcurrency import Android
+#endif
+#elseif canImport(WASILibc)
+@preconcurrency import WASILibc
+#else
+#error("SwiftOSC IO Internals was unable to identify the C library on the current platform.")
 #endif
 
 /// C IP address utilities.
