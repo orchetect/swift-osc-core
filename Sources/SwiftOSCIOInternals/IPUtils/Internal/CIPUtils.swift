@@ -90,10 +90,10 @@ enum CIPUtils {
         // }
         
         let hintFamily = PF_UNSPEC
-        let hintSockType = SOCK_STREAM
-        let hintProtocol = Int32(IPPROTO_TCP) // IPPROTO_TCP is `Int` on Android but `Int32` on Darwin/Linux; re-casting covers both
+        let hintSockType = Int32(SOCK_STREAM) // re-casting to Int32 is needed for Linux/Android
+        let hintProtocol = Int32(IPPROTO_TCP) // re-casting to Int32 is needed for Linux/Android
         
-        #if canImport(Darwin)
+        #if canImport(Darwin) || canImport(Android)
         // addrinfo on Darwin:
         // -------------------
         //     init(
@@ -116,7 +116,7 @@ enum CIPUtils {
             ai_addr: nil,
             ai_next: nil
         )
-        #elseif os(Linux) || os(Android)
+        #elseif canImport(Glibc) || canImport(Musl) // addrinfo has different parameter order on Linux
         // addrinfo in Glibc:
         // ------------------
         //     struct addrinfo
@@ -129,6 +129,19 @@ enum CIPUtils {
         //         struct sockaddr *ai_addr;  /* Socket address for socket. */
         //         char *ai_canonname;        /* Canonical name for service location. */
         //         struct addrinfo *ai_next;  /* Pointer to next in list. */
+        //     };
+        
+        // addrinfo in Musl:
+        // -----------------
+        //     struct addrinfo {
+        //         int ai_flags;
+        //         int ai_family;
+        //         int ai_socktype;
+        //         int ai_protocol;
+        //         socklen_t ai_addrlen;
+        //         struct sockaddr *ai_addr;
+        //         char *ai_canonname;
+        //         struct addrinfo *ai_next;
         //     };
         var hints = addrinfo(
             ai_flags: 0,
