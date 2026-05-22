@@ -42,19 +42,12 @@ extension SerializedTests {
             
             print("Using socket listen port \(socket.localPort), destination port \(socket.remotePort)")
             
-            final actor Receiver {
-                var messages: [OSCMessage] = []
-                func received(_ message: OSCMessage) {
-                    messages.append(message)
-                }
-            }
-            
-            let receiver = Receiver()
+            let receiver = ItemReceiver<OSCMessage>()
             
             socket.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await receiver.received(message)
+                    await receiver.add(message)
                 }
             })
             
@@ -78,10 +71,10 @@ extension SerializedTests {
                 }
             }
             
-            await wait(expect: { await receiver.messages.count == 1000 }, timeout: isFlakey ? 20.0 : 5.0)
-            try await #require(receiver.messages.count == 1000)
+            await wait(expect: { await receiver.items.count == 1000 }, timeout: isFlakey ? 20.0 : 5.0)
+            try await #require(receiver.items.count == 1000)
             
-            await #expect(receiver.messages == sourceMessages)
+            await #expect(receiver.items == sourceMessages)
         }
     }
 }

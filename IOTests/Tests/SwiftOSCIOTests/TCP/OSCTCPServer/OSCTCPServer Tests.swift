@@ -21,19 +21,13 @@ extension SerializedTests {
             // we aren't starting the server, so passing port 0 or nil has no meaningful effect
             let server = OSCTCPServer(port: nil)
             
-            final actor Receiver {
-                var messages: [(message: OSCMessage, host: String, port: UInt16)] = []
-                func received(_ message: OSCMessage, host: String, port: UInt16) {
-                    messages.append((message, host, port))
-                }
-            }
-            
-            let receiver = Receiver()
+            typealias MessageDetails = (message: OSCMessage, host: String, port: UInt16)
+            let receiver = ItemReceiver<MessageDetails>()
             
             server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await receiver.received(message, host: host, port: port)
+                    await receiver.add((message, host: host, port: port))
                 }
             })
             
@@ -49,19 +43,19 @@ extension SerializedTests {
                 server.core.dispatch(packet: .message(msg3), remoteHost: "10.0.0.50", remotePort: 8080)
             }
             
-            try await wait(require: { await receiver.messages.count == 3 }, timeout: 10.0)
+            try await wait(require: { await receiver.items.count == 3 }, timeout: 10.0)
             
-            let message1 = await receiver.messages[0]
+            let message1 = await receiver.items[0]
             #expect(message1.message == msg1)
             #expect(message1.host == "127.0.0.1")
             #expect(message1.port == 8008)
             
-            let message2 = await receiver.messages[1]
+            let message2 = await receiver.items[1]
             #expect(message2.message == msg2)
             #expect(message2.host == "192.168.0.25")
             #expect(message2.port == 8001)
             
-            let message3 = await receiver.messages[2]
+            let message3 = await receiver.items[2]
             #expect(message3.message == msg3)
             #expect(message3.host == "10.0.0.50")
             #expect(message3.port == 8080)
@@ -73,19 +67,12 @@ extension SerializedTests {
             // we aren't starting the server, so passing port 0 or nil has no meaningful effect
             let server = OSCTCPServer(port: nil)
             
-            final actor Receiver {
-                var messages: [OSCMessage] = []
-                func received(_ message: OSCMessage) {
-                    messages.append(message)
-                }
-            }
-            
-            let receiver = Receiver()
+            let receiver = ItemReceiver<OSCMessage>()
             
             server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await receiver.received(message)
+                    await receiver.add(message)
                 }
             })
             
@@ -110,9 +97,9 @@ extension SerializedTests {
                 }
             }
             
-            try await wait(require: { await receiver.messages.count == 1000 }, timeout: 20.0)
+            try await wait(require: { await receiver.items.count == 1000 }, timeout: 20.0)
             
-            await #expect(receiver.messages == sourceMessages)
+            await #expect(receiver.items == sourceMessages)
         }
     }
 }

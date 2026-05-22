@@ -11,17 +11,12 @@ import Testing
 extension SerializedTests {
     @Suite
     struct OSCTCPClient_Decode_Error_Tests {
-        private actor Receiver {
-            typealias ErrorPayload = (data: Data, error: OSCDecodeError, host: String, port: UInt16)
-            var errors: [ErrorPayload] = []
-            func addError(_ payload: ErrorPayload) { errors.append(payload) }
-            init() { }
-        }
+        private typealias ErrorPayload = (data: Data, error: OSCDecodeError, host: String, port: UInt16)
         
         /// Test receiving non-OSC data (potentially totally unrelated packet types)
         @Test
         func receiveNonOSCData() async throws {
-            let receiver = Receiver()
+            let receiver = ItemReceiver<ErrorPayload>()
             
             // manually build a raw OSC message
             var nonOSCData: [UInt8] = []
@@ -40,7 +35,7 @@ extension SerializedTests {
                     server.setReceiveErrorHandler { data, error, host, port in
                         guard !Task.isCancelled else { return }
                         errorHandlerConfirmation()
-                        Task { await receiver.addError((data, error, host, port)) }
+                        Task { await receiver.add((data, error, host, port)) }
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
@@ -51,7 +46,7 @@ extension SerializedTests {
                 }
             }
             
-            let payload = try await #require(receiver.errors.first)
+            let payload = try await #require(receiver.items.first)
             #expect(payload.data == Data(nonOSCData))
             #expect(payload.host == "dummy")
             #expect(payload.port == 8008)
@@ -60,7 +55,7 @@ extension SerializedTests {
         /// Test receiving OSC data with correct header bytes but malformed data within the packet.
         @Test
         func receiveMalformedData() async throws {
-            let receiver = Receiver()
+            let receiver = ItemReceiver<ErrorPayload>()
             
             // manually build a raw OSC message
             var malformedOSCData: [UInt8] = []
@@ -83,17 +78,17 @@ extension SerializedTests {
                     server.setReceiveErrorHandler { data, error, host, port in
                         guard !Task.isCancelled else { return }
                         errorHandlerConfirmation()
-                        Task { await receiver.addError((data, error, host, port)) }
+                        Task { await receiver.add((data, error, host, port)) }
                     }
                     
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8008)
                     
-                    await wait(expect: { await !receiver.errors.isEmpty }, timeout: 2.0)
+                    await wait(expect: { await !receiver.items.isEmpty }, timeout: 2.0)
                 }
             }
             
-            let payload = try await #require(receiver.errors.first)
+            let payload = try await #require(receiver.items.first)
             #expect(payload.data == Data(malformedOSCData))
             #expect(payload.host == "dummy")
             #expect(payload.port == 8008)

@@ -59,13 +59,6 @@ extension SerializedTests {
             
             // prep test types and variables
             
-            final actor Receiver {
-                var messages: [OSCMessage] = []
-                func received(_ message: OSCMessage) {
-                    messages.append(message)
-                }
-            }
-            
             var possibleValuePacks: [OSCValues] {
                 [
                     [],
@@ -82,12 +75,12 @@ extension SerializedTests {
             
             // Cycle 1: test client -> server
             
-            let serverReceiver = Receiver()
+            let serverReceiver = ItemReceiver<OSCMessage>()
             
             server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await serverReceiver.received(message)
+                    await serverReceiver.add(message)
                 }
             })
             
@@ -100,19 +93,19 @@ extension SerializedTests {
                 }
             }
             
-            await wait(expect: { await serverReceiver.messages.count == expectedMsgCount }, timeout: isStable ? 5.0 : 20.0)
-            try await #require(serverReceiver.messages.count == expectedMsgCount)
+            await wait(expect: { await serverReceiver.items.count == expectedMsgCount }, timeout: isStable ? 5.0 : 20.0)
+            try await #require(serverReceiver.items.count == expectedMsgCount)
             
-            await #expect(serverReceiver.messages == sourceMessages)
+            await #expect(serverReceiver.items == sourceMessages)
             
             // Cycle 2: test server -> client
             
-            let clientReceiver = Receiver()
+            let clientReceiver = ItemReceiver<OSCMessage>()
             
             client.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await clientReceiver.received(message)
+                    await clientReceiver.add(message)
                 }
             })
             
@@ -126,13 +119,13 @@ extension SerializedTests {
                 }
             }
             
-            await wait(expect: { await clientReceiver.messages.count == expectedMsgCount }, timeout: isStable ? 10.0 : 20.0)
-            try await #require(clientReceiver.messages.count == expectedMsgCount)
+            await wait(expect: { await clientReceiver.items.count == expectedMsgCount }, timeout: isStable ? 10.0 : 20.0)
+            try await #require(clientReceiver.items.count == expectedMsgCount)
             
-            await #expect(clientReceiver.messages == sourceMessages)
+            await #expect(clientReceiver.items == sourceMessages)
             
             // double-check Cycle 1 results have not changed
-            await #expect(serverReceiver.messages.count == expectedMsgCount) // should not have changed
+            await #expect(serverReceiver.items.count == expectedMsgCount) // should not have changed
         }
         
         /// Online test (IPv4) to check that connections are added when an incoming connection is made,
@@ -475,41 +468,30 @@ extension SerializedTests {
             
             // set up receivers
             
-            final actor Receiver {
-                var messages: [OSCMessage] = []
-                func received(_ message: OSCMessage) {
-                    messages.append(message)
-                }
-                
-                func reset() {
-                    messages.removeAll()
-                }
-            }
-            
-            let serverReceiver = Receiver()
+            let serverReceiver = ItemReceiver<OSCMessage>()
             
             server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await serverReceiver.received(message)
+                    await serverReceiver.add(message)
                 }
             })
             
-            let client1Receiver = Receiver()
+            let client1Receiver = ItemReceiver<OSCMessage>()
             
             client1.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await client1Receiver.received(message)
+                    await client1Receiver.add(message)
                 }
             })
             
-            let client2Receiver = Receiver()
+            let client2Receiver = ItemReceiver<OSCMessage>()
             
             client2.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 guard !Task.isCancelled else { return }
                 Task { @TestActor in // must be serialized on a global actor to maintain received message ordering
-                    await client2Receiver.received(message)
+                    await client2Receiver.add(message)
                 }
             })
             
@@ -517,10 +499,10 @@ extension SerializedTests {
             
             let msgA = OSCMessage("/a")
             server.send(msgA, toClientIDs: [client1ID]) { clientID, error in Issue.record(error) }
-            await wait(expect: { await client1Receiver.messages == [msgA] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client1Receiver.items == [msgA] }, timeout: isStable ? 1.0 : 10.0)
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0) // allow time for any errant messages
-            #expect(await serverReceiver.messages == [])
-            #expect(await client2Receiver.messages == [])
+            #expect(await serverReceiver.items == [])
+            #expect(await client2Receiver.items == [])
             
             await serverReceiver.reset()
             await client1Receiver.reset()
@@ -530,10 +512,10 @@ extension SerializedTests {
             
             let msgB = OSCMessage("/b")
             server.send(msgB, toClientIDs: [client2ID]) { clientID, error in Issue.record(error) }
-            await wait(expect: { await client2Receiver.messages == [msgB] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client2Receiver.items == [msgB] }, timeout: isStable ? 1.0 : 10.0)
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0) // allow time for any errant messages
-            #expect(await serverReceiver.messages == [])
-            #expect(await client1Receiver.messages == [])
+            #expect(await serverReceiver.items == [])
+            #expect(await client1Receiver.items == [])
             
             await serverReceiver.reset()
             await client1Receiver.reset()
@@ -543,10 +525,10 @@ extension SerializedTests {
             
             let msgC = OSCMessage("/c")
             server.send(msgC, toClientIDs: [client1ID, client2ID]) { clientID, error in Issue.record(error) }
-            await wait(expect: { await client1Receiver.messages == [msgC] }, timeout: isStable ? 1.0 : 10.0)
-            await wait(expect: { await client2Receiver.messages == [msgC] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client1Receiver.items == [msgC] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client2Receiver.items == [msgC] }, timeout: isStable ? 1.0 : 10.0)
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0) // allow time for any errant messages
-            #expect(await serverReceiver.messages == [])
+            #expect(await serverReceiver.items == [])
             
             await serverReceiver.reset()
             await client1Receiver.reset()
@@ -556,10 +538,10 @@ extension SerializedTests {
             
             let msgD = OSCMessage("/d")
             server.send(msgD) { clientID, error in Issue.record(error) }
-            await wait(expect: { await client1Receiver.messages == [msgD] }, timeout: isStable ? 1.0 : 10.0)
-            await wait(expect: { await client2Receiver.messages == [msgD] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client1Receiver.items == [msgD] }, timeout: isStable ? 1.0 : 10.0)
+            await wait(expect: { await client2Receiver.items == [msgD] }, timeout: isStable ? 1.0 : 10.0)
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0) // allow time for any errant messages
-            #expect(await serverReceiver.messages == [])
+            #expect(await serverReceiver.items == [])
             
             await serverReceiver.reset()
             await client1Receiver.reset()
