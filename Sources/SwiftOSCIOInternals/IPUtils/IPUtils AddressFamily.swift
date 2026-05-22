@@ -4,7 +4,7 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import CoreFoundation
+import Foundation
 
 extension IPUtils {
     public enum AddressFamily: Int32, Equatable, Hashable, CaseIterable, Sendable {

@@ -6,8 +6,6 @@
 
 import struct Foundation.Data
 import class Foundation.NSArray
-import CoreFoundation
-import CFNetwork
 
 extension IPUtils {
     public enum ResolveError: Error {
