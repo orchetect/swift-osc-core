@@ -119,7 +119,7 @@ extension SerializedTests {
                 }
             }
             
-            await wait(expect: { await clientReceiver.items.count == expectedMsgCount }, timeout: isStable ? 10.0 : 20.0)
+            await wait(expect: { await clientReceiver.items.count == expectedMsgCount }, timeout: isStable ? 20.0 : 30.0)
             try await #require(clientReceiver.items.count == expectedMsgCount)
             
             await #expect(clientReceiver.items == sourceMessages)

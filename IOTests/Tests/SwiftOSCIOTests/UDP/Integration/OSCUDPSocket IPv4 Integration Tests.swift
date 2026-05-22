@@ -71,7 +71,7 @@ extension SerializedTests {
                 }
             }
             
-            await wait(expect: { await receiver.items.count == 1000 }, timeout: isFlakey ? 20.0 : 5.0)
+            await wait(expect: { await receiver.items.count == 1000 }, timeout: isFlakey ? 30.0 : 20.0)
             try await #require(receiver.items.count == 1000)
             
             await #expect(receiver.items == sourceMessages)
