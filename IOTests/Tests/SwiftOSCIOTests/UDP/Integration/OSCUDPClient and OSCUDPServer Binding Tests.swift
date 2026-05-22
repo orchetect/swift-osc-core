@@ -9,16 +9,18 @@ import Foundation
 import Testing
 
 extension SerializedTests {
-    /// This forms a server/client connection and:
-    /// - checks that the "host" property of the OSC receiver callback for both classes contains the correct resolved IP address.
+    /// This creates a UDP server and client and:
+    /// - checks that the "host" property of the OSC server callback for contains the correct resolved IP address
     /// - ensures the IP protocol mode (`isIPv6Enabled` property) is respected.
     /// - TODO: if/when both classes gain a `localHost` property, that also should be checked.
+    ///
+    /// This also tests that the UDP client is capable of self-starting gracefully if it is not manually started prior to sending.
     ///
     /// This test assumes that the system contains a hosts file entry for `localhost` that has both IPv4 and IPv6 IP addresses.
     @Suite
     struct OSCUDPClient_and_OSCUDPServer_Binding_Tests {
-        @Test(arguments: [false, true]) // IPv4 and IPv6 modes
-        func defaultBinding(isIPv6Enabled: Bool) async throws {
+        @Test(arguments: [(false, false), (false, true), (true, false), (true, true)]) // IPv4 and IPv6 modes
+        func onlineDefaultBinding(isIPv6Enabled: Bool, isClientManuallyStarted: Bool) async throws {
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)
@@ -50,11 +52,8 @@ extension SerializedTests {
             let client = OSCUDPClient(localPort: nil, isIPv6Enabled: isIPv6Enabled)
             
             // start client
-            try client.start()
+            if isClientManuallyStarted { try client.start() }
             defer { client.stop() }
-            
-            // wait for connection
-            await wait(expect: { client.isStarted }, timeout: 5.0)
             
             // ensure property reflects expected state
             #expect(client.isIPv6Enabled == isIPv6Enabled)

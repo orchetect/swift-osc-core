@@ -9,8 +9,8 @@ import Foundation
 import Testing
 
 extension SerializedTests {
-    /// This forms a server/client connection and:
-    /// - checks that the "host" property of the OSC receiver callback for both classes contains the correct resolved IP address.
+    /// This forms a TCP server/client connection and:
+    /// - checks that the "host" property of the OSC receiver callback for both classes contains the correct resolved IP address
     /// - ensures the IP protocol mode (`isIPv6Enabled` property) is respected.
     /// - TODO: if/when both classes gain a `localHost` property, that also should be checked.
     ///
@@ -18,7 +18,7 @@ extension SerializedTests {
     @Suite
     struct OSCTCPClient_and_OSCTCPServer_Binding_Tests {
         @Test(arguments: [false, true]) // IPv4 and IPv6 modes
-        func defaultBinding(isIPv6Enabled: Bool) async throws {
+        func onlineDefaultBinding(isIPv6Enabled: Bool) async throws {
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)

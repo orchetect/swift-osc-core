@@ -20,8 +20,10 @@ extension SerializedTests {
     @Suite(.enabled(if: isSystemTimingStable()))
     struct OSCUDPClient_and_OSCUDPServer_IPv4_Integration_Tests {
         /// Online stress-test (IPv4) to ensure a large volume of OSC packets are received and dispatched in order.
-        @Test
-        func onlineStressTest() async throws {
+        ///
+        /// This also tests that the UDP client is capable of self-starting gracefully if it is not manually started prior to sending.
+        @Test(arguments: [false, true])
+        func onlineStressTest(isClientManuallyStarted: Bool) async throws {
             let isFlakey = !isSystemTimingStable()
 
             let server = OSCUDPServer(port: nil, interface: "0.0.0.0", queue: nil, receiveHandler: nil)
@@ -61,6 +63,8 @@ extension SerializedTests {
             let client = OSCUDPClient()
             try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
 
+            if isClientManuallyStarted { try client.start() }
+            
             // sanity check - IPv6 should be disabled by default, as per the OSCUDPClientProtocol spec.
             #expect(!client.isIPv6Enabled)
 
