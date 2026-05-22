@@ -76,6 +76,11 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     // MARK: - Properties
 
+    /// Local network port.
+    /// This port is automatically assigned by the system each time the client connects to a remote server.
+    /// Returns `nil` when not connected.
+    var localPort: UInt16? { get }
+
     /// Remote network hostname.
     var remoteHost: String { get }
 
