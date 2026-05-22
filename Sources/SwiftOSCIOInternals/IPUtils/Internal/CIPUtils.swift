@@ -90,7 +90,13 @@ enum CIPUtils {
         // }
         
         let hintFamily = PF_UNSPEC
-        let hintSockType = Int32(SOCK_STREAM) // re-casting to Int32 is needed for Linux/Android
+        
+        #if os(Linux)
+        let hintSockType = Int32(SOCK_STREAM.rawValue) // on Linux SOCK_STREAM is an enum, so we need to access its value
+        #else
+        let hintSockType = Int32(SOCK_STREAM) // re-casting to Int32 is needed for Android
+        #endif
+        
         let hintProtocol = Int32(IPPROTO_TCP) // re-casting to Int32 is needed for Linux/Android
         
         #if canImport(Darwin) || canImport(Android)
