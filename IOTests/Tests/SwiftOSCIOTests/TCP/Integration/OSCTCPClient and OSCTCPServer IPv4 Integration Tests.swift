@@ -23,7 +23,7 @@ extension SerializedTests {
         /// - This also tests that when passing local port 0 to server's init, after calling `start()` the `localPort`
         ///   property is then populated with the system-assigned port.
         @Test(.serialized, arguments: OSCTCPFramingMode.allCases)
-        func onlineStressTestIPv4(framingMode: OSCTCPFramingMode) async throws {
+        func onlineStressTest(framingMode: OSCTCPFramingMode) async throws {
             let isStable = isSystemTimingStable()
             
             // setup server
@@ -138,7 +138,7 @@ extension SerializedTests {
         /// Online test (IPv4) to check that connections are added when an incoming connection is made,
         /// and check that connections are removed when a connection is closed remotely.
         @Test
-        func onlineClientConnectDisconnectIPv4() async throws {
+        func onlineClientConnectDisconnect() async throws {
             let isStable = isSystemTimingStable()
             
             // setup server
@@ -202,6 +202,180 @@ extension SerializedTests {
             try await Task.sleep(seconds: isStable ? 1.0 : 5.0)
             
             #expect(server.clients.isEmpty)
+        }
+        
+        /// Online test (IPv4) to check that the expected notification callbacks are made when a client
+        /// gracefully disconnects itself from a server.
+        @Test
+        func onlineClientGracefulDisconnectNotifications() async throws {
+            let isStable = isSystemTimingStable()
+            
+            let serverReceiver = ItemReceiver<OSCTCPServer.Notification>()
+            let clientReceiver = ItemReceiver<OSCTCPClient.Notification>()
+            
+            // setup server
+            
+            // binding to port 0 or nil will cause the system to assign a random available port
+            let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
+            try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
+            server.setNotificationHandler { [weak serverReceiver] notification in
+                Task { @TestActor in // must be serialized on a global actor to maintain received notification ordering
+                    await serverReceiver?.add(notification)
+                }
+            }
+            
+            try server.start()
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // cleanup when test case exists so no open sockets hang or interfere with other test cases
+            defer { server.stop() }
+            
+            print("Using server listen port \(server.localPort)")
+            
+            #expect(await serverReceiver.items.isEmpty)
+            
+            // setup client 1
+            // (must be done after calling start on server so we have a non-zero local server port to use)
+            
+            let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
+            try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client.isIPv6Enabled)
+            
+            client.setNotificationHandler { [weak clientReceiver] notification in
+                Task { @TestActor in // must be serialized on a global actor to maintain received notification ordering
+                    await clientReceiver?.add(notification)
+                }
+            }
+            
+            // connect to server
+            try client.connect()
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            await wait(expect: { await !serverReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
+            await wait(expect: { await !clientReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
+            
+            let clientID = server.clients.first!.key
+            let clientRemoteHost = "127.0.0.1"
+            let clientRemotePort = client.core.tcpSocket.localPort // TODO: could change to `client.localPort` once implemented
+            
+            // check received notifications
+            #expect(await serverReceiver.items == [
+                .connected(remoteHost: clientRemoteHost, remotePort: clientRemotePort, clientID: clientID)
+            ])
+            #expect(await clientReceiver.items == [
+                .connected
+            ])
+            await serverReceiver.reset()
+            await clientReceiver.reset()
+            
+            // have client close its own connection gracefully
+            client.close()
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // check received notifications
+            #expect(await serverReceiver.items == [
+                .disconnected(remoteHost: "127.0.0.1", remotePort: clientRemotePort, clientID: clientID, error: nil)
+            ])
+            #expect(await clientReceiver.items == [
+                .disconnected(error: nil)
+            ])
+            await serverReceiver.reset()
+            await clientReceiver.reset()
+            
+            // cleanup
+            server.stop()
+        }
+        
+        /// Online test (IPv4) to check that the expected notification callbacks are made when a server gracefully
+        /// closes a connection to a connected remote client.
+        @Test
+        func onlineServerGracefulDisconnectNotification() async throws {
+            let isStable = isSystemTimingStable()
+            
+            let serverReceiver = ItemReceiver<OSCTCPServer.Notification>()
+            let clientReceiver = ItemReceiver<OSCTCPClient.Notification>()
+            
+            // setup server
+            
+            // binding to port 0 or nil will cause the system to assign a random available port
+            let server = OSCTCPServer(port: nil, framingMode: .osc1_1)
+            try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPServerProtocol spec.
+            #expect(!server.isIPv6Enabled)
+            
+            server.setNotificationHandler { [weak serverReceiver] notification in
+                Task { @TestActor in // must be serialized on a global actor to maintain received notification ordering
+                    await serverReceiver?.add(notification)
+                }
+            }
+            
+            try server.start()
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // cleanup when test case exists so no open sockets hang or interfere with other test cases
+            defer { server.stop() }
+            
+            print("Using server listen port \(server.localPort)")
+            
+            #expect(await serverReceiver.items.isEmpty)
+            
+            // setup client 1
+            // (must be done after calling start on server so we have a non-zero local server port to use)
+            
+            let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
+            try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
+            
+            // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
+            #expect(!client.isIPv6Enabled)
+            
+            client.setNotificationHandler { [weak clientReceiver] notification in
+                Task { @TestActor in // must be serialized on a global actor to maintain received notification ordering
+                    await clientReceiver?.add(notification)
+                }
+            }
+            
+            try client.connect()
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            await wait(expect: { await !serverReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
+            await wait(expect: { await !clientReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
+            
+            let clientID = server.clients.first!.key
+            let clientRemoteHost = "127.0.0.1"
+            let clientRemotePort = client.core.tcpSocket.localPort // TODO: could change to `client.localPort` once implemented
+            
+            // check received notifications
+            #expect(await serverReceiver.items == [
+                .connected(remoteHost: clientRemoteHost, remotePort: clientRemotePort, clientID: clientID)
+            ])
+            #expect(await clientReceiver.items == [
+                .connected
+            ])
+            await serverReceiver.reset()
+            await clientReceiver.reset()
+            
+            server.disconnectClient(clientID: clientID)
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
+            
+            // check received notifications
+            #expect(await serverReceiver.items == [
+                .disconnected(remoteHost: "127.0.0.1", remotePort: clientRemotePort, clientID: clientID, error: nil)
+            ])
+            #expect(await clientReceiver.items == [
+                .disconnected(error: nil)
+            ])
+            await serverReceiver.reset()
+            await clientReceiver.reset()
+            
+            // cleanup
+            client.close()
         }
         
         /// Online test (IPv4) of starting TCP server, then stopping it, then restarting it again.
