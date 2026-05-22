@@ -255,7 +255,7 @@ extension SerializedTests {
             
             let clientID = server.clients.first!.key
             let clientRemoteHost = "127.0.0.1"
-            let clientRemotePort = client.core.tcpSocket.localPort // TODO: could change to `client.localPort` once implemented
+            let clientRemotePort = try #require(client.localPort)
             
             // check received notifications
             #expect(await serverReceiver.items == [
@@ -342,7 +342,7 @@ extension SerializedTests {
             
             let clientID = server.clients.first!.key
             let clientRemoteHost = "127.0.0.1"
-            let clientRemotePort = client.core.tcpSocket.localPort // TODO: could change to `client.localPort` once implemented
+            let clientRemotePort = try #require(client.localPort)
             
             // check received notifications
             #expect(await serverReceiver.items == [
