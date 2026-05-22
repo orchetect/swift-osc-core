@@ -109,9 +109,10 @@ extension SerializedTests {
             let socket = OSCUDPSocket()
 
             // read
+            _ = socket.localHost
+            _ = socket.localPort
             _ = socket.remoteHost
             _ = socket.remotePort
-            _ = socket.localPort
             _ = socket.interface
             _ = socket.isIPv4BroadcastEnabled
             _ = socket.isIPv6Enabled

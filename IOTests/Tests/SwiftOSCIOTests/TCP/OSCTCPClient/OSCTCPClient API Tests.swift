@@ -93,6 +93,8 @@ extension SerializedTests {
             )
 
             // read
+            _ = client.localHost
+            _ = client.localPort
             _ = client.remoteHost
             _ = client.remotePort
             _ = client.interface

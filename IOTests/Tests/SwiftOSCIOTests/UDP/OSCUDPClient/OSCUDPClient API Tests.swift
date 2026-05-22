@@ -68,6 +68,7 @@ extension SerializedTests {
             let client = OSCUDPClient()
 
             // read
+            _ = client.localHost
             _ = client.localPort
             _ = client.interface
             _ = client.isPortReuseEnabled // mutable

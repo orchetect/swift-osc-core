@@ -84,6 +84,7 @@ extension SerializedTests {
             let server = OSCUDPServer()
 
             // read
+            _ = server.localHost
             _ = server.localPort
             _ = server.interface
             _ = server.isPortReuseEnabled
