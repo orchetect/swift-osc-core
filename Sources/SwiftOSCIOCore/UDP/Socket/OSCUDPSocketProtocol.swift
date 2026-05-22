@@ -80,7 +80,7 @@ public protocol OSCUDPSocketProtocol: Sendable {
 
     // MARK: - Properties
 
-    /// Remote network hostname.
+    /// Remote network host or IP address.
     /// If non-nil, this host will be used in calls to ``send(_:to:port:)-(OSCPacket,_,_)``. The host may still be
     /// overridden using the `host` parameter in the call to ``send(_:to:port:)-(OSCPacket,_,_)``..
     var remoteHost: String? { get set }

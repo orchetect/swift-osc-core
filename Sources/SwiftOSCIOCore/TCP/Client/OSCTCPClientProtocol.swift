@@ -81,7 +81,7 @@ public protocol OSCTCPClientProtocol: Sendable {
     /// Returns `nil` when not connected.
     var localPort: UInt16? { get }
 
-    /// Remote network hostname.
+    /// Remote network host or IP address.
     var remoteHost: String { get }
 
     /// Remote network port.
