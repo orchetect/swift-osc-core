@@ -76,6 +76,14 @@ public protocol OSCTCPClientProtocol: Sendable {
 
     // MARK: - Properties
 
+    /// Local network host or IP address.
+    /// The local address is resolved at the time of forming a connection to a remote server, when the local socket is bound.
+    /// Returns `nil` when not connected.
+    ///
+    /// The local host address is determined by the ``interface`` (if specified), otherwise the appropriate
+    /// default is used to communicate over all interfaces.
+    var localHost: String? { get }
+
     /// Local network port.
     /// This port is automatically assigned by the system each time the client connects to a remote server.
     /// Returns `nil` when not connected.

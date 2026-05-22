@@ -83,6 +83,19 @@ public protocol OSCUDPClientProtocol: Sendable {
 
     // MARK: - Properties
 
+    /// Local network host or IP address.
+    /// The local address is resolved at the time of starting the client, when the local socket is bound.
+    /// Returns `nil` when not started.
+    ///
+    /// The local host address is determined by the ``interface`` (if specified), otherwise the appropriate
+    /// default is used to communicate over all interfaces.
+    ///
+    /// > Note:
+    /// >
+    /// > If ``start()`` has not yet been called, reading this property may return `nil` until the first
+    /// > successful call to ``start()`` or ``send(_:to:port:)-(OSCPacket,_,_)`` is made.
+    var localHost: String? { get }
+
     /// Local UDP port used by the client from which to send OSC packets. (This is not the remote port
     /// which is specified each time a call to ``send(_:to:port:)-(OSCPacket,_,_)`` is made.)
     /// This may only be set at the time of initialization.

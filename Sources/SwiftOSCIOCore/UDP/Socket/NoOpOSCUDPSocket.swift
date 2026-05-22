@@ -8,6 +8,7 @@ import class Foundation.DispatchQueue
 
 /// A no-op OSC UDP socket implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCUDPSocket: OSCUDPSocketProtocol {
+    open private(set) var localHost: String?
     open var remoteHost: String?
     open private(set) var localPort: UInt16
     open var remotePort: UInt16 {

@@ -8,6 +8,7 @@ import class Foundation.DispatchQueue
 
 /// A no-op OSC TCP server implementation provided for testing, mocking, or as a stand-in on unsupported platforms.
 open class NoOpOSCTCPServer: OSCTCPServerProtocol {
+    open private(set) var localHost: String?
     open private(set) var localPort: UInt16
     open private(set) var interface: String?
     open var isIPv6Enabled: Bool

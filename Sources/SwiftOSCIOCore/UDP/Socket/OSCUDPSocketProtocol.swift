@@ -80,10 +80,13 @@ public protocol OSCUDPSocketProtocol: Sendable {
 
     // MARK: - Properties
 
-    /// Remote network host or IP address.
-    /// If non-nil, this host will be used in calls to ``send(_:to:port:)-(OSCPacket,_,_)``. The host may still be
-    /// overridden using the `host` parameter in the call to ``send(_:to:port:)-(OSCPacket,_,_)``..
-    var remoteHost: String? { get set }
+    /// Local network host or IP address.
+    /// The local address is resolved at the time of starting the socket, when the local socket is bound.
+    /// Returns `nil` when not started.
+    ///
+    /// The local host address is determined by the ``interface`` (if specified), otherwise the appropriate
+    /// default is used to communicate over all interfaces.
+    var localHost: String? { get }
 
     /// Local UDP port used to both send OSC packets from and listen for incoming packets.
     /// This may only be set at the time of initialization.
@@ -97,6 +100,11 @@ public protocol OSCUDPSocketProtocol: Sendable {
     /// > property may return a value of `0` until the first successful call to ``send(_:to:port:)-(OSCPacket,_,_)``
     /// > is made.
     var localPort: UInt16 { get }
+
+    /// Remote network host or IP address.
+    /// If non-nil, this host will be used in calls to ``send(_:to:port:)-(OSCPacket,_,_)``. The host may still be
+    /// overridden using the `host` parameter in the call to ``send(_:to:port:)-(OSCPacket,_,_)``..
+    var remoteHost: String? { get set }
 
     /// UDP port used by to send OSC packets. This may be set at any time.
     /// This port will be used in calls to ``send(_:to:port:)-(OSCPacket,_,_)``. The port may still be overridden

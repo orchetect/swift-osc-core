@@ -99,6 +99,14 @@ public protocol OSCTCPServerProtocol: Sendable {
 
     // MARK: - Properties
 
+    /// Local network host or IP address.
+    /// The local address is resolved at the time of starting the server, when the local socket is bound.
+    /// Returns `nil` when not started.
+    ///
+    /// The local host address is determined by the ``interface`` (if specified), otherwise the appropriate
+    /// default is used to communicate over all interfaces.
+    var localHost: String? { get }
+
     /// Local network port.
     var localPort: UInt16 { get }
 
