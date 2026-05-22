@@ -89,27 +89,60 @@ enum CIPUtils {
         //     return [addresses copy];
         // }
         
-        // addrinfo:
-        // init(
-        //     ai_flags: Int32,
-        //     ai_family: Int32,
-        //     ai_socktype: Int32,
-        //     ai_protocol: Int32,
-        //     ai_addrlen: socklen_t,
-        //     ai_canonname: UnsafeMutablePointer<CChar>!,
-        //     ai_addr: UnsafeMutablePointer<sockaddr>!,
-        //     ai_next: UnsafeMutablePointer<addrinfo>!
-        // )
+        let hintFamily = PF_UNSPEC
+        let hintSockType = SOCK_STREAM
+        let hintProtocol = Int32(IPPROTO_TCP) // IPPROTO_TCP is `Int` on Android but `Int32` on Darwin/Linux; re-casting covers both
+        
+        #if canImport(Darwin)
+        // addrinfo on Darwin:
+        // -------------------
+        //     init(
+        //         ai_flags: Int32,
+        //         ai_family: Int32,
+        //         ai_socktype: Int32,
+        //         ai_protocol: Int32,
+        //         ai_addrlen: socklen_t,
+        //         ai_canonname: UnsafeMutablePointer<CChar>!,
+        //         ai_addr: UnsafeMutablePointer<sockaddr>!,
+        //         ai_next: UnsafeMutablePointer<addrinfo>!
+        //     )
         var hints = addrinfo(
             ai_flags: 0,
-            ai_family: PF_UNSPEC,
-            ai_socktype: SOCK_STREAM,
-            ai_protocol: IPPROTO_TCP, // IPPROTO_UDP ?
+            ai_family: hintFamily,
+            ai_socktype: hintSockType,
+            ai_protocol: hintProtocol,
             ai_addrlen: 0,
             ai_canonname: nil,
             ai_addr: nil,
             ai_next: nil
         )
+        #elseif os(Linux) || os(Android)
+        // addrinfo in Glibc:
+        // ------------------
+        //     struct addrinfo
+        //     {
+        //         int ai_flags;              /* Input flags. */
+        //         int ai_family;             /* Protocol family for socket. */
+        //         int ai_socktype;           /* Socket type. */
+        //         int ai_protocol;           /* Protocol for socket. */
+        //         socklen_t ai_addrlen;      /* Length of socket address. */
+        //         struct sockaddr *ai_addr;  /* Socket address for socket. */
+        //         char *ai_canonname;        /* Canonical name for service location. */
+        //         struct addrinfo *ai_next;  /* Pointer to next in list. */
+        //     };
+        var hints = addrinfo(
+            ai_flags: 0,
+            ai_family: hintFamily,
+            ai_socktype: hintSockType,
+            ai_protocol: hintProtocol,
+            ai_addrlen: 0,
+            ai_addr: nil,
+            ai_canonname: nil,
+            ai_next: nil
+        )
+        #elseif canImport(WASILibc)
+        // TODO: add WASI support
+        #endif
         
         let host = host.cString(using: .utf8)
         let port = String(port).cString(using: .utf8)
@@ -151,11 +184,17 @@ extension CIPUtils {
     static func string(for address: UnsafePointer<sockaddr>, length: Int, property: IPUtils.SocketAddressProperty) -> String? {
         var ipCString = [Int8](repeating: 0x00, count: Int(NI_MAXHOST))
         
+        #if canImport(Darwin) || os(Linux)
+        let ipCStringLength = socklen_t(ipCString.count) // socklen_t a.k.a UInt32
+        #else
+        let ipCStringLength = Int(ipCString.count)
+        #endif
+        
         let result = getnameinfo(
             address,
             socklen_t(length),
             &ipCString,
-            socklen_t(ipCString.count),
+            ipCStringLength, // expects UInt32 on Darwin/Linux, but Int on Android
             nil,
             0,
             property.rawValue
