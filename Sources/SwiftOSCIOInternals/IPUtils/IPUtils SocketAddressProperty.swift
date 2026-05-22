@@ -4,7 +4,21 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import Foundation
+#if canImport(Darwin)
+import Darwin
+#elseif os(Linux) || os(Android)
+#if canImport(Glibc)
+@preconcurrency import Glibc
+#elseif canImport(Musl)
+@preconcurrency import Musl
+#elseif canImport(Android)
+@preconcurrency import Android
+#endif
+#elseif canImport(WASILibc)
+@preconcurrency import WASILibc
+#else
+#error("SwiftOSC IO Internals was unable to identify the C library on the current platform.")
+#endif
 
 extension IPUtils {
     public enum SocketAddressProperty: Int32, Equatable, Hashable, CaseIterable, Sendable {
