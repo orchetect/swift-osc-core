@@ -72,6 +72,7 @@ struct OSCTCPServer_API_Tests {
         let server = OSCTCPServer(port: nil)
 
         // read
+        _ = server.localHost
         _ = server.localPort
         _ = server.interface
         _ = server.isStarted
