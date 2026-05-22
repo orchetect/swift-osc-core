@@ -10,9 +10,9 @@ import Testing
 
 extension SerializedTests {
     /// This forms a TCP server/client connection and:
-    /// - checks that the "host" property of the OSC receiver callback for both classes contains the correct resolved IP address
-    /// - ensures the IP protocol mode (`isIPv6Enabled` property) is respected.
-    /// - TODO: if/when both classes gain a `localHost` property, that also should be checked.
+    /// - checks that the `host` parameter of the OSC receiver callbacks contain the correct resolved IP address
+    /// - ensures the `localHost` property contains the correct resolved IP address
+    /// - ensures the IP protocol mode (`isIPv6Enabled` property) is respected
     ///
     /// This test assumes that the system contains a hosts file entry for `localhost` that has both IPv4 and IPv6 IP addresses.
     @Suite
@@ -22,6 +22,7 @@ extension SerializedTests {
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)
+            let localBinding = "0.0.0.0"
             let localIP = "127.0.0.1"
             
             typealias MessageDetails = (message: OSCMessage, host: String, port: UInt16)
@@ -37,6 +38,9 @@ extension SerializedTests {
                 }
             })
             
+            // ensure property reflects expected state
+            #expect(server.localHost == nil)
+            
             // start server
             try server.start()
             defer { server.stop() }
@@ -44,8 +48,7 @@ extension SerializedTests {
             
             // ensure property reflects expected state
             #expect(server.isIPv6Enabled == isIPv6Enabled)
-            
-            // TODO: If `OSCTCPServerProtocol` gains a `localHost` property, check that it contains the correct resolved IP address as well
+            #expect(server.localHost == localBinding)
             
             // set up client
             let client = OSCTCPClient(remoteHost: "localhost", remotePort: server.localPort, isIPv6Enabled: isIPv6Enabled)
@@ -56,6 +59,9 @@ extension SerializedTests {
                 }
             })
             
+            // ensure property reflects expected state
+            #expect(client.localHost == nil)
+            
             // start client
             try client.connect()
             defer { client.close() }
@@ -63,10 +69,9 @@ extension SerializedTests {
             // wait for connection
             await wait(expect: { client.isConnected }, timeout: 5.0)
             
-            // ensure property reflects expected state
+            // ensure properties reflect expected state
             #expect(client.isIPv6Enabled == isIPv6Enabled)
-            
-            // TODO: If `OSCTCPClientProtocol` gains a `localHost` property, check that it contains the correct resolved IP address as well
+            #expect(client.localHost == localIP)
             
             // send a message from server to client
             server.send(.message("/test"), toClientIDs: nil) { clientID, error in
