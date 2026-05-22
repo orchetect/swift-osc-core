@@ -70,6 +70,13 @@ extension SerializedTests {
                 for message in sourceMessages {
                     do { try client.send(message, to: "127.0.0.1", port: port) }
                     catch { Issue.record(error, sourceLocation: srcLocSendToServer) }
+                    
+                    // randomly ask the client to send a message to a different (non-existent) host to ensure
+                    // it is able to resume sending gracefully without permanently dropping the socket
+                    if Int.random(in: 0 ... 20) == 10 {
+                        // ignore errors here
+                        try? client.send(message, to: "\(UUID().uuidString)", port: UInt16.random(in: 60_000 ... 61_000))
+                    }
                 }
             }
 
