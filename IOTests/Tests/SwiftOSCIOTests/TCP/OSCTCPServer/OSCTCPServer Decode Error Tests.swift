@@ -16,6 +16,8 @@ extension SerializedTests {
         /// Test receiving non-OSC data (potentially totally unrelated packet types)
         @Test
         func receiveNonOSCData() async throws {
+            let isStable = isSystemTimingStable()
+            
             let receiver = ItemReceiver<ErrorPayload>()
             
             // manually build a raw OSC message
@@ -41,8 +43,7 @@ extension SerializedTests {
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: nonOSCData, remoteHost: "dummy", remotePort: 8008)
                     
-                    // allow a little time to wait for any asynchronous callbacks
-                    try await Task.sleep(seconds: 0.5)
+                    await wait(expect: { await !receiver.items.isEmpty }, timeout: isStable ? 5.0 : 15.0)
                 }
             }
             
@@ -55,6 +56,8 @@ extension SerializedTests {
         /// Test receiving OSC data with correct header bytes but malformed data within the packet.
         @Test
         func receiveMalformedData() async throws {
+            let isStable = isSystemTimingStable()
+            
             let receiver = ItemReceiver<ErrorPayload>()
             
             // manually build a raw OSC message
@@ -84,7 +87,7 @@ extension SerializedTests {
                     // host and port here don't matter, as we're just feeding these messages into the server's internal receiver
                     server.core.dispatch(receivedTCPFramedData: malformedOSCData, remoteHost: "dummy", remotePort: 8008)
                     
-                    await wait(expect: { await !receiver.items.isEmpty }, timeout: 2.0)
+                    await wait(expect: { await !receiver.items.isEmpty }, timeout: isStable ? 5.0 : 15.0)
                 }
             }
             
