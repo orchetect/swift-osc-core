@@ -30,8 +30,8 @@ extension SerializedTests {
 
             let server = OSCTCPServer(port: nil)
 
-            try await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
-                try await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
+            await confirmation("Receive Handler", expectedCount: 0) { receiveHandlerConfirmation in
+                await confirmation("Error Handler", expectedCount: 1) { errorHandlerConfirmation in
                     server.setReceiveHandler(.packets { packet, host, port in
                         guard !Task.isCancelled else { return }
                         receiveHandlerConfirmation()
