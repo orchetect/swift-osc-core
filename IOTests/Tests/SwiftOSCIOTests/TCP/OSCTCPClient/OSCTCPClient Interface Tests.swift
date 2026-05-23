@@ -14,7 +14,9 @@ extension SerializedTests {
     struct OSCTCPClient_Interface_Tests {
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-        func interfaceBinding_interfaceAddress(toLocalIP localIP: String) throws {
+        func interfaceBinding_interfaceAddress(toLocalIP localIP: String) async throws {
+            let isStable = isSystemTimingStable()
+            
             let isIPv6 = localIP.contains(":")
 
             guard let (_, interfaceAddress) = try networkDevice(
@@ -37,6 +39,8 @@ extension SerializedTests {
             try server.start()
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             // set up client
             let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
@@ -46,7 +50,9 @@ extension SerializedTests {
 
         /// Attempt to bind to a network interface, if one is present that can be used.
         @Test(arguments: ["127.0.0.1", "::1"]) // IPv4 and IPv6 local addresses
-        func interfaceBinding_interfaceName(toInterfaceNameOfLocalIP localIP: String) throws {
+        func interfaceBinding_interfaceName(toInterfaceNameOfLocalIP localIP: String) async throws {
+            let isStable = isSystemTimingStable()
+            
             let isIPv6 = localIP.contains(":")
 
             guard let (interfaceName, _) = try networkDevice(
@@ -69,6 +75,8 @@ extension SerializedTests {
             try server.start()
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             // set up client
             let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)
@@ -78,7 +86,9 @@ extension SerializedTests {
 
         /// Attempt to bind to a wildcard address via the `interface` parameter.
         @Test(arguments: [("0.0.0.0", "127.0.0.1", false), ("::", "::1", true)]) // IPv4 and IPv6
-        func interfaceBinding_wildcardAddress(wildcardAddress: String, localIP: String, isIPv6: Bool) throws {
+        func interfaceBinding_wildcardAddress(wildcardAddress: String, localIP: String, isIPv6: Bool) async throws {
+            let isStable = isSystemTimingStable()
+            
             let interface = wildcardAddress
             print("Using interface \"\(interface)\"")
 
@@ -88,6 +98,8 @@ extension SerializedTests {
             try server.start()
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             // set up client
             let client = OSCTCPClient(remoteHost: localIP, remotePort: server.localPort, interface: interface, isIPv6Enabled: isIPv6)
             #expect(client.interface == interface)

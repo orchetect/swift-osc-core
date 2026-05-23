@@ -21,6 +21,8 @@ extension SerializedTests {
     struct OSCUDPClient_and_OSCUDPServer_Binding_Tests {
         @Test(arguments: [(false, false), (false, true), (true, false), (true, true)]) // IPv4 and IPv6 modes
         func onlineDefaultBinding(isIPv6Enabled: Bool, isClientManuallyStarted: Bool) async throws {
+            let isStable = isSystemTimingStable()
+            
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)
@@ -45,7 +47,8 @@ extension SerializedTests {
             // start server
             try server.start()
             defer { server.stop() }
-            await wait(expect: { server.isStarted }, timeout: 5.0)
+            
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             
             // ensure property reflects expected state
             #expect(server.isIPv6Enabled == isIPv6Enabled)

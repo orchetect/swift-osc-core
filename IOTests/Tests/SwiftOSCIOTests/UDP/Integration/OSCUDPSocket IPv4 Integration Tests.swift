@@ -22,7 +22,7 @@ extension SerializedTests {
         /// Online stress-test to ensure a large volume of OSC packets are received and dispatched in order.
         @Test
         func onlineStressTest() async throws {
-            let isFlakey = !isSystemTimingStable()
+            let isStable = isSystemTimingStable()
 
             let socket = OSCUDPSocket(
                 localPort: nil, // selects a random available port
@@ -32,14 +32,15 @@ extension SerializedTests {
                 queue: nil,
                 receiveHandler: nil
             )
-            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.1)
+            try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
             // sanity check - IPv6 should be disabled by default, as per the OSCUDPSocketProtocol spec.
             #expect(!socket.isIPv6Enabled)
 
             try socket.start()
-            try await Task.sleep(seconds: isFlakey ? 5.0 : 0.5)
+            try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { socket.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using socket listen port \(socket.localPort), destination port \(socket.remotePort)")
 
             let receiver = ItemReceiver<OSCMessage>()
@@ -78,7 +79,7 @@ extension SerializedTests {
                 }
             }
 
-            await wait(expect: { await receiver.items.count == 1000 }, timeout: isFlakey ? 30.0 : 20.0)
+            await wait(expect: { await receiver.items.count == 1000 }, timeout: isStable ? 20.0 : 30.0)
             try await #require(receiver.items.count == 1000)
 
             await #expect(receiver.items == sourceMessages)

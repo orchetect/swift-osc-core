@@ -98,13 +98,17 @@ extension SerializedTests {
 
         /// Attempt to bind to a wildcard address via the `interface` parameter.
         @Test(arguments: [("0.0.0.0", "127.0.0.1", false), ("::", "::1", true)]) // IPv4 and IPv6
-        func interfaceBinding_wildcardAddress(wildcardAddress: String, localIP: String, isIPv6: Bool) throws {
+        func interfaceBinding_wildcardAddress(wildcardAddress: String, localIP: String, isIPv6: Bool) async throws {
+            let isStable = isSystemTimingStable()
+            
             let interface = wildcardAddress
             print("Using interface \"\(interface)\"")
 
             let server = OSCUDPServer(port: nil, interface: interface, isIPv6Enabled: isIPv6)
             #expect(server.interface == interface)
             try server.start()
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             server.stop()
         }
 

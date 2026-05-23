@@ -41,6 +41,7 @@ extension SerializedTests {
             // cleanup when test case exists so no open sockets hang or interfere with other test cases
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
 
             // setup client
@@ -55,6 +56,8 @@ extension SerializedTests {
             try client.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            // wait for connection
+            await wait(expect: { !server.clients.isEmpty && client.isConnected }, timeout: isStable ? 0.5 : 5.0)
             #expect(server.clients.count == 1)
 
             // prep test types and variables
@@ -149,6 +152,7 @@ extension SerializedTests {
             // cleanup when test case exists so no open sockets hang or interfere with other test cases
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
 
             // setup client 1
@@ -166,6 +170,8 @@ extension SerializedTests {
             // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
             #expect(!client1.isIPv6Enabled)
 
+            // wait for connection
+            await wait(expect: { server.clients.count == 1 && client1.isConnected }, timeout: isStable ? 0.5 : 5.0)
             #expect(server.clients.count == 1)
 
             // setup client 2
@@ -180,6 +186,8 @@ extension SerializedTests {
             try client2.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            // wait for connection
+            await wait(expect: { server.clients.count == 2 && client2.isConnected }, timeout: isStable ? 0.5 : 5.0)
             #expect(server.clients.count == 2)
 
             // disconnect client 1
@@ -187,6 +195,7 @@ extension SerializedTests {
             client1.close()
             try await Task.sleep(seconds: isStable ? 1.0 : 5.0)
 
+            await wait(expect: { server.clients.count == 1 && !client1.isConnected }, timeout: isStable ? 0.5 : 5.0)
             #expect(server.clients.count == 1)
 
             // disconnect client 2
@@ -194,6 +203,7 @@ extension SerializedTests {
             client2.close()
             try await Task.sleep(seconds: isStable ? 1.0 : 5.0)
 
+            await wait(expect: { server.clients.isEmpty && !client2.isConnected }, timeout: isStable ? 0.5 : 5.0)
             #expect(server.clients.isEmpty)
         }
 
@@ -227,8 +237,9 @@ extension SerializedTests {
             // cleanup when test case exists so no open sockets hang or interfere with other test cases
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
-
+            
             #expect(await serverReceiver.items.isEmpty)
 
             // setup client 1
@@ -250,6 +261,8 @@ extension SerializedTests {
             try client.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.clients.count == 1 && client.isConnected }, timeout: isStable ? 0.5 : 5.0)
+            
             await wait(expect: { await !serverReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
             await wait(expect: { await !clientReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
 
@@ -271,6 +284,8 @@ extension SerializedTests {
             client.close()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.clients.isEmpty && !client.isConnected }, timeout: isStable ? 0.5 : 5.0)
+            
             // check received notifications
             #expect(await serverReceiver.items == [
                 .disconnected(remoteHost: "127.0.0.1", remotePort: clientRemotePort, clientID: clientID, error: nil)
@@ -315,6 +330,7 @@ extension SerializedTests {
             // cleanup when test case exists so no open sockets hang or interfere with other test cases
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
 
             #expect(await serverReceiver.items.isEmpty)
@@ -337,6 +353,8 @@ extension SerializedTests {
             try client.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.clients.count == 1 && client.isConnected }, timeout: isStable ? 0.5 : 5.0)
+            
             await wait(expect: { await !serverReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
             await wait(expect: { await !clientReceiver.items.isEmpty }, timeout: isStable ? 2.0 : 10.0)
 
@@ -357,6 +375,8 @@ extension SerializedTests {
             server.disconnectClient(clientID: clientID)
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.clients.isEmpty && !client.isConnected }, timeout: isStable ? 0.5 : 5.0)
+            
             // check received notifications
             #expect(await serverReceiver.items == [
                 .disconnected(remoteHost: "127.0.0.1", remotePort: clientRemotePort, clientID: clientID, error: nil)
@@ -385,32 +405,39 @@ extension SerializedTests {
 
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
-
+            
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             server.stop()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { !server.isStarted }, timeout: isStable ? 0.5 : 5.0)
+            
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
             // cleanup when test case exists so no open sockets hang or interfere with other test cases
             defer { server.stop() }
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
 
             // setup client 1
             // (must be done after calling start on server so we have a non-zero local server port to use)
 
-            let client1 = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
+            let client = OSCTCPClient(remoteHost: "127.0.0.1", remotePort: server.localPort, framingMode: .osc1_1)
             try await Task.sleep(seconds: isStable ? 0.1 : 5.0)
 
             // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
-            #expect(!client1.isIPv6Enabled)
+            #expect(!client.isIPv6Enabled)
 
-            try client1.connect()
+            try client.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.clients.count == 1 && client.isConnected }, timeout: isStable ? 0.5 : 5.0)
+            
             // sanity check - IPv6 should be disabled by default, as per the OSCTCPClientProtocol spec.
-            #expect(!client1.isIPv6Enabled)
+            #expect(!client.isIPv6Enabled)
 
             #expect(server.clients.count == 1)
         }
@@ -433,6 +460,7 @@ extension SerializedTests {
             try server.start()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
+            await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
             print("Using server listen port \(server.localPort)")
 
             // setup clients
@@ -449,7 +477,7 @@ extension SerializedTests {
             try client1.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
-            #expect(server.clients.count == 1)
+            await wait(expect: { server.clients.count == 1 && client1.isConnected }, timeout: isStable ? 0.5 : 5.0)
             let client1ID = try #require(server.clients.first?.key)
 
             // client 2
@@ -463,7 +491,7 @@ extension SerializedTests {
             try client2.connect()
             try await Task.sleep(seconds: isStable ? 0.5 : 5.0)
 
-            #expect(server.clients.count == 2)
+            await wait(expect: { server.clients.count == 2 && client2.isConnected }, timeout: isStable ? 0.5 : 5.0)
             let client2ID = try #require(server.clients.filter { $0.key != client1ID }.first?.key)
 
             // set up receivers
