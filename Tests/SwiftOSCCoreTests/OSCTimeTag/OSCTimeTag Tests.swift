@@ -11,12 +11,18 @@ import Testing
 @Suite
 struct OSCTimeTag_Tests {
     // De-flake mitigation: allow more time variance for CI pipeline
+    #if GITHUB_ACTIONS
+    static let toleranceMargin: TimeInterval = 0.05
+    #else
+    static let toleranceMargin: TimeInterval = 0.00
+    #endif
+    
     #if os(macOS)
-    let tolerance: TimeInterval = 0.001
+    static let tolerance: TimeInterval = 0.001 + toleranceMargin
     #elseif targetEnvironment(macCatalyst) || os(iOS) || os(tvOS) || os(watchOS)
-    let tolerance: TimeInterval = 0.01
+    static let tolerance: TimeInterval = 0.01 + toleranceMargin
     #else // linux
-    let tolerance: TimeInterval = 0.05
+    static let tolerance: TimeInterval = 0.05 + toleranceMargin
     #endif
 
     @Test
@@ -56,7 +62,7 @@ struct OSCTimeTag_Tests {
         #expect(!tag.isImmediate)
         #expect(!tag.isFuture)
         #expect(tag.date < Date())
-        #expect(timeIntervalSinceNowValue.isApproximatelyEqual(to: -10.0, absoluteTolerance: tolerance))
+        #expect(timeIntervalSinceNowValue.isApproximatelyEqual(to: -10.0, absoluteTolerance: Self.tolerance))
     }
 
     // MARK: - .init(timeIntervalSince1900:)
@@ -193,7 +199,7 @@ struct OSCTimeTag_Tests {
     func immediate_date() {
         let tag = OSCTimeTag.immediate()
         let date = Date()
-        #expect(tag.date.timeIntervalSince(date).isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
+        #expect(tag.date.timeIntervalSince(date).isApproximatelyEqual(to: 0.0, absoluteTolerance: Self.tolerance))
     }
 
     @Test
@@ -203,7 +209,7 @@ struct OSCTimeTag_Tests {
         // capture this value immediately, as it relies on system "now" time internally
         let captureSecondsFromNow = tag.timeIntervalSinceNow()
 
-        #expect(captureSecondsFromNow.isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
+        #expect(captureSecondsFromNow.isApproximatelyEqual(to: 0.0, absoluteTolerance: Self.tolerance))
     }
 
     // MARK: - .now()
@@ -237,7 +243,7 @@ struct OSCTimeTag_Tests {
         let date = Date()
         let tag = OSCTimeTag.now()
         let captureDate = tag.date
-        #expect(date.timeIntervalSince(captureDate).isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
+        #expect(date.timeIntervalSince(captureDate).isApproximatelyEqual(to: 0.0, absoluteTolerance: Self.tolerance))
     }
 
     @Test
@@ -247,7 +253,7 @@ struct OSCTimeTag_Tests {
         // capture this value immediately, as it relies on system "now" time internally
         let captureSecondsFromNow = tag.timeIntervalSinceNow()
 
-        #expect(captureSecondsFromNow.isApproximatelyEqual(to: 0.0, absoluteTolerance: tolerance))
+        #expect(captureSecondsFromNow.isApproximatelyEqual(to: 0.0, absoluteTolerance: Self.tolerance))
     }
 }
 

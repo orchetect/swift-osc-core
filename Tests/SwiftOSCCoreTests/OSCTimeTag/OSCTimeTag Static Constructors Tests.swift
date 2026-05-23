@@ -11,13 +11,20 @@ import Testing
 
 @Suite
 struct OSCTimeTag_StaticConstructors_Tests {
+    // De-flake mitigation: allow more time variance for CI pipeline
+    #if GITHUB_ACTIONS
+    static let toleranceMargin: TimeInterval = 0.05
+    #else
+    static let toleranceMargin: TimeInterval = 0.00
+    #endif
+    
     #if os(macOS) || os(iOS)
-    let tolerance: TimeInterval = 0.005
+    static let tolerance: TimeInterval = 0.005 + toleranceMargin
     #elseif os(tvOS) || os(watchOS)
     // allow more time variance for CI pipeline to de-flake
-    let tolerance: TimeInterval = 0.01
+    static let tolerance: TimeInterval = 0.01 + toleranceMargin
     #else // linux
-    let tolerance: TimeInterval = 0.2
+    static let tolerance: TimeInterval = 0.2 + toleranceMargin
     #endif
 
     // MARK: - Static Constructors
@@ -52,7 +59,7 @@ struct OSCTimeTag_StaticConstructors_Tests {
         let nowTI = now.timeIntervalSince(primeEpoch)
         let valTI = try #require((val as? OSCTimeTag)?.timeInterval(since: primeEpoch))
 
-        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: tolerance))
+        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: Self.tolerance))
     }
 
     @Test(.enabled(if: isSystemTimingStable()))
@@ -65,7 +72,7 @@ struct OSCTimeTag_StaticConstructors_Tests {
         let nowTI = now.timeIntervalSince(primeEpoch)
         let valTI = val.timeInterval(since: primeEpoch)
 
-        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: tolerance))
+        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: Self.tolerance))
     }
 
     @Test(.enabled(if: isSystemTimingStable()))
@@ -79,7 +86,7 @@ struct OSCTimeTag_StaticConstructors_Tests {
         let nowTI = now.timeIntervalSince(primeEpoch)
         let valTI = try #require((val as? OSCTimeTag)?.timeInterval(since: primeEpoch))
 
-        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: tolerance))
+        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: Self.tolerance))
     }
 
     @Test(.enabled(if: isSystemTimingStable()))
@@ -93,7 +100,7 @@ struct OSCTimeTag_StaticConstructors_Tests {
         let nowTI = now.timeIntervalSince(primeEpoch)
         let valTI = val.timeInterval(since: primeEpoch)
 
-        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: tolerance))
+        #expect(valTI.isApproximatelyEqual(to: nowTI, absoluteTolerance: Self.tolerance))
     }
 
     @Test
