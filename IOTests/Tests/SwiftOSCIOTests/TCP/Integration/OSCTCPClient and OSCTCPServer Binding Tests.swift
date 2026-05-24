@@ -24,8 +24,21 @@ extension SerializedTests {
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)
-            let localBinding = "0.0.0.0"
-            let localIP = "127.0.0.1"
+            var localBinding = "0.0.0.0"
+            var localIP = "127.0.0.1"
+            
+            #if os(Linux) || os(Android)
+            // Linux (and probably Android) can't support a dual channel TCP server, so when enabling IPv6
+            // we only use a single channel internally and bind it to the IPv6 wildcard address
+            if isIPv6Enabled {
+                localBinding = "::"
+                localIP = "::ffff:127.0.0.1"
+            }
+            #else
+            // silence mutable variable compiler warnings
+            _ = localBinding
+            _ = localIP
+            #endif
             
             typealias MessageDetails = (message: OSCMessage, host: String, port: UInt16)
             let serverReceiver = ItemReceiver<MessageDetails>()
