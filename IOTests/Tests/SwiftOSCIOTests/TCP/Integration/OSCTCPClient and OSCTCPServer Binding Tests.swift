@@ -24,20 +24,23 @@ extension SerializedTests {
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
             // when binding to "localhost", the IPv4 local address should always be used.
             // (unless an IPv6 interface is specified, of course -- which we are not testing here)
-            var localBinding = "0.0.0.0"
-            var localIP = "127.0.0.1"
+            var serverLocalBinding = "0.0.0.0"
+            var serverLocalIP = "127.0.0.1"
+            var clientLocalIP = "127.0.0.1"
             
             #if os(Linux) || os(Android)
             // Linux (and probably Android) can't support a dual channel TCP server, so when enabling IPv6
             // we only use a single channel internally and bind it to the IPv6 wildcard address
             if isIPv6Enabled {
-                localBinding = "::"
-                localIP = "::ffff:127.0.0.1"
+                serverLocalBinding = "::"
+                serverLocalIP = "::ffff:127.0.0.1"
+                clientLocalIP = "127.0.0.1"
             }
             #else
             // silence mutable variable compiler warnings
-            _ = localBinding
-            _ = localIP
+            _ = serverLocalBinding
+            _ = serverLocalIP
+            _ = clientLocalIP
             #endif
             
             typealias MessageDetails = (message: OSCMessage, host: String, port: UInt16)
@@ -66,7 +69,7 @@ extension SerializedTests {
             
             // ensure property reflects expected state
             #expect(server.isIPv6Enabled == isIPv6Enabled)
-            #expect(server.localHost == localBinding)
+            #expect(server.localHost == serverLocalBinding)
             
             // set up client
             let remoteHost = "localhost"
@@ -93,7 +96,7 @@ extension SerializedTests {
             
             // ensure properties reflect expected state
             #expect(client.isIPv6Enabled == isIPv6Enabled)
-            #expect(client.localHost == localIP)
+            #expect(client.localHost == clientLocalIP)
             
             // send a message from server to client
             server.send(.message("/test"), toClientIDs: nil) { clientID, error in
@@ -105,7 +108,7 @@ extension SerializedTests {
             await wait(expect: { await !clientReceiver.items.isEmpty }, timeout: 5.0)
             #expect(await clientReceiver.items.count == 1)
             let clientMessageDetails = try await #require(clientReceiver.items.first)
-            #expect(clientMessageDetails.host == localIP)
+            #expect(clientMessageDetails.host == clientLocalIP)
             
             // send a message from client to server
             try client.send(.message("/test"))
@@ -114,7 +117,7 @@ extension SerializedTests {
             await wait(expect: { await !serverReceiver.items.isEmpty }, timeout: 5.0)
             #expect(await serverReceiver.items.count == 1)
             let serverMessageDetails = try await #require(serverReceiver.items.first)
-            #expect(serverMessageDetails.host == localIP)
+            #expect(serverMessageDetails.host == serverLocalIP)
         }
     }
 }
