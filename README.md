@@ -33,7 +33,7 @@ To use this extension as standalone dependency (instead of importing the **swift
 1. Add the **swift-osc-core** repo as a dependency.
 
    ```swift
-   .package(url: "https://github.com/orchetect/swift-osc-core", from: "1.0.0")
+   .package(url: "https://github.com/orchetect/swift-osc-core", from: "1.4.0")
    ```
 
 2. Add **SwiftOSCCore** to your target.
