@@ -4,9 +4,7 @@
 
 ```swift
 let client = OSCUDPClient()
-```
-
-This initializer **does not** require calling ``OSCUDPClientProtocol/start()`` before it may be used to send messages. 
+``` 
 
 ### Advanced Initialization
 
@@ -15,11 +13,14 @@ let client = OSCUDPClient(
     localPort: 8000,
     interface: nil,
     isPortReuseEnabled: true,
-    isIPv4BroadcastEnabled: true
+    isIPv4BroadcastEnabled: true,
+    isIPv6Enabled: false                    
 )
 ```
 
-Ensure ``OSCUDPClientProtocol/start()`` is called once after initialization in order to begin receiving messages.
+### Setup
+
+This class **does not** require calling ``OSCUDPClientProtocol/start()`` before it may be used to send messages, however you may choose to do so early in your app lifecycle when configuring network services in order to handle any local port binding errors proactively.
 
 ```swift
 try client.start()    

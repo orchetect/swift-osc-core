@@ -56,7 +56,9 @@ public protocol OSCTCPServerProtocol: Sendable {
     /// Starts listening for inbound connections.
     func start() throws
 
-    /// Closes any open client connections and stops listening for inbound connection requests.
+    /// Closes all current client connections and stops listening for inbound connection requests.
+    ///
+    /// This method is called automatically upon class deinit.
     func stop()
 
     // MARK: - Communication

@@ -60,7 +60,9 @@ public protocol OSCTCPClientProtocol: Sendable {
     ///   - timeout: Supply a timeout period in seconds.
     func connect(timeout: TimeInterval) throws
 
-    /// Close the connection, if any.
+    /// Closes the connection, if the client is currently connected.
+    ///
+    /// This method is called automatically upon class deinit.
     func close()
 
     // MARK: - Communication

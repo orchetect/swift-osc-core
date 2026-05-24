@@ -56,6 +56,8 @@ public protocol OSCUDPSocketProtocol: Sendable {
     func start() throws
 
     /// Stops listening for data and closes the OSC port.
+    ///
+    /// This method is called automatically upon class deinit.
     func stop()
 
     // MARK: - Communication

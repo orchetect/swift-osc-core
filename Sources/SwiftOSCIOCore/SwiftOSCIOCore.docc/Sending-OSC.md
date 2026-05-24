@@ -33,8 +33,12 @@ let bundle = OSCBundle([
 
 For the UDP protocol, both ``OSCUDPClientProtocol`` and ``OSCUDPSocketProtocol`` are capable of sending messages using the same API.
 
+Hostnames will be resolved to their IPv4 address where possible, or may resolve to an IPv6 address if IPv6 support is enabled in the OSC class.
+
 ```swift
 try client.send(/* ... */, to: "192.168.1.2", port: 8000)
+try client.send(/* ... */, to: "localhost", port: 8000)
+try client.send(/* ... */, to: "MacBookPro.local", port: 8000)
 ```
 
 ## Sending over TCP

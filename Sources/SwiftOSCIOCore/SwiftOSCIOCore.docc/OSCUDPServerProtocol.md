@@ -3,9 +3,12 @@
 ### Minimal Initialization
 
 ```swift
-let server = OSCUDPServer(port: 8000) { [weak self] message, timeTag, host, port in
-    print("Received \(message)")
-}
+let server = OSCUDPServer(
+    port: 8000,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from \(host):\(port)")
+    }
+)
 ```
 
 ### Advanced Initialization
@@ -15,14 +18,31 @@ let server = OSCUDPServer(
     port: 8000,
     interface: nil,
     isPortReuseEnabled: true,
-    timeTagMode: .ignore,
-    queue: nil
-) { [weak self] message, timeTag, host, port in
-    print("Received \(message)")
-}
+    isIPv6Enabled: false,
+    queue: nil,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from \(host):\(port)")
+    }
+)
 ```
 
 ### Setup
+
+The receive handler may alternatively be provided after initialization if needed:
+
+```swift
+server.setReceiveHandler(.messages { [weak self] message, timeTag, host, port in
+    print("Received \(message) from \(host):\(port)")
+})
+```
+
+Received OSC packet decode errors can be observed by providing a handler closure:
+
+```swift
+server.setReceiveErrorHandler { [weak self] data, error, host, port in
+    // ...
+}
+```
 
 Ensure ``start()`` is called once after initialization in order to begin receiving messages.
 

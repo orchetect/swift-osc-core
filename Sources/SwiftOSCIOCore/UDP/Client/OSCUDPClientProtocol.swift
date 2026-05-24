@@ -13,14 +13,20 @@ public protocol OSCUDPClientProtocol: Sendable {
     ///
     /// A random available port in the system will be chosen.
     ///
-    /// Using this initializer does not require calling ``start()``.
+    /// > Note:
+    /// >
+    /// > This class does not require calling ``start()`` before it may be used to send messages, however you may
+    /// > choose to do so early in your app lifecycle when configuring network services in order to handle any local
+    /// > port binding errors proactively.
     init()
 
     /// Initialize an OSC client to send messages using the UDP network protocol using a specific local port.
     ///
     /// > Note:
     /// >
-    /// > Ensure ``start()`` is called once after initialization in order to begin sending messages.
+    /// > This class does not require calling ``start()`` before it may be used to send messages, however you may
+    /// > choose to do so early in your app lifecycle when configuring network services in order to handle any local
+    /// > port binding errors proactively.
     ///
     /// > Note:
     /// >
@@ -33,8 +39,7 @@ public protocol OSCUDPClientProtocol: Sendable {
     /// > client/server ``OSCUDPSocketProtocol`` object instead, which is designed to make working with these kind
     /// > round-trip requirements more streamlined.
     /// >
-    /// > To allow the system to assign a random available local port, use the ``init()`` initializer
-    /// > instead.
+    /// > To allow the system to assign a random available local port, pass `nil` or `0` to the `localPort` parameter.
     ///
     /// - Parameters:
     ///   - localPort: Local UDP port used by the client from which to send OSC packets.
@@ -54,11 +59,17 @@ public protocol OSCUDPClientProtocol: Sendable {
     // MARK: - Lifecycle
 
     /// Bind the local UDP port.
-    /// This call is only necessary if a local port was specified at the time of class
-    /// initialization or if class properties were modified after initialization.
+    ///
+    /// > Note:
+    /// >
+    /// > This class does not require calling ``start()`` before it may be used to send messages, however you may
+    /// > choose to do so early in your app lifecycle when configuring network services in order to handle any local
+    /// > port binding errors proactively.
     func start() throws
 
     /// Closes the OSC port.
+    ///
+    /// This method is called automatically upon class deinit.
     func stop()
 
     // MARK: - Communication
@@ -158,7 +169,9 @@ extension OSCUDPClientProtocol {
     ///
     /// > Note:
     /// >
-    /// > Ensure ``start()`` is called once after initialization in order to begin sending messages.
+    /// > This class does not require calling ``start()`` before it may be used to send messages, however you may
+    /// > choose to do so early in your app lifecycle when configuring network services in order to handle any local
+    /// > port binding errors proactively.
     ///
     /// > Note:
     /// >
@@ -171,8 +184,7 @@ extension OSCUDPClientProtocol {
     /// > client/server ``OSCUDPSocketProtocol`` object instead, which is designed to make working with these kind
     /// > round-trip requirements more streamlined.
     /// >
-    /// > To allow the system to assign a random available local port, use the ``init()`` initializer
-    /// > instead.
+    /// > To allow the system to assign a random available local port, pass `nil` or `0` to the `localPort` parameter.
     ///
     /// - Parameters:
     ///   - localPort: Local UDP port used by the client from which to send OSC packets.

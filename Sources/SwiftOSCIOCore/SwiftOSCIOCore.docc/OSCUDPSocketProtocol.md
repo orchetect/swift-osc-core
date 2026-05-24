@@ -12,10 +12,11 @@ The remote port may be omitted, in which case the same port number as the local 
 // send messages to remote port 10023.
 let socket = OSCUDPSocket(
     remoteHost: "192.168.0.2",
-    remotePort: 10023
-) { [weak self] message, timeTag, host, port in
-    print("Received \(message)")
-}
+    remotePort: 10023,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from \(host):\(port)")
+    }
+)
 ```
 
 ### Advanced Initialization
@@ -26,15 +27,32 @@ let socket = OSCUDPSocket(
     remoteHost: "192.168.0.2",
     remotePort: 10023,
     interface: nil,
-    timeTagMode: .ignore,
     isIPv4BroadcastEnabled: false,
-    queue: nil
-) { [weak self] message, timeTag, host, port in
-    print("Received \(message)")
-}
+    isIPv6Enabled: false,
+    queue: nil,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from \(host):\(port)")
+    }
+)
 ```
 
 ### Setup
+
+The receive handler may alternatively be provided after initialization if needed:
+
+```swift
+socket.setReceiveHandler(.messages { [weak self] message, timeTag, host, port in
+    print("Received \(message) from \(host):\(port)")
+})
+```
+
+Received OSC packet decode errors can be observed by providing a handler closure:
+
+```swift
+socket.setReceiveErrorHandler { [weak self] data, error, host, port in
+    // ...
+}
+```
 
 Similar to ``OSCUDPServerProtocol``, an ``OSCUDPSocketProtocol`` instance must be started before it can send or receive messages.
 

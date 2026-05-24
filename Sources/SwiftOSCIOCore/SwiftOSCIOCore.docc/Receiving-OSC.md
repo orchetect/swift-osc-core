@@ -17,7 +17,13 @@ Two packet handlers are available for I/O classes that receive OSC data:
   This is the most common receiver and is ideal for most use cases.
 
   ```swift
+  // using default OSC time-tag mode
   server.setReceiveHandler(.messages { message, timeTag, host, port in
+      // ...
+  })
+
+  // using a custom OSC time-tag mode
+  server.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
       // ...
   })
   ```

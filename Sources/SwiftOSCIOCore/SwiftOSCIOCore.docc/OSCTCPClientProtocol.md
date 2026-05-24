@@ -5,10 +5,11 @@
 ```swift
 let client = OSCTCPClient(
     remoteHost: "192.168.1.20",
-    remotePort: 3032
-) { [weak self] message, timeTag, host, port in
-    print("Received \(message) from server")
-}
+    remotePort: 3032,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from server")
+    }
+)
 ```
 
 ### Advanced Initialization
@@ -18,15 +19,24 @@ let client = OSCTCPClient(
     remoteHost: "192.168.1.20",
     remotePort: 3032,
     interface: nil,
-    timeTagMode: .ignore,
+    isIPv6Enabled: false,
     framingMode: .osc1_1,
-    queue: nil
-) { [weak self] message, timeTag, host, port in
-    print("Received \(message) from server")
-}
+    queue: nil,
+    receiveHandler: .messages { [weak self] message, timeTag, host, port in
+        print("Received \(message) from server")
+    }
+)
 ```
 
 ### Setup
+
+The receive handler may alternatively be provided after initialization if needed:
+
+```swift
+client.setReceiveHandler(.messages { [weak self] message, timeTag, host, port in
+    print("Received \(message) from server")
+})
+```
 
 Connection state notifications can be observed by providing a handler closure:
 
@@ -35,6 +45,14 @@ client.setNotificationHandler { [weak self] notification in
     switch notification {
         // ...
     }
+}
+```
+
+Received OSC packet decode errors can be observed by providing a handler closure:
+
+```swift
+client.setReceiveErrorHandler { [weak self] data, error, host, port in
+    // ...
 }
 ```
 
