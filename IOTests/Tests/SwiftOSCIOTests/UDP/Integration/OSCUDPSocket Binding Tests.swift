@@ -18,7 +18,7 @@ extension SerializedTests {
     @Suite
     struct OSCUDPSocket_Binding_Tests {
         @Test(arguments: [false, true]) // IPv4 and IPv6 modes
-        func defaultBinding(isIPv6Enabled: Bool) async throws {
+        func onlineDefaultBinding(isIPv6Enabled: Bool) async throws {
             let isStable = isSystemTimingStable()
             
             // since default behavior for all OSC classes is to prefer IPv4 when possible,
