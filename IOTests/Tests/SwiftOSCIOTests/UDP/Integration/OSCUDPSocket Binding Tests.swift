@@ -43,7 +43,9 @@ extension SerializedTests {
             #expect(socket.localHost == nil)
             
             // start socket
+            print("Starting UDP socket with IPv6 \(isIPv6Enabled ? "enabled" : "disabled")")
             try socket.start()
+            print("Started UDP socket.")
             defer { socket.stop() }
             
             await wait(expect: { socket.isStarted }, timeout: isStable ? 0.5 : 5.0)
@@ -56,7 +58,9 @@ extension SerializedTests {
             let client = OSCUDPClient(localPort: nil, isIPv6Enabled: isIPv6Enabled)
             
             // start client
+            print("Starting UDP client with IPv6 \(isIPv6Enabled ? "enabled" : "disabled")")
             try client.start()
+            print("Started UDP client.")
             defer { client.stop() }
             
             // wait for connection

@@ -45,7 +45,9 @@ extension SerializedTests {
             #expect(server.localHost == nil)
             
             // start server
+            print("Starting UDP server with IPv6 \(isIPv6Enabled ? "enabled" : "disabled")")
             try server.start()
+            print("Started UDP server.")
             defer { server.stop() }
             
             await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
@@ -62,10 +64,12 @@ extension SerializedTests {
             
             // start client
             if isClientManuallyStarted {
+                print("Manually starting UDP client.")
                 try client.start()
                 // ensure property reflects expected state
                 #expect(client.localHost == localBinding)
             } else {
+                print("Skipping manual start of UDP client.")
                 // ensure property reflects expected state
                 #expect(client.localHost == nil)
             }

@@ -44,7 +44,9 @@ extension SerializedTests {
             #expect(server.localHost == nil)
             
             // start server
+            print("Starting TCP server with IPv6 \(isIPv6Enabled ? "enabled" : "disabled")")
             try server.start()
+            print("Started TCP server.")
             defer { server.stop() }
             
             await wait(expect: { server.isStarted }, timeout: isStable ? 0.5 : 5.0)
@@ -54,7 +56,9 @@ extension SerializedTests {
             #expect(server.localHost == localBinding)
             
             // set up client
-            let client = OSCTCPClient(remoteHost: "localhost", remotePort: server.localPort, isIPv6Enabled: isIPv6Enabled)
+            let remoteHost = "localhost"
+            let remotePort = server.localPort
+            let client = OSCTCPClient(remoteHost: remoteHost, remotePort: remotePort, isIPv6Enabled: isIPv6Enabled)
             
             client.setReceiveHandler(.messages(timeTagMode: .ignore) { message, timeTag, host, port in
                 Task { @TestActor in // must be serialized on a global actor to maintain received notification ordering
@@ -66,7 +70,9 @@ extension SerializedTests {
             #expect(client.localHost == nil)
             
             // start client
+            print("Connecting TCP client to TCP server using address \(remoteHost):\(remotePort) with IPv6 \(isIPv6Enabled ? "enabled" : "disabled")")
             try client.connect()
+            print("TCP client connected to TCP server.")
             defer { client.close() }
             
             // wait for connection
