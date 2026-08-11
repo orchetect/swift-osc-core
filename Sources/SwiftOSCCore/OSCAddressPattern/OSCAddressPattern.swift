@@ -15,7 +15,7 @@ import struct FoundationEssentials.Data
 /// An OSC address pattern is a path string that may contain certain wildcards and pattern matching
 /// sequences.
 ///
-/// > [OSC 1.0 Spec](http://opensoundcontrol.org/spec-1_0.html):
+/// > [OSC 1.0 Spec](https://opensoundcontrol.stanford.edu/spec-1_0.html):
 /// >
 /// > - OSC server dispatches to all OSC Method subscribers that match the address pattern.
 /// > - Address path components are known as Containers, and the final path component is the Method
@@ -44,7 +44,7 @@ import struct FoundationEssentials.Data
 /// >   Pattern matches any of the strings in the list.
 /// > - Any other character in an OSC Address Pattern can match only the same character.
 ///
-/// > [OSC 1.1 Spec](http://opensoundcontrol.org/spec-1_1.html):
+/// > [OSC 1.1 Spec](https://opensoundcontrol.stanford.edu/spec-1_1.html):
 /// >
 /// > The 1.1 spec was never formalized, but the white-paper is available.
 /// >
