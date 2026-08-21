@@ -26,7 +26,11 @@ public struct AnyOSCNumberValue {
     init(_ base: some OSCValue & BinaryFloatingPoint) {
         self.base = .float(base)
     }
+}
 
+// MARK: - Computed Base Value Properties
+
+extension AnyOSCNumberValue {
     /// Returns the boxed value as an `Bool`, lossily converting format if necessary.
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
     ///
@@ -70,6 +74,8 @@ public struct AnyOSCNumberValue {
         }
     }
 }
+
+// MARK: - OSCValueMaskable
 
 @_documentation(visibility: internal)
 extension AnyOSCNumberValue: OSCValueMaskable {
