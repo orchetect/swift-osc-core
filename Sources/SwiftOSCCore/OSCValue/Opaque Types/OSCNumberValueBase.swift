@@ -160,6 +160,22 @@ extension OSCNumberValueBase {
         }
     }
 
+    /// Returns the wrapped value as a `Float`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    @inline(__always)
+    nonisolated
+    public var floatValue: Float {
+        switch self {
+        case let .bool(v):
+            v ? 1.0 : 0.0
+        case let .int(v):
+            Float(v)
+        case let .float(v):
+            Float(v)
+        }
+    }
+
     /// Returns the wrapped value as a `Double`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
