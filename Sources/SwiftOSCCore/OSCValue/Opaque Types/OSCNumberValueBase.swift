@@ -79,6 +79,8 @@ extension OSCNumberValueBase {
     ///
     /// This property is provided as a convenient alternative to unwrapping the enum case
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isBool: Bool {
         switch self {
         case .bool:
@@ -92,6 +94,8 @@ extension OSCNumberValueBase {
     ///
     /// This property is provided as a convenient alternative to unwrapping the enum case
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isInteger: Bool {
         switch self {
         case .int:
@@ -105,6 +109,8 @@ extension OSCNumberValueBase {
     ///
     /// This property is provided as a convenient alternative to unwrapping the enum case
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isFloat: Bool {
         switch self {
         case .float:
@@ -125,6 +131,8 @@ extension OSCNumberValueBase {
     /// In the event the wrapped type is numeric and not a boolean, values equal to or greater than
     /// `1` will return `true`, whereas values less than `1` (including negative values) will return
     /// `false`.
+    @inline(__always)
+    nonisolated
     public var boolValue: Bool {
         switch self {
         case let .bool(v):
@@ -139,6 +147,8 @@ extension OSCNumberValueBase {
     /// Returns the wrapped value as an `Int`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    @inline(__always)
+    nonisolated
     public var intValue: Int {
         switch self {
         case let .bool(v):
@@ -153,6 +163,8 @@ extension OSCNumberValueBase {
     /// Returns the wrapped value as a `Double`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    @inline(__always)
+    nonisolated
     public var doubleValue: Double {
         switch self {
         case let .bool(v):
