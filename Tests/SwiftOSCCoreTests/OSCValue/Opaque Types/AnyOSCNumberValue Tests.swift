@@ -108,4 +108,34 @@ struct AnyOSCNumberValue_Tests {
         #expect(AnyOSCNumberValue(1.0 as Double).doubleValue == 1.0)
         #expect(AnyOSCNumberValue(2.0 as Double).doubleValue == 2.0)
     }
+
+    // MARK: - isBool / isInteger / isFloat
+
+    @Test
+    func bool_Properties() {
+        #expect(AnyOSCNumberValue(true as Bool).isBool)
+        #expect(!AnyOSCNumberValue(true as Bool).isInteger)
+        #expect(!AnyOSCNumberValue(true as Bool).isFloat)
+    }
+
+    @Test
+    func int_Properties() {
+        #expect(!AnyOSCNumberValue(2 as Int).isBool)
+        #expect(AnyOSCNumberValue(2 as Int).isInteger)
+        #expect(!AnyOSCNumberValue(2 as Int).isFloat)
+    }
+
+    @Test
+    func int32_Properties() {
+        #expect(!AnyOSCNumberValue(2 as Int32).isBool)
+        #expect(AnyOSCNumberValue(2 as Int32).isInteger)
+        #expect(!AnyOSCNumberValue(2 as Int32).isFloat)
+    }
+
+    @Test
+    func double_Properties() {
+        #expect(!AnyOSCNumberValue(2.5 as Double).isBool)
+        #expect(!AnyOSCNumberValue(2.5 as Double).isInteger)
+        #expect(AnyOSCNumberValue(2.5 as Double).isFloat)
+    }
 }
