@@ -120,6 +120,15 @@ extension AnyOSCNumberValue {
         base.intValue
     }
 
+    /// Returns the ``base`` value as a `Float`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    @inline(__always)
+    nonisolated
+    public var floatValue: Float {
+        base.floatValue
+    }
+
     /// Returns the ``base`` value as a `Double`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
