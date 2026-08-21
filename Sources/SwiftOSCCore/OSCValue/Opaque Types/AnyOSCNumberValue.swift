@@ -28,53 +28,6 @@ public struct AnyOSCNumberValue {
     }
 }
 
-// MARK: - Computed Base Value Properties
-
-extension AnyOSCNumberValue {
-    /// Returns the boxed value as an `Bool`, lossily converting format if necessary.
-    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
-    ///
-    /// In the event the wrapped type is numeric and not a boolean, values equal to or greater than
-    /// `1` will return `true`, whereas values less than `1` (including negative values) will return
-    /// `false`.
-    public var boolValue: Bool {
-        switch base {
-        case let .bool(v):
-            v
-        case let .int(v):
-            Int(v) >= 1
-        case let .float(v):
-            Double(v) >= 1.0
-        }
-    }
-
-    /// Returns the boxed value as an `Int`, lossily converting format if necessary.
-    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
-    public var intValue: Int {
-        switch base {
-        case let .bool(v):
-            v ? 1 : 0
-        case let .int(v):
-            Int(v)
-        case let .float(v):
-            Int(v)
-        }
-    }
-
-    /// Returns the boxed value as a `Double`, lossily converting format if necessary.
-    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
-    public var doubleValue: Double {
-        switch base {
-        case let .bool(v):
-            v ? 1.0 : 0.0
-        case let .int(v):
-            Double(v)
-        case let .float(v):
-            Double(v)
-        }
-    }
-}
-
 // MARK: - OSCValueMaskable
 
 @_documentation(visibility: internal)
@@ -103,5 +56,34 @@ extension AnyOSCNumberValue: Sendable { }
 extension AnyOSCNumberValue: CustomStringConvertible {
     public var description: String {
         "\(base)"
+    }
+}
+
+// MARK: - Computed Base Value Properties
+
+extension AnyOSCNumberValue {
+    /// Returns the ``base`` value as an `Bool`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    ///
+    /// In the event the wrapped type is numeric and not a boolean, values equal to or greater than
+    /// `1` will return `true`, whereas values less than `1` (including negative values) will return
+    /// `false`.
+    public var boolValue: Bool {
+        base.boolValue
+    }
+
+    /// Returns the ``base`` value as an `Int`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    public var intValue: Int {
+        base.intValue
+    }
+
+    /// Returns the ``base`` value as a `Double`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    public var doubleValue: Double {
+        base.doubleValue
     }
 }
