@@ -10,10 +10,10 @@ public enum OSCNumberValueBase {
     case bool(Bool)
 
     /// Integer value.
-    case int(any(OSCValue & BinaryInteger))
+    case int(any (OSCValue & BinaryInteger))
 
     /// Floating-point value.
-    case float(any(OSCValue & BinaryFloatingPoint))
+    case float(any (OSCValue & BinaryFloatingPoint))
 }
 
 // MARK: - Equatable
@@ -111,6 +111,56 @@ extension OSCNumberValueBase {
             true
         default:
             false
+        }
+    }
+}
+
+// MARK: - Computed Base Value Properties
+
+extension OSCNumberValueBase {
+    /// Returns the wrapped value as an `Bool`, lossily converting format if necessary.
+    /// 
+    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    ///
+    /// In the event the wrapped type is numeric and not a boolean, values equal to or greater than
+    /// `1` will return `true`, whereas values less than `1` (including negative values) will return
+    /// `false`.
+    public var boolValue: Bool {
+        switch self {
+        case let .bool(v):
+            v
+        case let .int(v):
+            Int(v) >= 1
+        case let .float(v):
+            Double(v) >= 1.0
+        }
+    }
+
+    /// Returns the wrapped value as an `Int`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    public var intValue: Int {
+        switch self {
+        case let .bool(v):
+            v ? 1 : 0
+        case let .int(v):
+            Int(v)
+        case let .float(v):
+            Int(v)
+        }
+    }
+
+    /// Returns the wrapped value as a `Double`, lossily converting format if necessary.
+    ///
+    /// Provided as a convenience. To get the actual stored value, unwrap the enum case instead.
+    public var doubleValue: Double {
+        switch self {
+        case let .bool(v):
+            v ? 1.0 : 0.0
+        case let .int(v):
+            Double(v)
+        case let .float(v):
+            Double(v)
         }
     }
 }
