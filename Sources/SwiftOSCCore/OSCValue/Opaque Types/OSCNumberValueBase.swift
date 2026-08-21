@@ -5,6 +5,11 @@
 //
 
 /// Type-erased OSC number value encapsulation.
+///
+/// - ``boolValue``, ``intValue``, ``floatValue`` and ``doubleValue`` can be used as a convenience
+///   to access the base value, converting from the base type if necessary.
+/// - ``isBool``, ``isInteger``, and ``isFloat`` can be used as a convenience to return the base
+///   value's type without unwrapping it first.
 public enum OSCNumberValueBase {
     /// Boolean value.
     case bool(Bool)

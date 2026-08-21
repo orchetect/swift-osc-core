@@ -10,9 +10,11 @@
 /// This type is not publicly initialize-able; instead, it is provided as a box for a type-erased
 /// number value when masking.
 ///
-/// - ``base`` returns the strongly-typed number.
-/// - ``boolValue``, ``intValue`` and ``doubleValue`` can be used as a convenience to access the
-///   base value, converting from the base type if necessary.
+/// - ``base`` returns the strongly-typed number as an enum case.
+/// - ``boolValue``, ``intValue``, ``floatValue`` and ``doubleValue`` can be used as a convenience
+///   to access the base value, converting from the base type if necessary.
+/// - ``isBool``, ``isInteger``, and ``isFloat`` can be used as a convenience to return the base
+///   value's type without unwrapping it first.
 public struct AnyOSCNumberValue {
     /// Base value storage.
     public let base: OSCNumberValueBase
