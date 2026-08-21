@@ -4,6 +4,8 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
+// TODO: Absorb and remove AnyOSCNumberValue by converting AnyOSCNumberValue to an enum. Rename to OSCNumberValue after.
+
 /// A meta-type used in ``OSCValues`` `masked()` to opaquely mask any OSC number type.
 /// This type is not publicly initialize-able; instead, it is provided as a box for a type-erased
 /// number value when masking.
