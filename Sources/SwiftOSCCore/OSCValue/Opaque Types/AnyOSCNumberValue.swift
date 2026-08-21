@@ -59,6 +59,34 @@ extension AnyOSCNumberValue: CustomStringConvertible {
     }
 }
 
+// MARK: - Metadata Properties
+
+extension AnyOSCNumberValue {
+    /// Returns a boolean value indicating whether the wrapped ``base`` value type is `Bool`.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the ``base`` value
+    /// simply to determine its underlying concrete type.
+    public var isBool: Bool {
+        base.isBool
+    }
+
+    /// Returns a boolean value indicating whether the wrapped ``base`` value type is an integer.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the ``base`` value
+    /// simply to determine its underlying concrete type.
+    public var isInteger: Bool {
+        base.isInteger
+    }
+
+    /// Returns a boolean value indicating whether the wrapped ``base`` value type is a floating-point number.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the ``base`` value
+    /// simply to determine its underlying concrete type.
+    public var isFloat: Bool {
+        base.isFloat
+    }
+}
+
 // MARK: - Computed Base Value Properties
 
 extension AnyOSCNumberValue {
