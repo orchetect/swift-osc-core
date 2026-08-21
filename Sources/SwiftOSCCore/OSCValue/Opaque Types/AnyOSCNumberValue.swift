@@ -68,6 +68,8 @@ extension AnyOSCNumberValue {
     ///
     /// This property is provided as a convenient alternative to unwrapping the ``base`` value
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isBool: Bool {
         base.isBool
     }
@@ -76,6 +78,8 @@ extension AnyOSCNumberValue {
     ///
     /// This property is provided as a convenient alternative to unwrapping the ``base`` value
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isInteger: Bool {
         base.isInteger
     }
@@ -84,6 +88,8 @@ extension AnyOSCNumberValue {
     ///
     /// This property is provided as a convenient alternative to unwrapping the ``base`` value
     /// simply to determine its underlying concrete type.
+    @inline(__always)
+    nonisolated
     public var isFloat: Bool {
         base.isFloat
     }
@@ -99,6 +105,8 @@ extension AnyOSCNumberValue {
     /// In the event the wrapped type is numeric and not a boolean, values equal to or greater than
     /// `1` will return `true`, whereas values less than `1` (including negative values) will return
     /// `false`.
+    @inline(__always)
+    nonisolated
     public var boolValue: Bool {
         base.boolValue
     }
@@ -106,6 +114,8 @@ extension AnyOSCNumberValue {
     /// Returns the ``base`` value as an `Int`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    @inline(__always)
+    nonisolated
     public var intValue: Int {
         base.intValue
     }
@@ -113,6 +123,8 @@ extension AnyOSCNumberValue {
     /// Returns the ``base`` value as a `Double`, lossily converting format if necessary.
     ///
     /// Provided as a convenience. To get the actual stored value, unwrap the ``base`` enum case instead.
+    @inline(__always)
+    nonisolated
     public var doubleValue: Double {
         base.doubleValue
     }
