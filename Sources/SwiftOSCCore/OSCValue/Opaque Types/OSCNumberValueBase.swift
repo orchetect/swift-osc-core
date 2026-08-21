@@ -71,3 +71,46 @@ extension OSCNumberValueBase: CustomStringConvertible {
         }
     }
 }
+
+// MARK: - Metadata Properties
+
+extension OSCNumberValueBase {
+    /// Returns a boolean value indicating whether the wrapped value type is `Bool`.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the enum case
+    /// simply to determine its underlying concrete type.
+    public var isBool: Bool {
+        switch self {
+        case .bool:
+            true
+        default:
+            false
+        }
+    }
+
+    /// Returns a boolean value indicating whether the wrapped value type is an integer.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the enum case
+    /// simply to determine its underlying concrete type.
+    public var isInteger: Bool {
+        switch self {
+        case .int:
+            true
+        default:
+            false
+        }
+    }
+
+    /// Returns a boolean value indicating whether the wrapped value type is a floating-point number.
+    ///
+    /// This property is provided as a convenient alternative to unwrapping the enum case
+    /// simply to determine its underlying concrete type.
+    public var isFloat: Bool {
+        switch self {
+        case .float:
+            true
+        default:
+            false
+        }
+    }
+}
