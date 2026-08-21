@@ -35,6 +35,15 @@ struct AnyOSCNumberValue_Tests {
     }
 
     @Test
+    func float_boolValue() {
+        #expect(AnyOSCNumberValue(-1.0 as Float).boolValue == false)
+        #expect(AnyOSCNumberValue(0.0 as Float).boolValue == false)
+        #expect(AnyOSCNumberValue(0.99 as Float).boolValue == false)
+        #expect(AnyOSCNumberValue(1.0 as Float).boolValue == true)
+        #expect(AnyOSCNumberValue(2.0 as Float).boolValue == true)
+    }
+
+    @Test
     func double_boolValue() {
         #expect(AnyOSCNumberValue(-1.0 as Double).boolValue == false)
         #expect(AnyOSCNumberValue(0.0 as Double).boolValue == false)
@@ -68,12 +77,63 @@ struct AnyOSCNumberValue_Tests {
     }
 
     @Test
+    func float_intValue() {
+        #expect(AnyOSCNumberValue(-1.0 as Float).intValue == -1)
+        #expect(AnyOSCNumberValue(0.0 as Float).intValue == 0)
+        #expect(AnyOSCNumberValue(0.99 as Float).intValue == 0)
+        #expect(AnyOSCNumberValue(1.0 as Float).intValue == 1)
+        #expect(AnyOSCNumberValue(2.0 as Float).intValue == 2)
+    }
+
+    @Test
     func double_intValue() {
         #expect(AnyOSCNumberValue(-1.0 as Double).intValue == -1)
         #expect(AnyOSCNumberValue(0.0 as Double).intValue == 0)
         #expect(AnyOSCNumberValue(0.99 as Double).intValue == 0)
         #expect(AnyOSCNumberValue(1.0 as Double).intValue == 1)
         #expect(AnyOSCNumberValue(2.0 as Double).intValue == 2)
+    }
+
+    // MARK: - floatValue
+
+    @Test
+    func bool_floatValue() {
+        #expect(AnyOSCNumberValue(true as Bool).floatValue == 1.0)
+        #expect(AnyOSCNumberValue(false as Bool).floatValue == 0.0)
+    }
+
+    @Test
+    func int_floatValue() {
+        #expect(AnyOSCNumberValue(-1 as Int).floatValue == -1.0)
+        #expect(AnyOSCNumberValue(0 as Int).floatValue == 0.0)
+        #expect(AnyOSCNumberValue(1 as Int).floatValue == 1.0)
+        #expect(AnyOSCNumberValue(2 as Int).floatValue == 2.0)
+    }
+
+    @Test
+    func int32_floatValue() {
+        #expect(AnyOSCNumberValue(-1 as Int32).floatValue == -1.0)
+        #expect(AnyOSCNumberValue(0 as Int32).floatValue == 0.0)
+        #expect(AnyOSCNumberValue(1 as Int32).floatValue == 1.0)
+        #expect(AnyOSCNumberValue(2 as Int32).floatValue == 2.0)
+    }
+
+    @Test
+    func float_floatValue() {
+        #expect(AnyOSCNumberValue(-1.0 as Float).floatValue == -1.0)
+        #expect(AnyOSCNumberValue(0.0 as Float).floatValue == 0.0)
+        #expect(AnyOSCNumberValue(0.99 as Float).floatValue == 0.99)
+        #expect(AnyOSCNumberValue(1.0 as Float).floatValue == 1.0)
+        #expect(AnyOSCNumberValue(2.0 as Float).floatValue == 2.0)
+    }
+
+    @Test
+    func double_floatValue() {
+        #expect(AnyOSCNumberValue(-1.0 as Double).floatValue == -1.0)
+        #expect(AnyOSCNumberValue(0.0 as Double).floatValue == 0.0)
+        #expect(AnyOSCNumberValue(0.99 as Double).floatValue == 0.99)
+        #expect(AnyOSCNumberValue(1.0 as Double).floatValue == 1.0)
+        #expect(AnyOSCNumberValue(2.0 as Double).floatValue == 2.0)
     }
 
     // MARK: - doubleValue
@@ -98,6 +158,15 @@ struct AnyOSCNumberValue_Tests {
         #expect(AnyOSCNumberValue(0 as Int32).doubleValue == 0.0)
         #expect(AnyOSCNumberValue(1 as Int32).doubleValue == 1.0)
         #expect(AnyOSCNumberValue(2 as Int32).doubleValue == 2.0)
+    }
+
+    @Test
+    func float_doubleValue() {
+        #expect(AnyOSCNumberValue(-1.0 as Float).doubleValue == -1.0)
+        #expect(AnyOSCNumberValue(0.0 as Float).doubleValue == 0.0)
+        #expect(AnyOSCNumberValue(0.5 as Float).doubleValue == 0.5)
+        #expect(AnyOSCNumberValue(1.0 as Float).doubleValue == 1.0)
+        #expect(AnyOSCNumberValue(2.0 as Float).doubleValue == 2.0)
     }
 
     @Test
@@ -130,6 +199,13 @@ struct AnyOSCNumberValue_Tests {
         #expect(!AnyOSCNumberValue(2 as Int32).isBool)
         #expect(AnyOSCNumberValue(2 as Int32).isInteger)
         #expect(!AnyOSCNumberValue(2 as Int32).isFloat)
+    }
+
+    @Test
+    func float_Properties() {
+        #expect(!AnyOSCNumberValue(2.5 as Float).isBool)
+        #expect(!AnyOSCNumberValue(2.5 as Float).isInteger)
+        #expect(AnyOSCNumberValue(2.5 as Float).isFloat)
     }
 
     @Test
