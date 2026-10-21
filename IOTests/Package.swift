@@ -36,7 +36,7 @@ let package = Package(
                 .product(name: "NIOCore", package: "swift-nio")
 
                 // Add I/O package. For example:
-                //   .product(name: "SwiftOSCIO", package: "swift-core-io-nio")
+                //   .product(name: "SwiftOSCIO", package: "swift-osc-io-nio")
             ]
         )
     ],
